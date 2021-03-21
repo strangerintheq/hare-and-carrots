@@ -23725,12 +23725,13 @@
       return;
     let splash = createSplashEffect().pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
+    console.log("startSplash");
     addAnimation(function() {
       let dt = (Date.now() - splashAnimationStart) / 500;
       if (dt < 1) {
         splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
       } else {
-        splash.remove();
+        splash.obj.parent.remove(splash);
         return true;
       }
     });

@@ -130,6 +130,7 @@ export function startSplashAnimation( ) {
     let splash = createSplashEffect()
         .pos(p[0],p[1],p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
+    console.log('startSplash')
     addAnimation(function(){
         let dt = (Date.now() - splashAnimationStart)/500;
         if (dt < 1) {
@@ -139,7 +140,7 @@ export function startSplashAnimation( ) {
                 p[2]
             );
         } else {
-            splash.remove();
+            splash.obj.parent.remove(splash);
             return true
         }
     })
