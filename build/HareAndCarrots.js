@@ -23659,10 +23659,9 @@
     }
     return false;
   }
-  function handeRaycast(pt, obj) {
+  function tryJump(p) {
     if (moveStartTime !== 0)
       return;
-    let p = obj.object.parent.position;
     let dx = Math.sign(hare.obj.position.x - p.x);
     let dz = Math.sign(hare.obj.position.z - p.z);
     let x = hare.obj.position.x - dx;
@@ -23678,8 +23677,8 @@
     startSplashAnimation();
     setTimeout(checkHareIsNearSign, 200);
   }
-  function createSplashEffect(target) {
-    let splash = object(target);
+  function createSplashEffect() {
+    let splash = object(scene);
     cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
     return splash;
   }
@@ -23687,7 +23686,7 @@
     let p = targetLocation;
     if (!isWater(getCell(p)))
       return;
-    let splash = createSplashEffect(scene).pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
+    let splash = createSplashEffect().pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
     addAnimation(function() {
       let dt = (Date.now() - splashAnimationStart) / 500;
@@ -23861,7 +23860,12 @@
   function addAnimation(a) {
     activeAnimations.push(a);
   }
-  var planes = clippingPlanes();
+  var planes;
+  function getClippingPlanes() {
+    if (!planes)
+      planes = clippingPlanes();
+    return planes;
+  }
   var cube = new BoxGeometry(1, 1, 1);
   var renderer = new WebGLRenderer({
     antialias: true
@@ -23913,7 +23917,7 @@
     camera2.right = s * aspect2();
     camera2.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    checkHareIsNearSign(getTargetLocation());
+    checkHareIsNearSign();
   }
   function cubeMesh(parent, material) {
     let mesh = new Mesh(cube, material);
@@ -23944,7 +23948,7 @@
     let color = new Color(`hsl(${h || 0}, ${s2 || 50}%, ${l || 50}%)`);
     return new MeshLambertMaterial({
       color,
-      clippingPlanes: clip ? planes : [],
+      clippingPlanes: clip ? getClippingPlanes() : [],
       clipShadows: true
     });
   }
@@ -24001,28 +24005,6 @@
     ].map((el) => new Plane(new Vector3(...el), 10.4));
   }
 
-  // src/Inventory.ts
-  function inventory() {
-    let items = document.querySelectorAll(".grid div");
-    let el;
-    items.forEach((e) => {
-      e.id = "id_" + Math.random().toString(36).substring(2);
-      e.draggable = true;
-      e.ondragstart = () => {
-        el = e;
-        el.style.transform = "scale(0.5)";
-      };
-      e.ondragend = () => el.style.transform = "scale(1)";
-    });
-    document.querySelectorAll(".grid").forEach((e) => {
-      e.ondragover = (ev) => ev.preventDefault();
-      e.ondrop = (ev) => {
-        e.append(el);
-        console.log("move_to_" + e.id + "/" + el.id);
-      };
-    });
-  }
-
   // src/ground/Map.ts
   function groundData() {
     return `
@@ -24069,6 +24051,7 @@
   createGround(groundData());
   createClouds();
   createHare();
-  raycaster(handeRaycast);
-  inventory();
+  raycaster((pt, obj) => {
+    tryJump(obj.object.parent.position);
+  });
 })();

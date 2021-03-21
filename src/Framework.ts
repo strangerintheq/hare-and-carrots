@@ -1,8 +1,6 @@
 import * as THREE from 'three'
 import {getGround} from "./ground/Ground";
 import {checkHareIsNearSign} from "./signs/Signs";
-import {getTargetLocation} from "./objects/Hare";
-
 
 let activeAnimations : Array<(t:number) => boolean> = [];
 
@@ -10,7 +8,14 @@ export function addAnimation(a:(t:number) => boolean):void {
     activeAnimations.push(a)
 }
 
-let planes = clippingPlanes();
+let planes;
+
+function getClippingPlanes(){
+    if (!planes)
+        planes = clippingPlanes();
+    return planes
+}
+
 
 let cube = new THREE.BoxGeometry(1, 1, 1);
 
@@ -81,7 +86,7 @@ function onWindowResize() {
     camera.right = s*aspect();
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    checkHareIsNearSign(getTargetLocation())
+    checkHareIsNearSign()
 }
 
 export function cubeMesh (parent, material) {
@@ -116,7 +121,7 @@ export function hsl(h, s, l, clip?) {
     let color = new THREE.Color(`hsl(${h||0}, ${s||50}%, ${l||50}%)`);
     return new THREE.MeshLambertMaterial({
         color,
-        clippingPlanes: clip ? planes : [],
+        clippingPlanes: clip ? getClippingPlanes() : [],
         clipShadows: true
     });
 }
@@ -172,8 +177,6 @@ export function raycaster(cb) {
     addEventListener('touchstart', e => handle(e.touches[0]));
 
 }
-
-// inner functions
 
 function clippingPlanes() {
     return [

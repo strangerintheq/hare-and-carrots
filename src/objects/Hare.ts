@@ -58,10 +58,10 @@ export function moveHareAnimation(): boolean {
     return false;
 }
 
-export function handeRaycast(pt, obj){
+export function tryJump(p){
     if (moveStartTime !== 0)
         return
-    let p = obj.object.parent.position;
+
     let dx = Math.sign(hare.obj.position.x - p.x);
     let dz = Math.sign(hare.obj.position.z - p.z);
     let x = hare.obj.position.x - dx;
@@ -81,8 +81,8 @@ export function handeRaycast(pt, obj){
     setTimeout(checkHareIsNearSign, 200);
 }
 
-function createSplashEffect(target) {
-    let splash = object(target);
+function createSplashEffect() {
+    let splash = object(scene);
     cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0,-0.2,0)
     return splash;
 }
@@ -91,7 +91,7 @@ export function startSplashAnimation( ) {
     let p = targetLocation;
     if (!isWater(getCell(p)))
         return;
-    let splash = createSplashEffect(scene)
+    let splash = createSplashEffect()
         .pos(p[0],p[1],p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
     addAnimation(function(){
