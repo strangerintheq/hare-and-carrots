@@ -82,9 +82,7 @@ export function checkHareIsNearSign() {
             let cell = getCell([x+targetLocation[0],targetLocation[1],z+targetLocation[2]]);
             if (signs[cell[0]]) {
                 let s = signs[cell[0]];
-                showBalloon(s.size, s.text, () => {
-                    document.location.href = s.link
-                })
+                showBalloon(s.size, s.text, () => window.open(s.link))
                 break
             }
         }

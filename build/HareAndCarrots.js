@@ -23661,7 +23661,7 @@
     balloon.style.left = -20 + pos.x * widthHalf + widthHalf + "px";
     balloon.style.top = -100 - pos.y * heightHalf + heightHalf + "px";
     balloon.innerHTML = makeSvg(size, content);
-    balloon.querySelector("path").onclick = (e) => {
+    balloon.querySelector("rect").onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
       action();
@@ -23675,16 +23675,12 @@
   function makeSvg(size, content) {
     return `
         <svg pointer-events="none">
-            <path pointer-events="all"
-                fill="white" d="m5,10
-                 a10,10,0,0,1,10,-10
-                 h${size[0]}
-                 a10,10,0,0,1,10,10
-                 v${size[1]}
-                 a10,10,0,0,1,-10,10
-                 h-${size[0]}
-                 a10,10,0,0,1,-10,-10
-                 z" cursor="pointer"/>
+            <rect pointer-events="all"
+                fill="white" 
+                rx="15"
+                width="${size[0] + 30}"
+                height="${size[1] + 20}"
+                cursor="pointer"></rect>
              <g >
                 <circle r="12" fill="white" cx=25 cy=41></circle>
                 <circle r="5" fill="white" cx=20 cy=58></circle>
@@ -23868,9 +23864,7 @@
         let cell = getCell([x + targetLocation2[0], targetLocation2[1], z + targetLocation2[2]]);
         if (signs[cell[0]]) {
           let s2 = signs[cell[0]];
-          showBalloon(s2.size, s2.text, () => {
-            document.location.href = s2.link;
-          });
+          showBalloon(s2.size, s2.text, () => window.open(s2.link));
           break;
         }
       }
@@ -24075,15 +24069,15 @@
     return `
         G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
         G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
-        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
+        G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
         G0 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G1 G2
         G0 G1 T2 G1 G0 G0 G0 G0 c0 G0 G0 G0 G0 G0 B0 B1 G0 G0 G0 G1 G1
         G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G0 G0 G0 G1 G1 T1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G0 T0 G0 G0 S0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 G0 G0 G0 G0 G0 G0 G0 G0 C0 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
-        G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G2 G3 G2 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
+        G1 G1 G1 G1 G0 G0 G0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G2 G2 G2 G1 G1 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
