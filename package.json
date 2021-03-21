@@ -1,0 +1,17 @@
+{
+  "name": "hare-and-carrots",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/HareAndCarrots.ts --bundle --outdir=build --define:process.env.NODE_ENV=\\\"development\\\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.9.6"
+  },
+  "devDependencies": {
+    "three": "^0.126.1"
+  }
+}
