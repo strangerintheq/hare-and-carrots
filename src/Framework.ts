@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import {getGround} from "./ground/Ground";
 
 let planes = clippingPlanes();
 
@@ -151,6 +152,25 @@ export function texture(svg) {
 
 export function svg(w, h, html) {
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}px" height="${h}px">${html}</svg>`;
+}
+
+export function raycaster(cb) {
+    let cast = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
+
+    let handle = e => {
+        if (e.target.nodeName.toLowerCase() === "path")
+            return
+        mouse.x = ( e.clientX / innerWidth ) * 2 - 1;
+        mouse.y = - ( e.clientY / innerHeight ) * 2 + 1;
+        cast.setFromCamera( mouse, three.camera );
+        let intersects = cast.intersectObjects(getGround().possibleToMove, true);
+        intersects[0] && cb(intersects[0].point, intersects[0])
+    };
+
+    addEventListener('click', handle);
+    addEventListener('touchstart', e => handle(e.touches[0]));
+
 }
 
 // inner functions
