@@ -1,7 +1,6 @@
-import * as THREE from 'three'
 import {getCell} from "../ground/Ground";
-import {camera} from "../Framework";
-import {getHare, getTargetLocation} from "../objects/Hare";
+import { getTargetLocation} from "../objects/Hare";
+import {hideBalloon, showBalloon} from "../Balloon";
 
 export const signs = createSigns();
 
@@ -77,40 +76,17 @@ function createSigns() {
 
 export function checkHareIsNearSign() {
     let targetLocation = getTargetLocation();
-    let baloon : HTMLElement= document.querySelector('.balloon');
-    baloon.style.display = "none"
+    hideBalloon()
     for(let x=-1;x<=1;x++){
         for(let z=-1;z<=1;z++) {
             let cell = getCell([x+targetLocation[0],targetLocation[1],z+targetLocation[2]]);
             if (signs[cell[0]]) {
-                updateBalloon(cell[0], getHare(), camera)
+                let s = signs[cell[0]];
+                showBalloon(s.size, s.text, () => {
+                    document.location.href = s.link
+                })
                 break
             }
         }
     }
-}
-
-function updateBalloon(type, hare, camera) {
-    let balloon: HTMLElement  = document.querySelector('.balloon');
-    balloon.style.display = 'block';
-    let widthHalf = innerWidth / 2, heightHalf = innerHeight / 2;
-    let pos = new THREE.Vector3();
-    pos = pos.setFromMatrixPosition(hare.obj.matrixWorld);
-    pos.project(camera);
-    balloon.style.left = -20 + ( pos.x * widthHalf ) + widthHalf + 'px';
-    balloon.style.top = -100 - ( pos.y * heightHalf ) + heightHalf+ 'px';
-    let link = document.querySelector('#balloon');
-    let s = signs[type];
-    link.textContent = s.text;
-    link.setAttribute('target', '_blank')
-    link.setAttribute('href', s.link);
-    balloon.querySelector('path').setAttribute('d', `m5,10
-                 a10,10,0,0,1,10,-10
-                 h${s.size[0]}
-                 a10,10,0,0,1,10,10
-                 v${s.size[1]}
-                 a10,10,0,0,1,-10,10
-                 h-${s.size[0]}
-                 a10,10,0,0,1,-10,-10
-                 z`);
 }

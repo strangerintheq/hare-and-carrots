@@ -5,68 +5,6 @@
 </head>
 <body>
 
-<style>
-    body {
-        user-select: none;
-    }
-
-    .action {
-        position:fixed;
-        top:0;
-        right:0;
-    }
-
-    .items {
-        display: none;
-        position: absolute;
-        background: #fea6;
-        border: 1px solid;
-        transform: translate(calc(50vw - 50%), calc(50vh - 50%));
-
-    }
-
-    .grid {
-        display: inline-block;
-        width: 160px;
-        height: 160px;
-        background: #fff6;
-        margin: 2px;
-    }
-
-    .grid div {
-        display: block;
-        width: 30px;
-        height: 30px;
-        float: left;
-        margin: 3px 0 0 3px;
-        text-align: center;
-        line-height: 30px;
-        transition: 0.1s;
-        background: #5559;
-    }
-
-    .balloon {
-        position: fixed;
-    }
-
-    svg.action:hover circle{stroke:red}
-</style>
-
-<div class="action"></div>
-
-<div class="balloon" style="display:none">
-    <svg>
-        <path fill="white"/>
-        <circle r="12" fill="white" cx=25 cy=41></circle>
-        <circle r="5" fill="white" cx=20 cy=58></circle>
-        <circle r="2" fill="white" cx=15 cy=65></circle>
-        <text x=15 y=25>
-            <a id="balloon"
-               style="fill:blue;text-decoration:underline"
-               target="_blank"></a>
-        </text>
-    </svg>
-</div>
 <script src="HareAndCarrots.js"></script>
 
 </body>

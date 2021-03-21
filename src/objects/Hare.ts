@@ -1,16 +1,15 @@
-import {addAnimation, angleLerp, camera, cubeMesh, lerp, object, scene} from "../Framework";
+import {addAnimation, angleLerp,  cubeMesh, lerp, object, scene} from "../Framework";
 import {blue1, red, white} from "../Materials";
 import {cellElevetion, clearCell, getCell, isWater} from "../ground/Ground";
 import {checkHareIsNearSign} from "../signs/Signs";
 import {jumpSound} from "../Audio";
+import {hideBalloon, showBalloon} from "../Balloon";
 
 let moveStartTime = 0;
 let currentLocation = [0, 0, 0];
 let currentRotation = 0;
 let targetLocation = [0, 1, 0];
 let targetRotation = 0;
-
-let actionEl : HTMLElement= document.querySelector('.action');
 
 export function getTargetLocation(){
     return targetLocation
@@ -73,22 +72,16 @@ const actions = {
     S: '💩'
 }
 
-function doAction(code) {
-    actionEl.innerHTML = '';
+function doAction() {
+    hideBalloon();
     clearCell(targetLocation);
-
 }
 
 function checkActiveAction(code) {
     const action = actions[code];
-
-    actionEl.innerHTML = action ? `
-        <svg class="action" viewbox="-15,-15,30,30" height="70px" width="70px" style="cursor:pointer">
-            <circle r="12" fill="none"></circle>
-            <text text-anchor="middle" dominant-baseline="central">${action}</text>
-        </svg>
-    ` : ''
-    actionEl.onclick = () => doAction(code);
+    if (!action)
+        return
+    showBalloon([20, 20], action, () => doAction())
 }
 
 export function tryJump(p){
@@ -130,7 +123,6 @@ export function startSplashAnimation( ) {
     let splash = createSplashEffect()
         .pos(p[0],p[1],p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
-    console.log('startSplash')
     addAnimation(function(){
         let dt = (Date.now() - splashAnimationStart)/500;
         if (dt < 1) {

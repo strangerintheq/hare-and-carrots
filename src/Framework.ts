@@ -8,15 +8,6 @@ export function addAnimation(a:(t:number) => boolean):void {
     activeAnimations.push(a)
 }
 
-let planes;
-
-function getClippingPlanes(){
-    if (!planes)
-        planes = clippingPlanes();
-    return planes
-}
-
-
 let cube = new THREE.BoxGeometry(1, 1, 1);
 
 let renderer = new THREE.WebGLRenderer({
@@ -30,14 +21,13 @@ renderer.localClippingEnabled = true;
 document.body.appendChild(renderer.domElement);
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
+document.body.style.userSelect = 'none';
 
 let s = 10;
 export const camera = new THREE.OrthographicCamera(-s*aspect(), s*aspect(), s, -s, 0.1, 100);
 
 camera.position.set(15, 15, 15);
 camera.lookAt(0,0,0)
-
-//let controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 requestAnimationFrame(render);
 addEventListener("resize", onWindowResize);
@@ -116,15 +106,6 @@ export function xyz(obj, x, y, z): boolean {
     return false
 }
 
-export function hsl(h, s, l, clip?) {
-    let color = new THREE.Color(`hsl(${h||0}, ${s||50}%, ${l||50}%)`);
-    return new THREE.MeshLambertMaterial({
-        color,
-        clippingPlanes: clip ? getClippingPlanes() : [],
-        clipShadows: true
-    });
-}
-
 export function lerp(a, b, t) {
     return a + (b-a)*t
 }
@@ -174,15 +155,4 @@ export function raycaster(cb) {
 
     addEventListener('click', handle);
     addEventListener('touchstart', e => handle(e.touches[0]));
-
 }
-
-function clippingPlanes() {
-    return [
-        [0, 0, 1],
-        [0, 0, -1],
-        [1, 0, 0],
-        [ -1, 0, 0]
-    ].map(el => new THREE.Plane( new THREE.Vector3( ...el), 10.4 ))
-}
-
