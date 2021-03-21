@@ -11,5 +11,6 @@ export function tree1Cell(x, y, dy) {
     cubeMesh(tree, green2).scale(1, 2.5, 1).pos(0,2,0)
     cubeMesh(tree, green2).scale(2, 1.5, 1).pos(0,2,0)
     cubeMesh(tree, green2).scale(1, 1.5, 2).pos(0,2,0)
+    return tree
 }
 

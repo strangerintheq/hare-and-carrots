@@ -14,5 +14,5 @@ export function keyCell(x, y, dy) {
         .scale(0.2, 0.1, 0.2)
     cubeMesh(key, gold)
         .scale(0.4, 0.1, 0.1)
-
+    return key
 }

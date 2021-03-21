@@ -101,7 +101,6 @@ export function object(parent) {
     parent && parent.add(obj);
     let o = {
         obj,
-        remove: () => parent.remove(obj),
         add: child => obj.add(child) && o,
         scale: (x, y, z): any => xyz(obj.scale, x, y, z) || o,
         pos: (x, y, z): any => xyz(obj.position, x, y, z) || o,

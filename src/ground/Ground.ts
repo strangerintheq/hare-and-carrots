@@ -18,7 +18,7 @@ export function getGround(){
 }
 
 export function getCell(pos) {
-    return currentMap[pos[2]+10][pos[0]+10];
+    return currentMap[pos[2]+10][pos[0]+10][0];
 }
 
 export function createGround(data) {
@@ -46,11 +46,11 @@ export function createGround(data) {
     if (!Array.isArray(data))
         currentMap = split(currentMap)
 
-    currentMap.forEach((row, x) => {
+    currentMap = currentMap.map((row, x) => {
         try {
-            row.forEach((cell, y) => {
+            return row.map((cell, y) => {
                 try {
-                    return cells[cell[0]](x, y, cellElevetion(cell))
+                    return [cell, cells[cell[0]](x, y, cellElevetion(cell))]
                 } catch (e) {}
             });
         } catch (e) {}
@@ -72,5 +72,7 @@ export function isWater(cell) {
 
 
 export function clearCell(pos){
-    console.log(currentMap)
+    let obj = currentMap[pos[2]+10][pos[0]+10][1].obj;
+    obj.parent.remove(obj);
+    currentMap[pos[2]+10][pos[0]+10][0] = 'G0'
 }

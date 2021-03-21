@@ -14,5 +14,6 @@ export function signCell(type) {
         cubeMesh(sign, [
             brown, brown, brown, brown, mat, brown
         ]).scale(1, 0.6, 0.15).pos(0,0.5,0)
+        return sign
     }
 }

@@ -6,7 +6,8 @@ import {green3} from "../../Materials";
 export function bushCell(x, y, dy) {
     grassCell(x,y,dy);
     let bush = object(getGround()).pos(y-10, 1+dy, x-10);
-    cubeMesh(bush, green3).scale(1, 1, 1)
+    cubeMesh(bush, green3).scale(1, 1, 1);
+    return bush;
 }
 
 

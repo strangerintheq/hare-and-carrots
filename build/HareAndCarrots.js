@@ -23532,12 +23532,14 @@
     let obj = cubeMesh(getGround(), green).scale(1, 0.1, 1).pos(y - 10, 0.45 + dy, x - 10);
     cubeMesh(getGround(), brown).scale(1, 0.8, 1).pos(y - 10, dy, x - 10);
     !cantStandOn && getGround().possibleToMove.push(obj.obj);
+    return obj;
   }
 
   // src/ground/cells/waterCell.ts
   function waterCell(x, y) {
     let obj = cubeMesh(getGround(), blue).scale(1, 0.6, 1).pos(y - 10, -0.1, x - 10);
     getGround().possibleToMove.push(obj.obj);
+    return obj;
   }
 
   // src/ground/cells/tree1Cell.ts
@@ -23549,6 +23551,7 @@
     cubeMesh(tree, green2).scale(1, 2.5, 1).pos(0, 2, 0);
     cubeMesh(tree, green2).scale(2, 1.5, 1).pos(0, 2, 0);
     cubeMesh(tree, green2).scale(1, 1.5, 2).pos(0, 2, 0);
+    return tree;
   }
 
   // src/ground/cells/tree2Cell.ts
@@ -23561,6 +23564,7 @@
     cubeMesh(tree, green3).scale(1.5, 0.7, 1).pos(1.5, 2, 0);
     cubeMesh(tree, green3).scale(1, 0.7, 0.8).pos(1.7, 2.5, 0);
     cubeMesh(tree, green3).scale(1, 1, 1).pos(-1, 2, 0);
+    return tree;
   }
 
   // src/ground/cells/stoneCell.ts
@@ -23568,6 +23572,7 @@
     grassCell(x, y, dy);
     let stone = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
     cubeMesh(stone, gray).scale(0.3 + Math.random() * 0.2, 0.2, 0.2 + Math.random() * 0.2);
+    return stone;
   }
 
   // src/ground/cells/carrotCell.ts
@@ -23576,6 +23581,7 @@
     let carrot = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
     cubeMesh(carrot, orange).scale(0.3, 0.2, 0.3);
     cubeMesh(carrot, green2).scale(0.1, 1, 0.1);
+    return carrot;
   }
 
   // src/ground/cells/bushCell.ts
@@ -23583,6 +23589,7 @@
     grassCell(x, y, dy);
     let bush = object(getGround()).pos(y - 10, 1 + dy, x - 10);
     cubeMesh(bush, green3).scale(1, 1, 1);
+    return bush;
   }
 
   // src/ground/cells/signCell.ts
@@ -23602,6 +23609,7 @@
         mat,
         brown
       ]).scale(1, 0.6, 0.15).pos(0, 0.5, 0);
+      return sign2;
     };
   }
 
@@ -23840,6 +23848,7 @@
     let key = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
     cubeMesh(key, gold).pos(-0.3, 0, 0).scale(0.2, 0.1, 0.2);
     cubeMesh(key, gold).scale(0.4, 0.1, 0.1);
+    return key;
   }
 
   // src/ground/Ground.ts
@@ -23849,7 +23858,7 @@
     return ground;
   }
   function getCell(pos) {
-    return currentMap[pos[2] + 10][pos[0] + 10];
+    return currentMap[pos[2] + 10][pos[0] + 10][0];
   }
   function createGround(data) {
     ground = object(scene).pos(0, 0, 0);
@@ -23871,11 +23880,11 @@
     currentMap = data;
     if (!Array.isArray(data))
       currentMap = split(currentMap);
-    currentMap.forEach((row, x) => {
+    currentMap = currentMap.map((row, x) => {
       try {
-        row.forEach((cell, y) => {
+        return row.map((cell, y) => {
           try {
-            return cells[cell[0]](x, y, cellElevetion(cell));
+            return [cell, cells[cell[0]](x, y, cellElevetion(cell))];
           } catch (e) {
           }
         });
@@ -23893,7 +23902,9 @@
     return cell[0] === "W";
   }
   function clearCell(pos) {
-    console.log(currentMap);
+    let obj = currentMap[pos[2] + 10][pos[0] + 10][1].obj;
+    obj.parent.remove(obj);
+    currentMap[pos[2] + 10][pos[0] + 10][0] = "G0";
   }
 
   // src/Framework.ts
@@ -23971,7 +23982,6 @@
     parent && parent.add(obj);
     let o = {
       obj,
-      remove: () => parent.remove(obj),
       add: (child) => obj.add(child) && o,
       scale: (x, y, z) => xyz(obj.scale, x, y, z) || o,
       pos: (x, y, z) => xyz(obj.position, x, y, z) || o,
