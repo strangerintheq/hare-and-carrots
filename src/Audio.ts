@@ -4,7 +4,7 @@ let context = new AudioContext();
 context.resume();
 let gain = context.createGain();
 gain.connect(context.destination);
-gain.gain.value = 0.01
+gain.gain.value = 0.4
 
 function play(freq, delay, duration){
     let oscillator = context.createOscillator();

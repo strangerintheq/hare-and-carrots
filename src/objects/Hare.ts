@@ -1,6 +1,6 @@
 import {addAnimation, angleLerp, camera, cubeMesh, lerp, object, scene} from "../Framework";
 import {blue1, red, white} from "../Materials";
-import {cellElevetion, getCell, isWater} from "../ground/Ground";
+import {cellElevetion, clearCell, getCell, isWater} from "../ground/Ground";
 import {checkHareIsNearSign} from "../signs/Signs";
 import {jumpSound} from "../Audio";
 
@@ -9,6 +9,8 @@ let currentLocation = [0, 0, 0];
 let currentRotation = 0;
 let targetLocation = [0, 1, 0];
 let targetRotation = 0;
+
+let actionEl : HTMLElement= document.querySelector('.action');
 
 export function getTargetLocation(){
     return targetLocation
@@ -58,6 +60,37 @@ export function moveHareAnimation(): boolean {
     return false;
 }
 
+function checkForActiveAction() {
+    let p = getTargetLocation();
+    let cell = getCell([p[0],p[1],p[2]]);
+        checkActiveAction(cell[0])
+
+}
+
+const actions = {
+    C: '🥕',
+    K: '🔑',
+    S: '💩'
+}
+
+function doAction(code) {
+    actionEl.innerHTML = '';
+    clearCell(targetLocation);
+
+}
+
+function checkActiveAction(code) {
+    const action = actions[code];
+
+    actionEl.innerHTML = action ? `
+        <svg class="action" viewbox="-15,-15,30,30" height="70px" width="70px" style="cursor:pointer">
+            <circle r="12" fill="none"></circle>
+            <text text-anchor="middle" dominant-baseline="central">${action}</text>
+        </svg>
+    ` : ''
+    actionEl.onclick = () => doAction(code);
+}
+
 export function tryJump(p){
     if (moveStartTime !== 0)
         return
@@ -78,7 +111,10 @@ export function tryJump(p){
 
     startSplashAnimation();
 
-    setTimeout(checkHareIsNearSign, 200);
+    setTimeout(()=>{
+        checkHareIsNearSign();
+        checkForActiveAction()
+    }, 200);
 }
 
 function createSplashEffect() {

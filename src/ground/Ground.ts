@@ -8,6 +8,7 @@ import {carrotCell} from "./cells/carrotCell";
 import {bushCell} from "./cells/bushCell";
 import {signCell} from "./cells/signCell";
 import {signs} from "../signs/Signs";
+import {keyCell} from "./cells/keyCell";
 
 let currentMap;
 let ground;
@@ -33,6 +34,7 @@ export function createGround(data) {
         S: stoneCell,
         C: carrotCell,
         B: bushCell,
+        K: keyCell,
 
         s: signCell(signs.s),
         c: signCell(signs.c),
@@ -66,4 +68,9 @@ export function split(data){
 
 export function isWater(cell) {
     return cell[0] === 'W'
+}
+
+
+export function clearCell(pos){
+    console.log(currentMap)
 }

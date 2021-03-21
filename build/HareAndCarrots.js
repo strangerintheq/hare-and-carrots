@@ -21771,7 +21771,7 @@
       return index !== null && index < this._nActiveActions;
     }
     _addInactiveAction(action, clipUuid, rootUuid) {
-      const actions = this._actions, actionsByClip = this._actionsByClip;
+      const actions2 = this._actions, actionsByClip = this._actionsByClip;
       let actionsForClip = actionsByClip[clipUuid];
       if (actionsForClip === void 0) {
         actionsForClip = {
@@ -21785,15 +21785,15 @@
         action._byClipCacheIndex = knownActions.length;
         knownActions.push(action);
       }
-      action._cacheIndex = actions.length;
-      actions.push(action);
+      action._cacheIndex = actions2.length;
+      actions2.push(action);
       actionsForClip.actionByRoot[rootUuid] = action;
     }
     _removeInactiveAction(action) {
-      const actions = this._actions, lastInactiveAction = actions[actions.length - 1], cacheIndex = action._cacheIndex;
+      const actions2 = this._actions, lastInactiveAction = actions2[actions2.length - 1], cacheIndex = action._cacheIndex;
       lastInactiveAction._cacheIndex = cacheIndex;
-      actions[cacheIndex] = lastInactiveAction;
-      actions.pop();
+      actions2[cacheIndex] = lastInactiveAction;
+      actions2.pop();
       action._cacheIndex = null;
       const clipUuid = action._clip.uuid, actionsByClip = this._actionsByClip, actionsForClip = actionsByClip[clipUuid], knownActionsForClip = actionsForClip.knownActions, lastKnownAction = knownActionsForClip[knownActionsForClip.length - 1], byClipCacheIndex = action._byClipCacheIndex;
       lastKnownAction._byClipCacheIndex = byClipCacheIndex;
@@ -21817,18 +21817,18 @@
       }
     }
     _lendAction(action) {
-      const actions = this._actions, prevIndex = action._cacheIndex, lastActiveIndex = this._nActiveActions++, firstInactiveAction = actions[lastActiveIndex];
+      const actions2 = this._actions, prevIndex = action._cacheIndex, lastActiveIndex = this._nActiveActions++, firstInactiveAction = actions2[lastActiveIndex];
       action._cacheIndex = lastActiveIndex;
-      actions[lastActiveIndex] = action;
+      actions2[lastActiveIndex] = action;
       firstInactiveAction._cacheIndex = prevIndex;
-      actions[prevIndex] = firstInactiveAction;
+      actions2[prevIndex] = firstInactiveAction;
     }
     _takeBackAction(action) {
-      const actions = this._actions, prevIndex = action._cacheIndex, firstInactiveIndex = --this._nActiveActions, lastActiveAction = actions[firstInactiveIndex];
+      const actions2 = this._actions, prevIndex = action._cacheIndex, firstInactiveIndex = --this._nActiveActions, lastActiveAction = actions2[firstInactiveIndex];
       action._cacheIndex = firstInactiveIndex;
-      actions[firstInactiveIndex] = action;
+      actions2[firstInactiveIndex] = action;
       lastActiveAction._cacheIndex = prevIndex;
-      actions[prevIndex] = lastActiveAction;
+      actions2[prevIndex] = lastActiveAction;
     }
     _addInactiveBinding(binding, rootUuid, trackName) {
       const bindingsByRoot = this._bindingsByRootAndName, bindings = this._bindings;
@@ -21919,17 +21919,17 @@
       return null;
     }
     stopAllAction() {
-      const actions = this._actions, nActions = this._nActiveActions;
+      const actions2 = this._actions, nActions = this._nActiveActions;
       for (let i = nActions - 1; i >= 0; --i) {
-        actions[i].stop();
+        actions2[i].stop();
       }
       return this;
     }
     update(deltaTime) {
       deltaTime *= this.timeScale;
-      const actions = this._actions, nActions = this._nActiveActions, time = this.time += deltaTime, timeDirection = Math.sign(deltaTime), accuIndex = this._accuIndex ^= 1;
+      const actions2 = this._actions, nActions = this._nActiveActions, time = this.time += deltaTime, timeDirection = Math.sign(deltaTime), accuIndex = this._accuIndex ^= 1;
       for (let i = 0; i !== nActions; ++i) {
-        const action = actions[i];
+        const action = actions2[i];
         action._update(time, deltaTime, timeDirection, accuIndex);
       }
       const bindings = this._bindings, nBindings = this._nActiveBindings;
@@ -21949,18 +21949,18 @@
       return this._root;
     }
     uncacheClip(clip) {
-      const actions = this._actions, clipUuid = clip.uuid, actionsByClip = this._actionsByClip, actionsForClip = actionsByClip[clipUuid];
+      const actions2 = this._actions, clipUuid = clip.uuid, actionsByClip = this._actionsByClip, actionsForClip = actionsByClip[clipUuid];
       if (actionsForClip !== void 0) {
         const actionsToRemove = actionsForClip.knownActions;
         for (let i = 0, n = actionsToRemove.length; i !== n; ++i) {
           const action = actionsToRemove[i];
           this._deactivateAction(action);
-          const cacheIndex = action._cacheIndex, lastInactiveAction = actions[actions.length - 1];
+          const cacheIndex = action._cacheIndex, lastInactiveAction = actions2[actions2.length - 1];
           action._cacheIndex = null;
           action._byClipCacheIndex = null;
           lastInactiveAction._cacheIndex = cacheIndex;
-          actions[cacheIndex] = lastInactiveAction;
-          actions.pop();
+          actions2[cacheIndex] = lastInactiveAction;
+          actions2.pop();
           this._removeInactiveBindingsForAction(action);
         }
         delete actionsByClip[clipUuid];
@@ -23523,6 +23523,7 @@
   var blue = hsl(222, 50, 50);
   var blue1 = hsl(222, 50, 60, true);
   var gray = hsl(44, 0, 30);
+  var gold = hsl(50, 70, 60);
   var red = hsl(0, 100, 50);
   var orange = hsl(25, 100, 50);
 
@@ -23610,7 +23611,7 @@
   context.resume();
   var gain = context.createGain();
   gain.connect(context.destination);
-  gain.gain.value = 0.01;
+  gain.gain.value = 0.4;
   function play(freq, delay, duration) {
     let oscillator = context.createOscillator();
     oscillator.type = "sine";
@@ -23630,6 +23631,7 @@
   var currentRotation = 0;
   var targetLocation = [0, 1, 0];
   var targetRotation = 0;
+  var actionEl = document.querySelector(".action");
   function getTargetLocation() {
     return targetLocation;
   }
@@ -23659,6 +23661,30 @@
     }
     return false;
   }
+  function checkForActiveAction() {
+    let p = getTargetLocation();
+    let cell = getCell([p[0], p[1], p[2]]);
+    checkActiveAction(cell[0]);
+  }
+  var actions = {
+    C: "\u{1F955}",
+    K: "\u{1F511}",
+    S: "\u{1F4A9}"
+  };
+  function doAction(code) {
+    actionEl.innerHTML = "";
+    clearCell(targetLocation);
+  }
+  function checkActiveAction(code) {
+    const action = actions[code];
+    actionEl.innerHTML = action ? `
+        <svg class="action" viewbox="-15,-15,30,30" height="70px" width="70px" style="cursor:pointer">
+            <circle r="12" fill="none"></circle>
+            <text text-anchor="middle" dominant-baseline="central">${action}</text>
+        </svg>
+    ` : "";
+    actionEl.onclick = () => doAction(code);
+  }
   function tryJump(p) {
     if (moveStartTime !== 0)
       return;
@@ -23675,7 +23701,10 @@
     moveStartTime = Date.now();
     jumpSound();
     startSplashAnimation();
-    setTimeout(checkHareIsNearSign, 200);
+    setTimeout(() => {
+      checkHareIsNearSign();
+      checkForActiveAction();
+    }, 200);
   }
   function createSplashEffect() {
     let splash = object(scene);
@@ -23805,6 +23834,14 @@
                  z`);
   }
 
+  // src/ground/cells/keyCell.ts
+  function keyCell(x, y, dy) {
+    grassCell(x, y, dy);
+    let key = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
+    cubeMesh(key, gold).pos(-0.3, 0, 0).scale(0.2, 0.1, 0.2);
+    cubeMesh(key, gold).scale(0.4, 0.1, 0.1);
+  }
+
   // src/ground/Ground.ts
   var currentMap;
   var ground;
@@ -23825,6 +23862,7 @@
       S: stoneCell,
       C: carrotCell,
       B: bushCell,
+      K: keyCell,
       s: signCell(signs.s),
       c: signCell(signs.c),
       g: signCell(signs.g),
@@ -23853,6 +23891,9 @@
   }
   function isWater(cell) {
     return cell[0] === "W";
+  }
+  function clearCell(pos) {
+    console.log(currentMap);
   }
 
   // src/Framework.ts
@@ -24023,7 +24064,7 @@
         G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
         G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
         G1 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0
-        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W2
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 K0 G0 G0 W0 W2
         G0 G0 G0 G0 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W0 W0
         W0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 C1 G0 G0 W0 W0 W0 W0 W0 W0
         W0 W0 W0 G0 G0 G0 G0 G0 G0 G0 G1 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0

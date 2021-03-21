@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Hare and carrots</title>
 </head>
 <body>
@@ -9,6 +8,12 @@
 <style>
     body {
         user-select: none;
+    }
+
+    .action {
+        position:fixed;
+        top:0;
+        right:0;
     }
 
     .items {
@@ -43,21 +48,14 @@
     .balloon {
         position: fixed;
     }
+
+    svg.action:hover circle{stroke:red}
 </style>
 
 
 
-<script src="HareAndCarrots.js"></script>
 
-<div class=items>
-    <label>&nbsp;&nbsp;ground / inventory</label><br>
-    <div id=chest class="grid">
-        <div>🥕</div>
-    </div>
-    <div id=bag class="grid">
-        <div>🗝️</div>
-    </div>
-</div>
+<div class="action"></div>
 
 <div class="balloon" style="display:none">
     <svg>
@@ -72,6 +70,7 @@
         </text>
     </svg>
 </div>
+<script src="HareAndCarrots.js"></script>
 
 </body>
 </html>
