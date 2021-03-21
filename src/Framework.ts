@@ -1,9 +1,88 @@
 import * as THREE from 'three'
 import {getGround} from "./ground/Ground";
+import {checkHareIsNearSign} from "./signs/Signs";
+import {getTargetLocation} from "./objects/Hare";
+
+
+let activeAnimations : Array<(t:number) => boolean> = [];
+
+export function addAnimation(a:(t:number) => boolean):void {
+    activeAnimations.push(a)
+}
 
 let planes = clippingPlanes();
 
 let cube = new THREE.BoxGeometry(1, 1, 1);
+
+let renderer = new THREE.WebGLRenderer({
+    antialias: true
+});
+
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.setClearColor(new THREE.Color("hsl(34, 50%, 70%)"));
+renderer.localClippingEnabled = true;
+document.body.appendChild(renderer.domElement);
+document.body.style.margin = '0';
+document.body.style.overflow = 'hidden';
+
+let s = 10;
+export const camera = new THREE.OrthographicCamera(-s*aspect(), s*aspect(), s, -s, 0.1, 100);
+
+camera.position.set(15, 15, 15);
+camera.lookAt(0,0,0)
+
+//let controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+requestAnimationFrame(render);
+addEventListener("resize", onWindowResize);
+
+export const scene = new THREE.Scene();
+
+scene.add(lights());
+
+function lights(color?): THREE.Object3D {
+    let lightsGroup = new THREE.Object3D('lights');
+    lightsGroup.add(new THREE.AmbientLight(color, 0.2));
+
+    let light = new THREE.DirectionalLight(color, 0.2);
+    light.position.set(-5, -15, -20);
+    lightsGroup.add(light);
+
+    light = new THREE.DirectionalLight(color, 0.8);
+    light.position.set(5, 15, 20);
+    lightsGroup.add(light);
+
+    light.castShadow = true;
+    light.shadow.mapSize.width = 4096;
+    light.shadow.mapSize.height = 4096;
+    light.shadow.camera.left = -s;
+    light.shadow.camera.right = s;
+    light.shadow.camera.top = s;
+    light.shadow.camera.bottom = -s
+    light.shadow.bias = -0.000016
+    // scene.add(new THREE.CameraHelper(light.shadow.camera));
+
+    return lightsGroup;
+}
+
+function aspect() {
+    return innerWidth / innerHeight;
+}
+
+function render(t) {
+    renderer.render(scene, camera);
+    activeAnimations = activeAnimations.filter(play => !play(t))
+    requestAnimationFrame(render);
+}
+
+function onWindowResize() {
+    camera.left = -s*aspect();
+    camera.right = s*aspect();
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+    checkHareIsNearSign(getTargetLocation())
+}
 
 export function cubeMesh (parent, material) {
     let mesh = new THREE.Mesh(cube, material);
@@ -40,85 +119,6 @@ export function hsl(h, s, l, clip?) {
         clippingPlanes: clip ? planes : [],
         clipShadows: true
     });
-}
-
-export function threejs(f) {
-
-    let renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
-
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.setClearColor(new THREE.Color("hsl(34, 50%, 70%)"));
-    renderer.localClippingEnabled = true;
-    document.body.appendChild(renderer.domElement);
-    document.body.style.margin = '0';
-    document.body.style.overflow = 'hidden';
-
-    let s = 10;
-    let camera = new THREE.OrthographicCamera(-s*aspect(), s*aspect(), s, -s, 0.1, 100);
-
-    camera.position.set(15, 15, 15);
-    camera.lookAt(0,0,0)
-
-    //let controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-    requestAnimationFrame(render);
-    addEventListener("resize", onWindowResize);
-
-    let scene = new THREE.Scene();
-
-    scene.add(lights());
-
-    return {
-        renderer,
-        camera,
-        scene,
-    }
-
-    function lights(color?): THREE.Object3D {
-        let lightsGroup = new THREE.Object3D('lights');
-        lightsGroup.add(new THREE.AmbientLight(color, 0.2));
-
-        let light = new THREE.DirectionalLight(color, 0.2);
-        light.position.set(-5, -15, -20);
-        lightsGroup.add(light);
-
-        light = new THREE.DirectionalLight(color, 0.8);
-        light.position.set(5, 15, 20);
-        lightsGroup.add(light);
-
-        light.castShadow = true;
-        light.shadow.mapSize.width = 4096;
-        light.shadow.mapSize.height = 4096;
-        light.shadow.camera.left = -s;
-        light.shadow.camera.right = s;
-        light.shadow.camera.top = s;
-        light.shadow.camera.bottom = -s
-        light.shadow.bias = -0.000016
-        // scene.add(new THREE.CameraHelper(light.shadow.camera));
-
-        return lightsGroup;
-    }
-
-    function aspect() {
-        return innerWidth / innerHeight;
-    }
-
-    function render(t) {
-        renderer.render(scene, camera);
-        f && f(t)
-        requestAnimationFrame(render);
-    }
-
-    function onWindowResize() {
-        camera.left = -s*aspect();
-        camera.right = s*aspect();
-        camera.updateProjectionMatrix();
-        renderer.setSize(innerWidth, innerHeight);
-       // checkHareIsNearSign() todo ???
-    }
 }
 
 export function lerp(a, b, t) {
@@ -163,7 +163,7 @@ export function raycaster(cb) {
             return
         mouse.x = ( e.clientX / innerWidth ) * 2 - 1;
         mouse.y = - ( e.clientY / innerHeight ) * 2 + 1;
-        cast.setFromCamera( mouse, three.camera );
+        cast.setFromCamera( mouse, camera );
         let intersects = cast.intersectObjects(getGround().possibleToMove, true);
         intersects[0] && cb(intersects[0].point, intersects[0])
     };
@@ -183,3 +183,4 @@ function clippingPlanes() {
         [ -1, 0, 0]
     ].map(el => new THREE.Plane( new THREE.Vector3( ...el), 10.4 ))
 }
+

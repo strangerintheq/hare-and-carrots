@@ -265,9 +265,9 @@
     randFloatSpread: function(range) {
       return range * (0.5 - Math.random());
     },
-    seededRandom: function(s) {
-      if (s !== void 0)
-        _seed = s % 2147483647;
+    seededRandom: function(s2) {
+      if (s2 !== void 0)
+        _seed = s2 % 2147483647;
       _seed = _seed * 16807 % 2147483647;
       return (_seed - 1) / 2147483646;
     },
@@ -396,9 +396,9 @@
       this.y += v.y;
       return this;
     }
-    addScalar(s) {
-      this.x += s;
-      this.y += s;
+    addScalar(s2) {
+      this.x += s2;
+      this.y += s2;
       return this;
     }
     addVectors(a, b) {
@@ -406,9 +406,9 @@
       this.y = a.y + b.y;
       return this;
     }
-    addScaledVector(v, s) {
-      this.x += v.x * s;
-      this.y += v.y * s;
+    addScaledVector(v, s2) {
+      this.x += v.x * s2;
+      this.y += v.y * s2;
       return this;
     }
     sub(v, w) {
@@ -420,9 +420,9 @@
       this.y -= v.y;
       return this;
     }
-    subScalar(s) {
-      this.x -= s;
-      this.y -= s;
+    subScalar(s2) {
+      this.x -= s2;
+      this.y -= s2;
       return this;
     }
     subVectors(a, b) {
@@ -571,11 +571,11 @@
       return this;
     }
     rotateAround(center, angle) {
-      const c = Math.cos(angle), s = Math.sin(angle);
+      const c = Math.cos(angle), s2 = Math.sin(angle);
       const x = this.x - center.x;
       const y = this.y - center.y;
-      this.x = x * c - y * s + center.x;
-      this.y = x * s + y * c + center.y;
+      this.x = x * c - y * s2 + center.x;
+      this.y = x * s2 + y * c + center.y;
       return this;
     }
     random() {
@@ -671,17 +671,17 @@
       te[8] = a31 * b13 + a32 * b23 + a33 * b33;
       return this;
     }
-    multiplyScalar(s) {
+    multiplyScalar(s2) {
       const te = this.elements;
-      te[0] *= s;
-      te[3] *= s;
-      te[6] *= s;
-      te[1] *= s;
-      te[4] *= s;
-      te[7] *= s;
-      te[2] *= s;
-      te[5] *= s;
-      te[8] *= s;
+      te[0] *= s2;
+      te[3] *= s2;
+      te[6] *= s2;
+      te[1] *= s2;
+      te[4] *= s2;
+      te[7] *= s2;
+      te[2] *= s2;
+      te[5] *= s2;
+      te[8] *= s2;
       return this;
     }
     determinant() {
@@ -737,8 +737,8 @@
     }
     setUvTransform(tx, ty, sx, sy, rotation, cx, cy) {
       const c = Math.cos(rotation);
-      const s = Math.sin(rotation);
-      this.set(sx * c, sx * s, -sx * (c * cx + s * cy) + cx + tx, -sy * s, sy * c, -sy * (-s * cx + c * cy) + cy + ty, 0, 0, 1);
+      const s2 = Math.sin(rotation);
+      this.set(sx * c, sx * s2, -sx * (c * cx + s2 * cy) + cx + tx, -sy * s2, sy * c, -sy * (-s2 * cx + c * cy) + cy + ty, 0, 0, 1);
       return this;
     }
     scale(sx, sy) {
@@ -753,16 +753,16 @@
     }
     rotate(theta) {
       const c = Math.cos(theta);
-      const s = Math.sin(theta);
+      const s2 = Math.sin(theta);
       const te = this.elements;
       const a11 = te[0], a12 = te[3], a13 = te[6];
       const a21 = te[1], a22 = te[4], a23 = te[7];
-      te[0] = c * a11 + s * a21;
-      te[3] = c * a12 + s * a22;
-      te[6] = c * a13 + s * a23;
-      te[1] = -s * a11 + c * a21;
-      te[4] = -s * a12 + c * a22;
-      te[7] = -s * a13 + c * a23;
+      te[0] = c * a11 + s2 * a21;
+      te[3] = c * a12 + s2 * a22;
+      te[6] = c * a13 + s2 * a23;
+      te[1] = -s2 * a11 + c * a21;
+      te[4] = -s2 * a12 + c * a22;
+      te[7] = -s2 * a13 + c * a23;
       return this;
     }
     translate(tx, ty) {
@@ -825,11 +825,11 @@
           _canvas = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
         _canvas.width = image.width;
         _canvas.height = image.height;
-        const context = _canvas.getContext("2d");
+        const context2 = _canvas.getContext("2d");
         if (image instanceof ImageData) {
-          context.putImageData(image, 0, 0);
+          context2.putImageData(image, 0, 0);
         } else {
-          context.drawImage(image, 0, 0, image.width, image.height);
+          context2.drawImage(image, 0, 0, image.width, image.height);
         }
         canvas = _canvas;
       }
@@ -1138,11 +1138,11 @@
       this.w += v.w;
       return this;
     }
-    addScalar(s) {
-      this.x += s;
-      this.y += s;
-      this.z += s;
-      this.w += s;
+    addScalar(s2) {
+      this.x += s2;
+      this.y += s2;
+      this.z += s2;
+      this.w += s2;
       return this;
     }
     addVectors(a, b) {
@@ -1152,11 +1152,11 @@
       this.w = a.w + b.w;
       return this;
     }
-    addScaledVector(v, s) {
-      this.x += v.x * s;
-      this.y += v.y * s;
-      this.z += v.z * s;
-      this.w += v.w * s;
+    addScaledVector(v, s2) {
+      this.x += v.x * s2;
+      this.y += v.y * s2;
+      this.z += v.z * s2;
+      this.w += v.w * s2;
       return this;
     }
     sub(v, w) {
@@ -1170,11 +1170,11 @@
       this.w -= v.w;
       return this;
     }
-    subScalar(s) {
-      this.x -= s;
-      this.y -= s;
-      this.z -= s;
-      this.w -= s;
+    subScalar(s2) {
+      this.x -= s2;
+      this.y -= s2;
+      this.z -= s2;
+      this.w -= s2;
       return this;
     }
     subVectors(a, b) {
@@ -1212,15 +1212,15 @@
     }
     setAxisAngleFromQuaternion(q) {
       this.w = 2 * Math.acos(q.w);
-      const s = Math.sqrt(1 - q.w * q.w);
-      if (s < 1e-4) {
+      const s2 = Math.sqrt(1 - q.w * q.w);
+      if (s2 < 1e-4) {
         this.x = 1;
         this.y = 0;
         this.z = 0;
       } else {
-        this.x = q.x / s;
-        this.y = q.y / s;
-        this.z = q.z / s;
+        this.x = q.x / s2;
+        this.y = q.y / s2;
+        this.z = q.z / s2;
       }
       return this;
     }
@@ -1273,12 +1273,12 @@
         this.set(x, y, z, angle);
         return this;
       }
-      let s = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12));
-      if (Math.abs(s) < 1e-3)
-        s = 1;
-      this.x = (m32 - m23) / s;
-      this.y = (m13 - m31) / s;
-      this.z = (m21 - m12) / s;
+      let s2 = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12));
+      if (Math.abs(s2) < 1e-3)
+        s2 = 1;
+      this.x = (m32 - m23) / s2;
+      this.y = (m13 - m31) / s2;
+      this.z = (m21 - m12) / s2;
       this.w = Math.acos((m11 + m22 + m33 - 1) / 2);
       return this;
     }
@@ -1518,19 +1518,19 @@
         return;
       }
       if (w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1) {
-        let s = 1 - t;
+        let s2 = 1 - t;
         const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1, dir = cos >= 0 ? 1 : -1, sqrSin = 1 - cos * cos;
         if (sqrSin > Number.EPSILON) {
           const sin = Math.sqrt(sqrSin), len = Math.atan2(sin, cos * dir);
-          s = Math.sin(s * len) / sin;
+          s2 = Math.sin(s2 * len) / sin;
           t = Math.sin(t * len) / sin;
         }
         const tDir = t * dir;
-        x0 = x0 * s + x1 * tDir;
-        y0 = y0 * s + y1 * tDir;
-        z0 = z0 * s + z1 * tDir;
-        w0 = w0 * s + w1 * tDir;
-        if (s === 1 - t) {
+        x0 = x0 * s2 + x1 * tDir;
+        y0 = y0 * s2 + y1 * tDir;
+        z0 = z0 * s2 + z1 * tDir;
+        w0 = w0 * s2 + w1 * tDir;
+        if (s2 === 1 - t) {
           const f = 1 / Math.sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
           x0 *= f;
           y0 *= f;
@@ -1663,10 +1663,10 @@
       return this;
     }
     setFromAxisAngle(axis, angle) {
-      const halfAngle = angle / 2, s = Math.sin(halfAngle);
-      this._x = axis.x * s;
-      this._y = axis.y * s;
-      this._z = axis.z * s;
+      const halfAngle = angle / 2, s2 = Math.sin(halfAngle);
+      this._x = axis.x * s2;
+      this._y = axis.y * s2;
+      this._z = axis.z * s2;
       this._w = Math.cos(halfAngle);
       this._onChangeCallback();
       return this;
@@ -1674,29 +1674,29 @@
     setFromRotationMatrix(m) {
       const te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33;
       if (trace > 0) {
-        const s = 0.5 / Math.sqrt(trace + 1);
-        this._w = 0.25 / s;
-        this._x = (m32 - m23) * s;
-        this._y = (m13 - m31) * s;
-        this._z = (m21 - m12) * s;
+        const s2 = 0.5 / Math.sqrt(trace + 1);
+        this._w = 0.25 / s2;
+        this._x = (m32 - m23) * s2;
+        this._y = (m13 - m31) * s2;
+        this._z = (m21 - m12) * s2;
       } else if (m11 > m22 && m11 > m33) {
-        const s = 2 * Math.sqrt(1 + m11 - m22 - m33);
-        this._w = (m32 - m23) / s;
-        this._x = 0.25 * s;
-        this._y = (m12 + m21) / s;
-        this._z = (m13 + m31) / s;
+        const s2 = 2 * Math.sqrt(1 + m11 - m22 - m33);
+        this._w = (m32 - m23) / s2;
+        this._x = 0.25 * s2;
+        this._y = (m12 + m21) / s2;
+        this._z = (m13 + m31) / s2;
       } else if (m22 > m33) {
-        const s = 2 * Math.sqrt(1 + m22 - m11 - m33);
-        this._w = (m13 - m31) / s;
-        this._x = (m12 + m21) / s;
-        this._y = 0.25 * s;
-        this._z = (m23 + m32) / s;
+        const s2 = 2 * Math.sqrt(1 + m22 - m11 - m33);
+        this._w = (m13 - m31) / s2;
+        this._x = (m12 + m21) / s2;
+        this._y = 0.25 * s2;
+        this._z = (m23 + m32) / s2;
       } else {
-        const s = 2 * Math.sqrt(1 + m33 - m11 - m22);
-        this._w = (m21 - m12) / s;
-        this._x = (m13 + m31) / s;
-        this._y = (m23 + m32) / s;
-        this._z = 0.25 * s;
+        const s2 = 2 * Math.sqrt(1 + m33 - m11 - m22);
+        this._w = (m21 - m12) / s2;
+        this._x = (m13 + m31) / s2;
+        this._y = (m23 + m32) / s2;
+        this._z = 0.25 * s2;
       }
       this._onChangeCallback();
       return this;
@@ -1820,11 +1820,11 @@
       }
       const sqrSinHalfTheta = 1 - cosHalfTheta * cosHalfTheta;
       if (sqrSinHalfTheta <= Number.EPSILON) {
-        const s = 1 - t;
-        this._w = s * w + t * this._w;
-        this._x = s * x + t * this._x;
-        this._y = s * y + t * this._y;
-        this._z = s * z + t * this._z;
+        const s2 = 1 - t;
+        this._w = s2 * w + t * this._w;
+        this._x = s2 * x + t * this._x;
+        this._y = s2 * y + t * this._y;
+        this._z = s2 * z + t * this._z;
         this.normalize();
         this._onChangeCallback();
         return this;
@@ -1951,10 +1951,10 @@
       this.z += v.z;
       return this;
     }
-    addScalar(s) {
-      this.x += s;
-      this.y += s;
-      this.z += s;
+    addScalar(s2) {
+      this.x += s2;
+      this.y += s2;
+      this.z += s2;
       return this;
     }
     addVectors(a, b) {
@@ -1963,10 +1963,10 @@
       this.z = a.z + b.z;
       return this;
     }
-    addScaledVector(v, s) {
-      this.x += v.x * s;
-      this.y += v.y * s;
-      this.z += v.z * s;
+    addScaledVector(v, s2) {
+      this.x += v.x * s2;
+      this.y += v.y * s2;
+      this.z += v.z * s2;
       return this;
     }
     sub(v, w) {
@@ -1979,10 +1979,10 @@
       this.z -= v.z;
       return this;
     }
-    subScalar(s) {
-      this.x -= s;
-      this.y -= s;
-      this.z -= s;
+    subScalar(s2) {
+      this.x -= s2;
+      this.y -= s2;
+      this.z -= s2;
       return this;
     }
     subVectors(a, b) {
@@ -2054,11 +2054,11 @@
       this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
       return this;
     }
-    project(camera) {
-      return this.applyMatrix4(camera.matrixWorldInverse).applyMatrix4(camera.projectionMatrix);
+    project(camera3) {
+      return this.applyMatrix4(camera3.matrixWorldInverse).applyMatrix4(camera3.projectionMatrix);
     }
-    unproject(camera) {
-      return this.applyMatrix4(camera.projectionMatrixInverse).applyMatrix4(camera.matrixWorld);
+    unproject(camera3) {
+      return this.applyMatrix4(camera3.projectionMatrixInverse).applyMatrix4(camera3.matrixWorld);
     }
     transformDirection(m) {
       const x = this.x, y = this.y, z = this.z;
@@ -2211,8 +2211,8 @@
     manhattanDistanceTo(v) {
       return Math.abs(this.x - v.x) + Math.abs(this.y - v.y) + Math.abs(this.z - v.z);
     }
-    setFromSpherical(s) {
-      return this.setFromSphericalCoords(s.radius, s.phi, s.theta);
+    setFromSpherical(s2) {
+      return this.setFromSphericalCoords(s2.radius, s2.phi, s2.theta);
     }
     setFromSphericalCoords(radius, phi, theta) {
       const sinPhiRadius = Math.sin(phi) * radius;
@@ -3248,24 +3248,24 @@
       te[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
       return this;
     }
-    multiplyScalar(s) {
+    multiplyScalar(s2) {
       const te = this.elements;
-      te[0] *= s;
-      te[4] *= s;
-      te[8] *= s;
-      te[12] *= s;
-      te[1] *= s;
-      te[5] *= s;
-      te[9] *= s;
-      te[13] *= s;
-      te[2] *= s;
-      te[6] *= s;
-      te[10] *= s;
-      te[14] *= s;
-      te[3] *= s;
-      te[7] *= s;
-      te[11] *= s;
-      te[15] *= s;
+      te[0] *= s2;
+      te[4] *= s2;
+      te[8] *= s2;
+      te[12] *= s2;
+      te[1] *= s2;
+      te[5] *= s2;
+      te[9] *= s2;
+      te[13] *= s2;
+      te[2] *= s2;
+      te[6] *= s2;
+      te[10] *= s2;
+      te[14] *= s2;
+      te[3] *= s2;
+      te[7] *= s2;
+      te[11] *= s2;
+      te[15] *= s2;
       return this;
     }
     determinant() {
@@ -3365,27 +3365,27 @@
       return this;
     }
     makeRotationX(theta) {
-      const c = Math.cos(theta), s = Math.sin(theta);
-      this.set(1, 0, 0, 0, 0, c, -s, 0, 0, s, c, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s2 = Math.sin(theta);
+      this.set(1, 0, 0, 0, 0, c, -s2, 0, 0, s2, c, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationY(theta) {
-      const c = Math.cos(theta), s = Math.sin(theta);
-      this.set(c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s2 = Math.sin(theta);
+      this.set(c, 0, s2, 0, 0, 1, 0, 0, -s2, 0, c, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationZ(theta) {
-      const c = Math.cos(theta), s = Math.sin(theta);
-      this.set(c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s2 = Math.sin(theta);
+      this.set(c, -s2, 0, 0, s2, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationAxis(axis, angle) {
       const c = Math.cos(angle);
-      const s = Math.sin(angle);
+      const s2 = Math.sin(angle);
       const t = 1 - c;
       const x = axis.x, y = axis.y, z = axis.z;
       const tx = t * x, ty = t * y;
-      this.set(tx * x + c, tx * y - s * z, tx * z + s * y, 0, tx * y + s * z, ty * y + c, ty * z - s * x, 0, tx * z - s * y, ty * z + s * x, t * z * z + c, 0, 0, 0, 0, 1);
+      this.set(tx * x + c, tx * y - s2 * z, tx * z + s2 * y, 0, tx * y + s2 * z, ty * y + c, ty * z - s2 * x, 0, tx * z - s2 * y, ty * z + s2 * x, t * z * z + c, 0, 0, 0, 0, 1);
       return this;
     }
     makeScale(x, y, z) {
@@ -5091,14 +5091,14 @@
       this.b = b;
       return this;
     }
-    setHSL(h, s, l) {
+    setHSL(h, s2, l) {
       h = MathUtils.euclideanModulo(h, 1);
-      s = MathUtils.clamp(s, 0, 1);
+      s2 = MathUtils.clamp(s2, 0, 1);
       l = MathUtils.clamp(l, 0, 1);
-      if (s === 0) {
+      if (s2 === 0) {
         this.r = this.g = this.b = l;
       } else {
-        const p = l <= 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = l <= 0.5 ? l * (1 + s2) : l + s2 - l * s2;
         const q = 2 * l - p;
         this.r = hue2rgb(q, p, h + 1 / 3);
         this.g = hue2rgb(q, p, h);
@@ -5141,10 +5141,10 @@
           case "hsla":
             if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
               const h = parseFloat(color[1]) / 360;
-              const s = parseInt(color[2], 10) / 100;
+              const s2 = parseInt(color[2], 10) / 100;
               const l = parseInt(color[3], 10) / 100;
               handleAlpha(color[4]);
-              return this.setHSL(h, s, l);
+              return this.setHSL(h, s2, l);
             }
             break;
         }
@@ -5270,10 +5270,10 @@
     getStyle() {
       return "rgb(" + (this.r * 255 | 0) + "," + (this.g * 255 | 0) + "," + (this.b * 255 | 0) + ")";
     }
-    offsetHSL(h, s, l) {
+    offsetHSL(h, s2, l) {
       this.getHSL(_hslA);
       _hslA.h += h;
-      _hslA.s += s;
+      _hslA.s += s2;
       _hslA.l += l;
       this.setHSL(_hslA.h, _hslA.s, _hslA.l);
       return this;
@@ -5290,10 +5290,10 @@
       this.b = color1.b + color2.b;
       return this;
     }
-    addScalar(s) {
-      this.r += s;
-      this.g += s;
-      this.b += s;
+    addScalar(s2) {
+      this.r += s2;
+      this.g += s2;
+      this.b += s2;
       return this;
     }
     sub(color) {
@@ -5308,10 +5308,10 @@
       this.b *= color.b;
       return this;
     }
-    multiplyScalar(s) {
-      this.r *= s;
-      this.g *= s;
-      this.b *= s;
+    multiplyScalar(s2) {
+      this.r *= s2;
+      this.g *= s2;
+      this.b *= s2;
       return this;
     }
     lerp(color, alpha) {
@@ -5330,9 +5330,9 @@
       this.getHSL(_hslA);
       color.getHSL(_hslB);
       const h = MathUtils.lerp(_hslA.h, _hslB.h, alpha);
-      const s = MathUtils.lerp(_hslA.s, _hslB.s, alpha);
+      const s2 = MathUtils.lerp(_hslA.s, _hslB.s, alpha);
       const l = MathUtils.lerp(_hslA.l, _hslB.l, alpha);
-      this.setHSL(h, s, l);
+      this.setHSL(h, s2, l);
       return this;
     }
     equals(c) {
@@ -6784,7 +6784,7 @@
       return new this.constructor().copy(this);
     }
   });
-  function PerspectiveCamera(fov2 = 50, aspect2 = 1, near = 0.1, far = 2e3) {
+  function PerspectiveCamera(fov2 = 50, aspect3 = 1, near = 0.1, far = 2e3) {
     Camera.call(this);
     this.type = "PerspectiveCamera";
     this.fov = fov2;
@@ -6792,7 +6792,7 @@
     this.near = near;
     this.far = far;
     this.focus = 10;
-    this.aspect = aspect2;
+    this.aspect = aspect3;
     this.view = null;
     this.filmGauge = 35;
     this.filmOffset = 0;
@@ -6937,31 +6937,31 @@
       cameraNZ.lookAt(new Vector3(0, 0, -1));
       this.add(cameraNZ);
     }
-    update(renderer, scene) {
+    update(renderer2, scene2) {
       if (this.parent === null)
         this.updateMatrixWorld();
       const renderTarget = this.renderTarget;
       const [cameraPX, cameraNX, cameraPY, cameraNY, cameraPZ, cameraNZ] = this.children;
-      const currentXrEnabled = renderer.xr.enabled;
-      const currentRenderTarget = renderer.getRenderTarget();
-      renderer.xr.enabled = false;
+      const currentXrEnabled = renderer2.xr.enabled;
+      const currentRenderTarget = renderer2.getRenderTarget();
+      renderer2.xr.enabled = false;
       const generateMipmaps = renderTarget.texture.generateMipmaps;
       renderTarget.texture.generateMipmaps = false;
-      renderer.setRenderTarget(renderTarget, 0);
-      renderer.render(scene, cameraPX);
-      renderer.setRenderTarget(renderTarget, 1);
-      renderer.render(scene, cameraNX);
-      renderer.setRenderTarget(renderTarget, 2);
-      renderer.render(scene, cameraPY);
-      renderer.setRenderTarget(renderTarget, 3);
-      renderer.render(scene, cameraNY);
-      renderer.setRenderTarget(renderTarget, 4);
-      renderer.render(scene, cameraPZ);
+      renderer2.setRenderTarget(renderTarget, 0);
+      renderer2.render(scene2, cameraPX);
+      renderer2.setRenderTarget(renderTarget, 1);
+      renderer2.render(scene2, cameraNX);
+      renderer2.setRenderTarget(renderTarget, 2);
+      renderer2.render(scene2, cameraPY);
+      renderer2.setRenderTarget(renderTarget, 3);
+      renderer2.render(scene2, cameraNY);
+      renderer2.setRenderTarget(renderTarget, 4);
+      renderer2.render(scene2, cameraPZ);
       renderTarget.texture.generateMipmaps = generateMipmaps;
-      renderer.setRenderTarget(renderTarget, 5);
-      renderer.render(scene, cameraNZ);
-      renderer.setRenderTarget(currentRenderTarget);
-      renderer.xr.enabled = currentXrEnabled;
+      renderer2.setRenderTarget(renderTarget, 5);
+      renderer2.render(scene2, cameraNZ);
+      renderer2.setRenderTarget(currentRenderTarget);
+      renderer2.xr.enabled = currentXrEnabled;
     }
   };
   var CubeTexture = class extends Texture {
@@ -6994,7 +6994,7 @@
       this.texture.minFilter = options.minFilter !== void 0 ? options.minFilter : LinearFilter;
       this.texture._needsFlipEnvMap = false;
     }
-    fromEquirectangularTexture(renderer, texture3) {
+    fromEquirectangularTexture(renderer2, texture3) {
       this.texture.type = texture3.type;
       this.texture.format = RGBAFormat;
       this.texture.encoding = texture3.encoding;
@@ -7057,20 +7057,20 @@
       const currentMinFilter = texture3.minFilter;
       if (texture3.minFilter === LinearMipmapLinearFilter)
         texture3.minFilter = LinearFilter;
-      const camera = new CubeCamera(1, 10, this);
-      camera.update(renderer, mesh);
+      const camera3 = new CubeCamera(1, 10, this);
+      camera3.update(renderer2, mesh);
       texture3.minFilter = currentMinFilter;
       mesh.geometry.dispose();
       mesh.material.dispose();
       return this;
     }
-    clear(renderer, color, depth, stencil) {
-      const currentRenderTarget = renderer.getRenderTarget();
+    clear(renderer2, color, depth, stencil) {
+      const currentRenderTarget = renderer2.getRenderTarget();
       for (let i = 0; i < 6; i++) {
-        renderer.setRenderTarget(this, i);
-        renderer.clear(color, depth, stencil);
+        renderer2.setRenderTarget(this, i);
+        renderer2.clear(color, depth, stencil);
       }
-      renderer.setRenderTarget(currentRenderTarget);
+      renderer2.setRenderTarget(currentRenderTarget);
     }
   };
   WebGLCubeRenderTarget.prototype.isWebGLCubeRenderTarget = true;
@@ -7177,13 +7177,13 @@
     }
   };
   function WebGLAnimation() {
-    let context = null;
+    let context2 = null;
     let isAnimating = false;
     let animationLoop = null;
     let requestId = null;
     function onAnimationFrame(time, frame) {
       animationLoop(time, frame);
-      requestId = context.requestAnimationFrame(onAnimationFrame);
+      requestId = context2.requestAnimationFrame(onAnimationFrame);
     }
     return {
       start: function() {
@@ -7191,18 +7191,18 @@
           return;
         if (animationLoop === null)
           return;
-        requestId = context.requestAnimationFrame(onAnimationFrame);
+        requestId = context2.requestAnimationFrame(onAnimationFrame);
         isAnimating = true;
       },
       stop: function() {
-        context.cancelAnimationFrame(requestId);
+        context2.cancelAnimationFrame(requestId);
         isAnimating = false;
       },
       setAnimationLoop: function(callback) {
         animationLoop = callback;
       },
       setContext: function(value) {
-        context = value;
+        context2 = value;
       }
     };
   }
@@ -7982,7 +7982,7 @@
     vertexShader: ShaderChunk.meshphysical_vert,
     fragmentShader: ShaderChunk.meshphysical_frag
   };
-  function WebGLBackground(renderer, cubemaps, state, objects, premultipliedAlpha) {
+  function WebGLBackground(renderer2, cubemaps, state, objects, premultipliedAlpha) {
     const clearColor = new Color(0);
     let clearAlpha = 0;
     let planeMesh;
@@ -7990,12 +7990,12 @@
     let currentBackground = null;
     let currentBackgroundVersion = 0;
     let currentTonemapping = null;
-    function render(renderList, scene, camera, forceClear) {
-      let background = scene.isScene === true ? scene.background : null;
+    function render2(renderList, scene2, camera3, forceClear) {
+      let background = scene2.isScene === true ? scene2.background : null;
       if (background && background.isTexture) {
         background = cubemaps.get(background);
       }
-      const xr = renderer.xr;
+      const xr = renderer2.xr;
       const session = xr.getSession && xr.getSession();
       if (session && session.environmentBlendMode === "additive") {
         background = null;
@@ -8006,8 +8006,8 @@
         setClear(background, 1);
         forceClear = true;
       }
-      if (renderer.autoClear || forceClear) {
-        renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
+      if (renderer2.autoClear || forceClear) {
+        renderer2.clear(renderer2.autoClearColor, renderer2.autoClearDepth, renderer2.autoClearStencil);
       }
       if (background && (background.isCubeTexture || background.isWebGLCubeRenderTarget || background.mapping === CubeUVReflectionMapping)) {
         if (boxMesh === void 0) {
@@ -8023,8 +8023,8 @@
           }));
           boxMesh.geometry.deleteAttribute("normal");
           boxMesh.geometry.deleteAttribute("uv");
-          boxMesh.onBeforeRender = function(renderer2, scene2, camera2) {
-            this.matrixWorld.copyPosition(camera2.matrixWorld);
+          boxMesh.onBeforeRender = function(renderer3, scene3, camera4) {
+            this.matrixWorld.copyPosition(camera4.matrixWorld);
           };
           Object.defineProperty(boxMesh.material, "envMap", {
             get: function() {
@@ -8038,11 +8038,11 @@
         }
         boxMesh.material.uniforms.envMap.value = background;
         boxMesh.material.uniforms.flipEnvMap.value = background.isCubeTexture && background._needsFlipEnvMap ? -1 : 1;
-        if (currentBackground !== background || currentBackgroundVersion !== background.version || currentTonemapping !== renderer.toneMapping) {
+        if (currentBackground !== background || currentBackgroundVersion !== background.version || currentTonemapping !== renderer2.toneMapping) {
           boxMesh.material.needsUpdate = true;
           currentBackground = background;
           currentBackgroundVersion = background.version;
-          currentTonemapping = renderer.toneMapping;
+          currentTonemapping = renderer2.toneMapping;
         }
         renderList.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
       } else if (background && background.isTexture) {
@@ -8070,11 +8070,11 @@
           background.updateMatrix();
         }
         planeMesh.material.uniforms.uvTransform.value.copy(background.matrix);
-        if (currentBackground !== background || currentBackgroundVersion !== background.version || currentTonemapping !== renderer.toneMapping) {
+        if (currentBackground !== background || currentBackgroundVersion !== background.version || currentTonemapping !== renderer2.toneMapping) {
           planeMesh.material.needsUpdate = true;
           currentBackground = background;
           currentBackgroundVersion = background.version;
-          currentTonemapping = renderer.toneMapping;
+          currentTonemapping = renderer2.toneMapping;
         }
         renderList.unshift(planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null);
       }
@@ -8098,7 +8098,7 @@
         clearAlpha = alpha;
         setClear(clearColor, clearAlpha);
       },
-      render
+      render: render2
     };
   }
   function WebGLBindingStates(gl, extensions, attributes, capabilities) {
@@ -8442,7 +8442,7 @@
     function setMode(value) {
       mode = value;
     }
-    function render(start, count) {
+    function render2(start, count) {
       gl.drawArrays(mode, start, count);
       info.update(count, mode, 1);
     }
@@ -8465,7 +8465,7 @@
       info.update(count, mode, primcount);
     }
     this.setMode = setMode;
-    this.render = render;
+    this.render = render2;
     this.renderInstances = renderInstances;
   }
   function WebGLCapabilities(gl, extensions, parameters) {
@@ -8542,10 +8542,10 @@
     this.uniform = uniform;
     this.numPlanes = 0;
     this.numIntersection = 0;
-    this.init = function(planes2, enableLocalClipping, camera) {
+    this.init = function(planes2, enableLocalClipping, camera3) {
       const enabled = planes2.length !== 0 || enableLocalClipping || numGlobalPlanes !== 0 || localClippingEnabled;
       localClippingEnabled = enableLocalClipping;
-      globalState = projectPlanes(planes2, camera, 0);
+      globalState = projectPlanes(planes2, camera3, 0);
       numGlobalPlanes = planes2.length;
       return enabled;
     };
@@ -8557,7 +8557,7 @@
       renderingShadows = false;
       resetGlobalState();
     };
-    this.setState = function(material, camera, useCache) {
+    this.setState = function(material, camera3, useCache) {
       const planes2 = material.clippingPlanes, clipIntersection = material.clipIntersection, clipShadows = material.clipShadows;
       const materialProperties = properties.get(material);
       if (!localClippingEnabled || planes2 === null || planes2.length === 0 || renderingShadows && !clipShadows) {
@@ -8570,7 +8570,7 @@
         const nGlobal = renderingShadows ? 0 : numGlobalPlanes, lGlobal = nGlobal * 4;
         let dstArray = materialProperties.clippingState || null;
         uniform.value = dstArray;
-        dstArray = projectPlanes(planes2, camera, lGlobal, useCache);
+        dstArray = projectPlanes(planes2, camera3, lGlobal, useCache);
         for (let i = 0; i !== lGlobal; ++i) {
           dstArray[i] = globalState[i];
         }
@@ -8587,13 +8587,13 @@
       scope.numPlanes = numGlobalPlanes;
       scope.numIntersection = 0;
     }
-    function projectPlanes(planes2, camera, dstOffset, skipTransform) {
+    function projectPlanes(planes2, camera3, dstOffset, skipTransform) {
       const nPlanes = planes2 !== null ? planes2.length : 0;
       let dstArray = null;
       if (nPlanes !== 0) {
         dstArray = uniform.value;
         if (skipTransform !== true || dstArray === null) {
-          const flatSize = dstOffset + nPlanes * 4, viewMatrix = camera.matrixWorldInverse;
+          const flatSize = dstOffset + nPlanes * 4, viewMatrix = camera3.matrixWorldInverse;
           viewNormalMatrix.getNormalMatrix(viewMatrix);
           if (dstArray === null || dstArray.length < flatSize) {
             dstArray = new Float32Array(flatSize);
@@ -8612,7 +8612,7 @@
       return dstArray;
     }
   }
-  function WebGLCubeMaps(renderer) {
+  function WebGLCubeMaps(renderer2) {
     let cubemaps = new WeakMap();
     function mapTextureMapping(texture3, mapping) {
       if (mapping === EquirectangularReflectionMapping) {
@@ -8632,11 +8632,11 @@
           } else {
             const image = texture3.image;
             if (image && image.height > 0) {
-              const currentRenderTarget = renderer.getRenderTarget();
+              const currentRenderTarget = renderer2.getRenderTarget();
               const renderTarget = new WebGLCubeRenderTarget(image.height / 2);
-              renderTarget.fromEquirectangularTexture(renderer, texture3);
+              renderTarget.fromEquirectangularTexture(renderer2, texture3);
               cubemaps.set(texture3, renderTarget);
-              renderer.setRenderTarget(currentRenderTarget);
+              renderer2.setRenderTarget(currentRenderTarget);
               texture3.addEventListener("dispose", onTextureDispose);
               return mapTextureMapping(renderTarget.texture, texture3.mapping);
             } else {
@@ -8826,7 +8826,7 @@
       type = value.type;
       bytesPerElement = value.bytesPerElement;
     }
-    function render(start, count) {
+    function render2(start, count) {
       gl.drawElements(mode, count, type, start * bytesPerElement);
       info.update(count, mode, 1);
     }
@@ -8850,7 +8850,7 @@
     }
     this.setMode = setMode;
     this.setIndex = setIndex;
-    this.render = render;
+    this.render = render2;
     this.renderInstances = renderInstances;
   }
   function WebGLInfo(gl) {
@@ -8858,7 +8858,7 @@
       geometries: 0,
       textures: 0
     };
-    const render = {
+    const render2 = {
       frame: 0,
       calls: 0,
       triangles: 0,
@@ -8866,22 +8866,22 @@
       lines: 0
     };
     function update(count, mode, instanceCount) {
-      render.calls++;
+      render2.calls++;
       switch (mode) {
         case 4:
-          render.triangles += instanceCount * (count / 3);
+          render2.triangles += instanceCount * (count / 3);
           break;
         case 1:
-          render.lines += instanceCount * (count / 2);
+          render2.lines += instanceCount * (count / 2);
           break;
         case 3:
-          render.lines += instanceCount * (count - 1);
+          render2.lines += instanceCount * (count - 1);
           break;
         case 2:
-          render.lines += instanceCount * count;
+          render2.lines += instanceCount * count;
           break;
         case 0:
-          render.points += instanceCount * count;
+          render2.points += instanceCount * count;
           break;
         default:
           console.error("THREE.WebGLInfo: Unknown draw mode:", mode);
@@ -8889,15 +8889,15 @@
       }
     }
     function reset() {
-      render.frame++;
-      render.calls = 0;
-      render.triangles = 0;
-      render.points = 0;
-      render.lines = 0;
+      render2.frame++;
+      render2.calls = 0;
+      render2.triangles = 0;
+      render2.points = 0;
+      render2.lines = 0;
     }
     return {
       memory,
-      render,
+      render: render2,
       programs: null,
       autoReset: true,
       reset,
@@ -9727,8 +9727,8 @@
     }
     return envMapBlendingDefine;
   }
-  function WebGLProgram(renderer, cacheKey, parameters, bindingStates) {
-    const gl = renderer.getContext();
+  function WebGLProgram(renderer2, cacheKey, parameters, bindingStates) {
+    const gl = renderer2.getContext();
     const defines = parameters.defines;
     let vertexShader = parameters.vertexShader;
     let fragmentShader = parameters.fragmentShader;
@@ -9736,7 +9736,7 @@
     const envMapTypeDefine = generateEnvMapTypeDefine(parameters);
     const envMapModeDefine = generateEnvMapModeDefine(parameters);
     const envMapBlendingDefine = generateEnvMapBlendingDefine(parameters);
-    const gammaFactorDefine = renderer.gammaFactor > 0 ? renderer.gammaFactor : 1;
+    const gammaFactorDefine = renderer2.gammaFactor > 0 ? renderer2.gammaFactor : 1;
     const customExtensions = parameters.isWebGL2 ? "" : generateExtensions(parameters);
     const customDefines = generateDefines(defines);
     const program = gl.createProgram();
@@ -9955,7 +9955,7 @@
       gl.bindAttribLocation(program, 0, "position");
     }
     gl.linkProgram(program);
-    if (renderer.debug.checkShaderErrors) {
+    if (renderer2.debug.checkShaderErrors) {
       const programLog = gl.getProgramInfoLog(program).trim();
       const vertexLog = gl.getShaderInfoLog(glVertexShader).trim();
       const fragmentLog = gl.getShaderInfoLog(glFragmentShader).trim();
@@ -10016,7 +10016,7 @@
     this.fragmentShader = glFragmentShader;
     return this;
   }
-  function WebGLPrograms(renderer, cubemaps, extensions, capabilities, bindingStates, clipping) {
+  function WebGLPrograms(renderer2, cubemaps, extensions, capabilities, bindingStates, clipping) {
     const programs = [];
     const isWebGL2 = capabilities.isWebGL2;
     const logarithmicDepthBuffer = capabilities.logarithmicDepthBuffer;
@@ -10143,9 +10143,9 @@
       }
       return encoding;
     }
-    function getParameters(material, lights, shadows, scene, object2) {
-      const fog = scene.fog;
-      const environment = material.isMeshStandardMaterial ? scene.environment : null;
+    function getParameters(material, lights2, shadows, scene2, object2) {
+      const fog = scene2.fog;
+      const environment = material.isMeshStandardMaterial ? scene2.environment : null;
       const envMap = cubemaps.get(material.envMap || environment);
       const shaderID = shaderIDs[material.type];
       const maxBones = object2.isSkinnedMesh ? getMaxBones(object2) : 0;
@@ -10164,7 +10164,7 @@
         vertexShader = material.vertexShader;
         fragmentShader = material.fragmentShader;
       }
-      const currentRenderTarget = renderer.getRenderTarget();
+      const currentRenderTarget = renderer2.getRenderTarget();
       const parameters = {
         isWebGL2,
         shaderID,
@@ -10178,7 +10178,7 @@
         instancing: object2.isInstancedMesh === true,
         instancingColor: object2.isInstancedMesh === true && object2.instanceColor !== null,
         supportsVertexTextures: vertexTextures,
-        outputEncoding: currentRenderTarget !== null ? getTextureEncodingFromMap(currentRenderTarget.texture) : renderer.outputEncoding,
+        outputEncoding: currentRenderTarget !== null ? getTextureEncodingFromMap(currentRenderTarget.texture) : renderer2.outputEncoding,
         map: !!material.map,
         mapEncoding: getTextureEncodingFromMap(material.map),
         matcap: !!material.matcap,
@@ -10223,23 +10223,23 @@
         useVertexTexture: floatVertexTextures,
         morphTargets: material.morphTargets,
         morphNormals: material.morphNormals,
-        maxMorphTargets: renderer.maxMorphTargets,
-        maxMorphNormals: renderer.maxMorphNormals,
-        numDirLights: lights.directional.length,
-        numPointLights: lights.point.length,
-        numSpotLights: lights.spot.length,
-        numRectAreaLights: lights.rectArea.length,
-        numHemiLights: lights.hemi.length,
-        numDirLightShadows: lights.directionalShadowMap.length,
-        numPointLightShadows: lights.pointShadowMap.length,
-        numSpotLightShadows: lights.spotShadowMap.length,
+        maxMorphTargets: renderer2.maxMorphTargets,
+        maxMorphNormals: renderer2.maxMorphNormals,
+        numDirLights: lights2.directional.length,
+        numPointLights: lights2.point.length,
+        numSpotLights: lights2.spot.length,
+        numRectAreaLights: lights2.rectArea.length,
+        numHemiLights: lights2.hemi.length,
+        numDirLightShadows: lights2.directionalShadowMap.length,
+        numPointLightShadows: lights2.pointShadowMap.length,
+        numSpotLightShadows: lights2.spotShadowMap.length,
         numClippingPlanes: clipping.numPlanes,
         numClipIntersection: clipping.numIntersection,
         dithering: material.dithering,
-        shadowMapEnabled: renderer.shadowMap.enabled && shadows.length > 0,
-        shadowMapType: renderer.shadowMap.type,
-        toneMapping: material.toneMapped ? renderer.toneMapping : NoToneMapping,
-        physicallyCorrectLights: renderer.physicallyCorrectLights,
+        shadowMapEnabled: renderer2.shadowMap.enabled && shadows.length > 0,
+        shadowMapType: renderer2.shadowMap.type,
+        toneMapping: material.toneMapped ? renderer2.toneMapping : NoToneMapping,
+        physicallyCorrectLights: renderer2.physicallyCorrectLights,
         premultipliedAlpha: material.premultipliedAlpha,
         alphaTest: material.alphaTest,
         doubleSided: material.side === DoubleSide,
@@ -10275,8 +10275,8 @@
         for (let i = 0; i < parameterNames.length; i++) {
           array.push(parameters[parameterNames[i]]);
         }
-        array.push(renderer.outputEncoding);
-        array.push(renderer.gammaFactor);
+        array.push(renderer2.outputEncoding);
+        array.push(renderer2.gammaFactor);
       }
       array.push(parameters.customProgramCacheKey);
       return array.join();
@@ -10303,7 +10303,7 @@
         }
       }
       if (program === void 0) {
-        program = new WebGLProgram(renderer, cacheKey, parameters, bindingStates);
+        program = new WebGLProgram(renderer2, cacheKey, parameters, bindingStates);
         programs.push(program);
       }
       return program;
@@ -10457,17 +10457,17 @@
   }
   function WebGLRenderLists(properties) {
     let lists = new WeakMap();
-    function get(scene, renderCallDepth) {
+    function get(scene2, renderCallDepth) {
       let list;
-      if (lists.has(scene) === false) {
+      if (lists.has(scene2) === false) {
         list = new WebGLRenderList(properties);
-        lists.set(scene, [list]);
+        lists.set(scene2, [list]);
       } else {
-        if (renderCallDepth >= lists.get(scene).length) {
+        if (renderCallDepth >= lists.get(scene2).length) {
           list = new WebGLRenderList(properties);
-          lists.get(scene).push(list);
+          lists.get(scene2).push(list);
         } else {
-          list = lists.get(scene)[renderCallDepth];
+          list = lists.get(scene2)[renderCallDepth];
         }
       }
       return list;
@@ -10481,11 +10481,11 @@
     };
   }
   function UniformsCache() {
-    const lights = {};
+    const lights2 = {};
     return {
       get: function(light) {
-        if (lights[light.id] !== void 0) {
-          return lights[light.id];
+        if (lights2[light.id] !== void 0) {
+          return lights2[light.id];
         }
         let uniforms;
         switch (light.type) {
@@ -10530,17 +10530,17 @@
             };
             break;
         }
-        lights[light.id] = uniforms;
+        lights2[light.id] = uniforms;
         return uniforms;
       }
     };
   }
   function ShadowUniformsCache() {
-    const lights = {};
+    const lights2 = {};
     return {
       get: function(light) {
-        if (lights[light.id] !== void 0) {
-          return lights[light.id];
+        if (lights2[light.id] !== void 0) {
+          return lights2[light.id];
         }
         let uniforms;
         switch (light.type) {
@@ -10571,7 +10571,7 @@
             };
             break;
         }
-        lights[light.id] = uniforms;
+        lights2[light.id] = uniforms;
         return uniforms;
       }
     };
@@ -10619,7 +10619,7 @@
     const vector3 = new Vector3();
     const matrix4 = new Matrix4();
     const matrix42 = new Matrix4();
-    function setup(lights) {
+    function setup(lights2) {
       let r = 0, g = 0, b = 0;
       for (let i = 0; i < 9; i++)
         state.probe[i].set(0, 0, 0);
@@ -10631,9 +10631,9 @@
       let numDirectionalShadows = 0;
       let numPointShadows = 0;
       let numSpotShadows = 0;
-      lights.sort(shadowCastingLightsFirst);
-      for (let i = 0, l = lights.length; i < l; i++) {
-        const light = lights[i];
+      lights2.sort(shadowCastingLightsFirst);
+      for (let i = 0, l = lights2.length; i < l; i++) {
+        const light = lights2[i];
         const color = light.color;
         const intensity = light.intensity;
         const distance = light.distance;
@@ -10767,15 +10767,15 @@
         state.version = nextVersion++;
       }
     }
-    function setupView(lights, camera) {
+    function setupView(lights2, camera3) {
       let directionalLength = 0;
       let pointLength = 0;
       let spotLength = 0;
       let rectAreaLength = 0;
       let hemiLength = 0;
-      const viewMatrix = camera.matrixWorldInverse;
-      for (let i = 0, l = lights.length; i < l; i++) {
-        const light = lights[i];
+      const viewMatrix = camera3.matrixWorldInverse;
+      for (let i = 0, l = lights2.length; i < l; i++) {
+        const light = lights2[i];
         if (light.isDirectionalLight) {
           const uniforms = state.directional[directionalLength];
           uniforms.direction.setFromMatrixPosition(light.matrixWorld);
@@ -10826,7 +10826,7 @@
     };
   }
   function WebGLRenderState(extensions, capabilities) {
-    const lights = new WebGLLights(extensions, capabilities);
+    const lights2 = new WebGLLights(extensions, capabilities);
     const lightsArray = [];
     const shadowsArray = [];
     function init() {
@@ -10840,15 +10840,15 @@
       shadowsArray.push(shadowLight);
     }
     function setupLights() {
-      lights.setup(lightsArray);
+      lights2.setup(lightsArray);
     }
-    function setupLightsView(camera) {
-      lights.setupView(lightsArray, camera);
+    function setupLightsView(camera3) {
+      lights2.setupView(lightsArray, camera3);
     }
     const state = {
       lightsArray,
       shadowsArray,
-      lights
+      lights: lights2
     };
     return {
       init,
@@ -10861,17 +10861,17 @@
   }
   function WebGLRenderStates(extensions, capabilities) {
     let renderStates = new WeakMap();
-    function get(scene, renderCallDepth = 0) {
+    function get(scene2, renderCallDepth = 0) {
       let renderState;
-      if (renderStates.has(scene) === false) {
+      if (renderStates.has(scene2) === false) {
         renderState = new WebGLRenderState(extensions, capabilities);
-        renderStates.set(scene, [renderState]);
+        renderStates.set(scene2, [renderState]);
       } else {
-        if (renderCallDepth >= renderStates.get(scene).length) {
+        if (renderCallDepth >= renderStates.get(scene2).length) {
           renderState = new WebGLRenderState(extensions, capabilities);
-          renderStates.get(scene).push(renderState);
+          renderStates.get(scene2).push(renderState);
         } else {
-          renderState = renderStates.get(scene)[renderCallDepth];
+          renderState = renderStates.get(scene2)[renderCallDepth];
         }
       }
       return renderState;
@@ -10979,12 +10979,12 @@
     this.autoUpdate = true;
     this.needsUpdate = false;
     this.type = PCFShadowMap;
-    this.render = function(lights, scene, camera) {
+    this.render = function(lights2, scene2, camera3) {
       if (scope.enabled === false)
         return;
       if (scope.autoUpdate === false && scope.needsUpdate === false)
         return;
-      if (lights.length === 0)
+      if (lights2.length === 0)
         return;
       const currentRenderTarget = _renderer.getRenderTarget();
       const activeCubeFace = _renderer.getActiveCubeFace();
@@ -10994,8 +10994,8 @@
       _state.buffers.color.setClear(1, 1, 1, 1);
       _state.buffers.depth.setTest(true);
       _state.setScissorTest(false);
-      for (let i = 0, il = lights.length; i < il; i++) {
-        const light = lights[i];
+      for (let i = 0, il = lights2.length; i < il; i++) {
+        const light = lights2[i];
         const shadow = light.shadow;
         if (shadow === void 0) {
           console.warn("THREE.WebGLShadowMap:", light, "has no shadow.");
@@ -11041,30 +11041,30 @@
           _state.viewport(_viewport);
           shadow.updateMatrices(light, vp);
           _frustum = shadow.getFrustum();
-          renderObject(scene, camera, shadow.camera, light, this.type);
+          renderObject(scene2, camera3, shadow.camera, light, this.type);
         }
         if (!shadow.isPointLightShadow && this.type === VSMShadowMap) {
-          VSMPass(shadow, camera);
+          VSMPass(shadow, camera3);
         }
         shadow.needsUpdate = false;
       }
       scope.needsUpdate = false;
       _renderer.setRenderTarget(currentRenderTarget, activeCubeFace, activeMipmapLevel);
     };
-    function VSMPass(shadow, camera) {
+    function VSMPass(shadow, camera3) {
       const geometry = _objects.update(fullScreenMesh);
       shadowMaterialVertical.uniforms.shadow_pass.value = shadow.map.texture;
       shadowMaterialVertical.uniforms.resolution.value = shadow.mapSize;
       shadowMaterialVertical.uniforms.radius.value = shadow.radius;
       _renderer.setRenderTarget(shadow.mapPass);
       _renderer.clear();
-      _renderer.renderBufferDirect(camera, null, geometry, shadowMaterialVertical, fullScreenMesh, null);
+      _renderer.renderBufferDirect(camera3, null, geometry, shadowMaterialVertical, fullScreenMesh, null);
       shadowMaterialHorizontal.uniforms.shadow_pass.value = shadow.mapPass.texture;
       shadowMaterialHorizontal.uniforms.resolution.value = shadow.mapSize;
       shadowMaterialHorizontal.uniforms.radius.value = shadow.radius;
       _renderer.setRenderTarget(shadow.map);
       _renderer.clear();
-      _renderer.renderBufferDirect(camera, null, geometry, shadowMaterialHorizontal, fullScreenMesh, null);
+      _renderer.renderBufferDirect(camera3, null, geometry, shadowMaterialHorizontal, fullScreenMesh, null);
     }
     function getDepthMaterialVariant(useMorphing, useSkinning, useInstancing) {
       const index = useMorphing << 0 | useSkinning << 1 | useInstancing << 2;
@@ -11150,10 +11150,10 @@
       }
       return result;
     }
-    function renderObject(object2, camera, shadowCamera, light, type) {
+    function renderObject(object2, camera3, shadowCamera, light, type) {
       if (object2.visible === false)
         return;
-      const visible = object2.layers.test(camera.layers);
+      const visible = object2.layers.test(camera3.layers);
       if (visible && (object2.isMesh || object2.isLine || object2.isPoints)) {
         if ((object2.castShadow || object2.receiveShadow && type === VSMShadowMap) && (!object2.frustumCulled || _frustum.intersectsObject(object2))) {
           object2.modelViewMatrix.multiplyMatrices(shadowCamera.matrixWorldInverse, object2.matrixWorld);
@@ -11177,7 +11177,7 @@
       }
       const children = object2.children;
       for (let i = 0, l = children.length; i < l; i++) {
-        renderObject(children[i], camera, shadowCamera, light, type);
+        renderObject(children[i], camera3, shadowCamera, light, type);
       }
     }
   }
@@ -11786,8 +11786,8 @@
           const canvas = needsNewCanvas ? createCanvas(width, height) : _canvas2;
           canvas.width = width;
           canvas.height = height;
-          const context = canvas.getContext("2d");
-          context.drawImage(image, 0, 0, width, height);
+          const context2 = canvas.getContext("2d");
+          context2.drawImage(image, 0, 0, width, height);
           console.warn("THREE.WebGLRenderer: Texture has been resized from (" + image.width + "x" + image.height + ") to (" + width + "x" + height + ").");
           return canvas;
         } else {
@@ -12737,7 +12737,7 @@
       return this;
     }
   });
-  function WebXRManager(renderer, gl) {
+  function WebXRManager(renderer2, gl) {
     const scope = this;
     let session = null;
     let framebufferScaleFactor = 1;
@@ -12797,8 +12797,8 @@
       inputSourcesMap.clear();
       _currentDepthNear = null;
       _currentDepthFar = null;
-      renderer.setFramebuffer(null);
-      renderer.setRenderTarget(renderer.getRenderTarget());
+      renderer2.setFramebuffer(null);
+      renderer2.setRenderTarget(renderer2.getRenderTarget());
       animation.stop();
       scope.isPresenting = false;
       scope.dispatchEvent({type: "sessionend"});
@@ -12875,7 +12875,7 @@
     }
     const cameraLPos = new Vector3();
     const cameraRPos = new Vector3();
-    function setProjectionFromUnion(camera, cameraL2, cameraR2) {
+    function setProjectionFromUnion(camera3, cameraL2, cameraR2) {
       cameraLPos.setFromMatrixPosition(cameraL2.matrixWorld);
       cameraRPos.setFromMatrixPosition(cameraR2.matrixWorld);
       const ipd = cameraLPos.distanceTo(cameraRPos);
@@ -12891,30 +12891,30 @@
       const right = near * rightFov;
       const zOffset = ipd / (-leftFov + rightFov);
       const xOffset = zOffset * -leftFov;
-      cameraL2.matrixWorld.decompose(camera.position, camera.quaternion, camera.scale);
-      camera.translateX(xOffset);
-      camera.translateZ(zOffset);
-      camera.matrixWorld.compose(camera.position, camera.quaternion, camera.scale);
-      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+      cameraL2.matrixWorld.decompose(camera3.position, camera3.quaternion, camera3.scale);
+      camera3.translateX(xOffset);
+      camera3.translateZ(zOffset);
+      camera3.matrixWorld.compose(camera3.position, camera3.quaternion, camera3.scale);
+      camera3.matrixWorldInverse.copy(camera3.matrixWorld).invert();
       const near2 = near + zOffset;
       const far2 = far + zOffset;
       const left2 = left - xOffset;
       const right2 = right + (ipd - xOffset);
       const top2 = topFov * far / far2 * near2;
       const bottom2 = bottomFov * far / far2 * near2;
-      camera.projectionMatrix.makePerspective(left2, right2, top2, bottom2, near2, far2);
+      camera3.projectionMatrix.makePerspective(left2, right2, top2, bottom2, near2, far2);
     }
-    function updateCamera(camera, parent) {
+    function updateCamera(camera3, parent) {
       if (parent === null) {
-        camera.matrixWorld.copy(camera.matrix);
+        camera3.matrixWorld.copy(camera3.matrix);
       } else {
-        camera.matrixWorld.multiplyMatrices(parent.matrixWorld, camera.matrix);
+        camera3.matrixWorld.multiplyMatrices(parent.matrixWorld, camera3.matrix);
       }
-      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+      camera3.matrixWorldInverse.copy(camera3.matrixWorld).invert();
     }
-    this.getCamera = function(camera) {
-      cameraVR.near = cameraR.near = cameraL.near = camera.near;
-      cameraVR.far = cameraR.far = cameraL.far = camera.far;
+    this.getCamera = function(camera3) {
+      cameraVR.near = cameraR.near = cameraL.near = camera3.near;
+      cameraVR.far = cameraR.far = cameraL.far = camera3.far;
       if (_currentDepthNear !== cameraVR.near || _currentDepthFar !== cameraVR.far) {
         session.updateRenderState({
           depthNear: cameraVR.near,
@@ -12923,16 +12923,16 @@
         _currentDepthNear = cameraVR.near;
         _currentDepthFar = cameraVR.far;
       }
-      const parent = camera.parent;
+      const parent = camera3.parent;
       const cameras2 = cameraVR.cameras;
       updateCamera(cameraVR, parent);
       for (let i = 0; i < cameras2.length; i++) {
         updateCamera(cameras2[i], parent);
       }
-      camera.matrixWorld.copy(cameraVR.matrixWorld);
-      camera.matrix.copy(cameraVR.matrix);
-      camera.matrix.decompose(camera.position, camera.quaternion, camera.scale);
-      const children = camera.children;
+      camera3.matrixWorld.copy(cameraVR.matrixWorld);
+      camera3.matrix.copy(cameraVR.matrix);
+      camera3.matrix.decompose(camera3.position, camera3.quaternion, camera3.scale);
+      const children = camera3.children;
       for (let i = 0, l = children.length; i < l; i++) {
         children[i].updateMatrixWorld(true);
       }
@@ -12949,7 +12949,7 @@
       if (pose !== null) {
         const views = pose.views;
         const baseLayer = session.renderState.baseLayer;
-        renderer.setFramebuffer(baseLayer.framebuffer);
+        renderer2.setFramebuffer(baseLayer.framebuffer);
         let cameraVRNeedsUpdate = false;
         if (views.length !== cameraVR.cameras.length) {
           cameraVR.cameras.length = 0;
@@ -12958,15 +12958,15 @@
         for (let i = 0; i < views.length; i++) {
           const view = views[i];
           const viewport = baseLayer.getViewport(view);
-          const camera = cameras[i];
-          camera.matrix.fromArray(view.transform.matrix);
-          camera.projectionMatrix.fromArray(view.projectionMatrix);
-          camera.viewport.set(viewport.x, viewport.y, viewport.width, viewport.height);
+          const camera3 = cameras[i];
+          camera3.matrix.fromArray(view.transform.matrix);
+          camera3.projectionMatrix.fromArray(view.projectionMatrix);
+          camera3.viewport.set(viewport.x, viewport.y, viewport.width, viewport.height);
           if (i === 0) {
-            cameraVR.matrix.copy(camera.matrix);
+            cameraVR.matrix.copy(camera3.matrix);
           }
           if (cameraVRNeedsUpdate === true) {
-            cameraVR.cameras.push(camera);
+            cameraVR.cameras.push(camera3);
           }
         }
       }
@@ -13427,9 +13427,9 @@
     function getContext(contextNames, contextAttributes) {
       for (let i = 0; i < contextNames.length; i++) {
         const contextName = contextNames[i];
-        const context = _canvas2.getContext(contextName, contextAttributes);
-        if (context !== null)
-          return context;
+        const context2 = _canvas2.getContext(contextName, contextAttributes);
+        if (context2 !== null)
+          return context2;
       }
       return null;
     }
@@ -13732,11 +13732,11 @@
       _gl.drawArrays(4, 0, object2.count);
       object2.count = 0;
     };
-    this.renderBufferDirect = function(camera, scene, geometry, material, object2, group) {
-      if (scene === null)
-        scene = _emptyScene;
+    this.renderBufferDirect = function(camera3, scene2, geometry, material, object2, group) {
+      if (scene2 === null)
+        scene2 = _emptyScene;
       const frontFaceCW = object2.isMesh && object2.matrixWorld.determinant() < 0;
-      const program = setProgram(camera, scene, material, object2);
+      const program = setProgram(camera3, scene2, material, object2);
       state.setMaterial(material, frontFaceCW);
       let index = geometry.index;
       const position = geometry.attributes.position;
@@ -13756,11 +13756,11 @@
       }
       bindingStates.setup(object2, material, program, geometry, index);
       let attribute;
-      let renderer = bufferRenderer;
+      let renderer2 = bufferRenderer;
       if (index !== null) {
         attribute = attributes.get(index);
-        renderer = indexedBufferRenderer;
-        renderer.setIndex(attribute);
+        renderer2 = indexedBufferRenderer;
+        renderer2.setIndex(attribute);
       }
       const dataCount = index !== null ? index.count : position.count;
       const rangeStart = geometry.drawRange.start * rangeFactor;
@@ -13775,9 +13775,9 @@
       if (object2.isMesh) {
         if (material.wireframe === true) {
           state.setLineWidth(material.wireframeLinewidth * getTargetPixelRatio());
-          renderer.setMode(1);
+          renderer2.setMode(1);
         } else {
-          renderer.setMode(4);
+          renderer2.setMode(4);
         }
       } else if (object2.isLine) {
         let lineWidth = material.linewidth;
@@ -13785,31 +13785,31 @@
           lineWidth = 1;
         state.setLineWidth(lineWidth * getTargetPixelRatio());
         if (object2.isLineSegments) {
-          renderer.setMode(1);
+          renderer2.setMode(1);
         } else if (object2.isLineLoop) {
-          renderer.setMode(2);
+          renderer2.setMode(2);
         } else {
-          renderer.setMode(3);
+          renderer2.setMode(3);
         }
       } else if (object2.isPoints) {
-        renderer.setMode(0);
+        renderer2.setMode(0);
       } else if (object2.isSprite) {
-        renderer.setMode(4);
+        renderer2.setMode(4);
       }
       if (object2.isInstancedMesh) {
-        renderer.renderInstances(drawStart, drawCount, object2.count);
+        renderer2.renderInstances(drawStart, drawCount, object2.count);
       } else if (geometry.isInstancedBufferGeometry) {
         const instanceCount = Math.min(geometry.instanceCount, geometry._maxInstanceCount);
-        renderer.renderInstances(drawStart, drawCount, instanceCount);
+        renderer2.renderInstances(drawStart, drawCount, instanceCount);
       } else {
-        renderer.render(drawStart, drawCount);
+        renderer2.render(drawStart, drawCount);
       }
     };
-    this.compile = function(scene, camera) {
-      currentRenderState = renderStates.get(scene);
+    this.compile = function(scene2, camera3) {
+      currentRenderState = renderStates.get(scene2);
       currentRenderState.init();
-      scene.traverseVisible(function(object2) {
-        if (object2.isLight && object2.layers.test(camera.layers)) {
+      scene2.traverseVisible(function(object2) {
+        if (object2.isLight && object2.layers.test(camera3.layers)) {
           currentRenderState.pushLight(object2);
           if (object2.castShadow) {
             currentRenderState.pushShadow(object2);
@@ -13818,19 +13818,19 @@
       });
       currentRenderState.setupLights();
       const compiled = new WeakMap();
-      scene.traverse(function(object2) {
+      scene2.traverse(function(object2) {
         const material = object2.material;
         if (material) {
           if (Array.isArray(material)) {
             for (let i = 0; i < material.length; i++) {
               const material2 = material[i];
               if (compiled.has(material2) === false) {
-                initMaterial(material2, scene, object2);
+                initMaterial(material2, scene2, object2);
                 compiled.set(material2);
               }
             }
           } else if (compiled.has(material) === false) {
-            initMaterial(material, scene, object2);
+            initMaterial(material, scene2, object2);
             compiled.set(material);
           }
         }
@@ -13852,7 +13852,7 @@
       xr.setAnimationLoop(callback);
       callback === null ? animation.stop() : animation.start();
     };
-    this.render = function(scene, camera) {
+    this.render = function(scene2, camera3) {
       let renderTarget, forceClear;
       if (arguments[2] !== void 0) {
         console.warn("THREE.WebGLRenderer.render(): the renderTarget argument has been removed. Use .setRenderTarget() instead.");
@@ -13862,7 +13862,7 @@
         console.warn("THREE.WebGLRenderer.render(): the forceClear argument has been removed. Use .clear() instead.");
         forceClear = arguments[3];
       }
-      if (camera !== void 0 && camera.isCamera !== true) {
+      if (camera3 !== void 0 && camera3.isCamera !== true) {
         console.error("THREE.WebGLRenderer.render: camera is not an instance of THREE.Camera.");
         return;
       }
@@ -13871,26 +13871,26 @@
       bindingStates.resetDefaultState();
       _currentMaterialId = -1;
       _currentCamera = null;
-      if (scene.autoUpdate === true)
-        scene.updateMatrixWorld();
-      if (camera.parent === null)
-        camera.updateMatrixWorld();
+      if (scene2.autoUpdate === true)
+        scene2.updateMatrixWorld();
+      if (camera3.parent === null)
+        camera3.updateMatrixWorld();
       if (xr.enabled === true && xr.isPresenting === true) {
-        camera = xr.getCamera(camera);
+        camera3 = xr.getCamera(camera3);
       }
-      if (scene.isScene === true)
-        scene.onBeforeRender(_this, scene, camera, renderTarget || _currentRenderTarget);
-      currentRenderState = renderStates.get(scene, renderStateStack.length);
+      if (scene2.isScene === true)
+        scene2.onBeforeRender(_this, scene2, camera3, renderTarget || _currentRenderTarget);
+      currentRenderState = renderStates.get(scene2, renderStateStack.length);
       currentRenderState.init();
       renderStateStack.push(currentRenderState);
-      _projScreenMatrix2.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+      _projScreenMatrix2.multiplyMatrices(camera3.projectionMatrix, camera3.matrixWorldInverse);
       _frustum.setFromProjectionMatrix(_projScreenMatrix2);
       _localClippingEnabled = this.localClippingEnabled;
-      _clippingEnabled = clipping.init(this.clippingPlanes, _localClippingEnabled, camera);
-      currentRenderList = renderLists.get(scene, renderListStack.length);
+      _clippingEnabled = clipping.init(this.clippingPlanes, _localClippingEnabled, camera3);
+      currentRenderList = renderLists.get(scene2, renderListStack.length);
       currentRenderList.init();
       renderListStack.push(currentRenderList);
-      projectObject(scene, camera, 0, _this.sortObjects);
+      projectObject(scene2, camera3, 0, _this.sortObjects);
       currentRenderList.finish();
       if (_this.sortObjects === true) {
         currentRenderList.sort(_opaqueSort, _transparentSort);
@@ -13898,9 +13898,9 @@
       if (_clippingEnabled === true)
         clipping.beginShadows();
       const shadowsArray = currentRenderState.state.shadowsArray;
-      shadowMap.render(shadowsArray, scene, camera);
+      shadowMap.render(shadowsArray, scene2, camera3);
       currentRenderState.setupLights();
-      currentRenderState.setupLightsView(camera);
+      currentRenderState.setupLightsView(camera3);
       if (_clippingEnabled === true)
         clipping.endShadows();
       if (this.info.autoReset === true)
@@ -13908,15 +13908,15 @@
       if (renderTarget !== void 0) {
         this.setRenderTarget(renderTarget);
       }
-      background.render(currentRenderList, scene, camera, forceClear);
+      background.render(currentRenderList, scene2, camera3, forceClear);
       const opaqueObjects = currentRenderList.opaque;
       const transparentObjects = currentRenderList.transparent;
       if (opaqueObjects.length > 0)
-        renderObjects(opaqueObjects, scene, camera);
+        renderObjects(opaqueObjects, scene2, camera3);
       if (transparentObjects.length > 0)
-        renderObjects(transparentObjects, scene, camera);
-      if (scene.isScene === true)
-        scene.onAfterRender(_this, scene, camera);
+        renderObjects(transparentObjects, scene2, camera3);
+      if (scene2.isScene === true)
+        scene2.onAfterRender(_this, scene2, camera3);
       if (_currentRenderTarget !== null) {
         textures.updateRenderTargetMipmap(_currentRenderTarget);
         textures.updateMultisampleRenderTarget(_currentRenderTarget);
@@ -13938,16 +13938,16 @@
         currentRenderList = null;
       }
     };
-    function projectObject(object2, camera, groupOrder, sortObjects) {
+    function projectObject(object2, camera3, groupOrder, sortObjects) {
       if (object2.visible === false)
         return;
-      const visible = object2.layers.test(camera.layers);
+      const visible = object2.layers.test(camera3.layers);
       if (visible) {
         if (object2.isGroup) {
           groupOrder = object2.renderOrder;
         } else if (object2.isLOD) {
           if (object2.autoUpdate === true)
-            object2.update(camera);
+            object2.update(camera3);
         } else if (object2.isLight) {
           currentRenderState.pushLight(object2);
           if (object2.castShadow) {
@@ -13999,59 +13999,59 @@
       }
       const children = object2.children;
       for (let i = 0, l = children.length; i < l; i++) {
-        projectObject(children[i], camera, groupOrder, sortObjects);
+        projectObject(children[i], camera3, groupOrder, sortObjects);
       }
     }
-    function renderObjects(renderList, scene, camera) {
-      const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
+    function renderObjects(renderList, scene2, camera3) {
+      const overrideMaterial = scene2.isScene === true ? scene2.overrideMaterial : null;
       for (let i = 0, l = renderList.length; i < l; i++) {
         const renderItem = renderList[i];
         const object2 = renderItem.object;
         const geometry = renderItem.geometry;
         const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
         const group = renderItem.group;
-        if (camera.isArrayCamera) {
-          const cameras = camera.cameras;
+        if (camera3.isArrayCamera) {
+          const cameras = camera3.cameras;
           for (let j = 0, jl = cameras.length; j < jl; j++) {
-            const camera2 = cameras[j];
-            if (object2.layers.test(camera2.layers)) {
-              state.viewport(_currentViewport.copy(camera2.viewport));
-              currentRenderState.setupLightsView(camera2);
-              renderObject(object2, scene, camera2, geometry, material, group);
+            const camera22 = cameras[j];
+            if (object2.layers.test(camera22.layers)) {
+              state.viewport(_currentViewport.copy(camera22.viewport));
+              currentRenderState.setupLightsView(camera22);
+              renderObject(object2, scene2, camera22, geometry, material, group);
             }
           }
         } else {
-          renderObject(object2, scene, camera, geometry, material, group);
+          renderObject(object2, scene2, camera3, geometry, material, group);
         }
       }
     }
-    function renderObject(object2, scene, camera, geometry, material, group) {
-      object2.onBeforeRender(_this, scene, camera, geometry, material, group);
-      object2.modelViewMatrix.multiplyMatrices(camera.matrixWorldInverse, object2.matrixWorld);
+    function renderObject(object2, scene2, camera3, geometry, material, group) {
+      object2.onBeforeRender(_this, scene2, camera3, geometry, material, group);
+      object2.modelViewMatrix.multiplyMatrices(camera3.matrixWorldInverse, object2.matrixWorld);
       object2.normalMatrix.getNormalMatrix(object2.modelViewMatrix);
       if (object2.isImmediateRenderObject) {
-        const program = setProgram(camera, scene, material, object2);
+        const program = setProgram(camera3, scene2, material, object2);
         state.setMaterial(material);
         bindingStates.reset();
         renderObjectImmediate(object2, program);
       } else {
-        _this.renderBufferDirect(camera, scene, geometry, material, object2, group);
+        _this.renderBufferDirect(camera3, scene2, geometry, material, object2, group);
       }
-      object2.onAfterRender(_this, scene, camera, geometry, material, group);
+      object2.onAfterRender(_this, scene2, camera3, geometry, material, group);
     }
-    function initMaterial(material, scene, object2) {
-      if (scene.isScene !== true)
-        scene = _emptyScene;
+    function initMaterial(material, scene2, object2) {
+      if (scene2.isScene !== true)
+        scene2 = _emptyScene;
       const materialProperties = properties.get(material);
-      const lights = currentRenderState.state.lights;
+      const lights2 = currentRenderState.state.lights;
       const shadowsArray = currentRenderState.state.shadowsArray;
-      const lightsStateVersion = lights.state.version;
-      const parameters2 = programCache.getParameters(material, lights.state, shadowsArray, scene, object2);
+      const lightsStateVersion = lights2.state.version;
+      const parameters2 = programCache.getParameters(material, lights2.state, shadowsArray, scene2, object2);
       const programCacheKey = programCache.getProgramCacheKey(parameters2);
       let program = materialProperties.program;
       let programChange = true;
-      materialProperties.environment = material.isMeshStandardMaterial ? scene.environment : null;
-      materialProperties.fog = scene.fog;
+      materialProperties.environment = material.isMeshStandardMaterial ? scene2.environment : null;
+      materialProperties.fog = scene2.fog;
       materialProperties.envMap = cubemaps.get(material.envMap || materialProperties.environment);
       if (program === void 0) {
         material.addEventListener("dispose", onMaterialDispose);
@@ -14081,61 +14081,61 @@
       materialProperties.needsLights = materialNeedsLights(material);
       materialProperties.lightsStateVersion = lightsStateVersion;
       if (materialProperties.needsLights) {
-        uniforms.ambientLightColor.value = lights.state.ambient;
-        uniforms.lightProbe.value = lights.state.probe;
-        uniforms.directionalLights.value = lights.state.directional;
-        uniforms.directionalLightShadows.value = lights.state.directionalShadow;
-        uniforms.spotLights.value = lights.state.spot;
-        uniforms.spotLightShadows.value = lights.state.spotShadow;
-        uniforms.rectAreaLights.value = lights.state.rectArea;
-        uniforms.ltc_1.value = lights.state.rectAreaLTC1;
-        uniforms.ltc_2.value = lights.state.rectAreaLTC2;
-        uniforms.pointLights.value = lights.state.point;
-        uniforms.pointLightShadows.value = lights.state.pointShadow;
-        uniforms.hemisphereLights.value = lights.state.hemi;
-        uniforms.directionalShadowMap.value = lights.state.directionalShadowMap;
-        uniforms.directionalShadowMatrix.value = lights.state.directionalShadowMatrix;
-        uniforms.spotShadowMap.value = lights.state.spotShadowMap;
-        uniforms.spotShadowMatrix.value = lights.state.spotShadowMatrix;
-        uniforms.pointShadowMap.value = lights.state.pointShadowMap;
-        uniforms.pointShadowMatrix.value = lights.state.pointShadowMatrix;
+        uniforms.ambientLightColor.value = lights2.state.ambient;
+        uniforms.lightProbe.value = lights2.state.probe;
+        uniforms.directionalLights.value = lights2.state.directional;
+        uniforms.directionalLightShadows.value = lights2.state.directionalShadow;
+        uniforms.spotLights.value = lights2.state.spot;
+        uniforms.spotLightShadows.value = lights2.state.spotShadow;
+        uniforms.rectAreaLights.value = lights2.state.rectArea;
+        uniforms.ltc_1.value = lights2.state.rectAreaLTC1;
+        uniforms.ltc_2.value = lights2.state.rectAreaLTC2;
+        uniforms.pointLights.value = lights2.state.point;
+        uniforms.pointLightShadows.value = lights2.state.pointShadow;
+        uniforms.hemisphereLights.value = lights2.state.hemi;
+        uniforms.directionalShadowMap.value = lights2.state.directionalShadowMap;
+        uniforms.directionalShadowMatrix.value = lights2.state.directionalShadowMatrix;
+        uniforms.spotShadowMap.value = lights2.state.spotShadowMap;
+        uniforms.spotShadowMatrix.value = lights2.state.spotShadowMatrix;
+        uniforms.pointShadowMap.value = lights2.state.pointShadowMap;
+        uniforms.pointShadowMatrix.value = lights2.state.pointShadowMatrix;
       }
       const progUniforms = materialProperties.program.getUniforms();
       const uniformsList = WebGLUniforms.seqWithValue(progUniforms.seq, uniforms);
       materialProperties.uniformsList = uniformsList;
     }
-    function setProgram(camera, scene, material, object2) {
-      if (scene.isScene !== true)
-        scene = _emptyScene;
+    function setProgram(camera3, scene2, material, object2) {
+      if (scene2.isScene !== true)
+        scene2 = _emptyScene;
       textures.resetTextureUnits();
-      const fog = scene.fog;
-      const environment = material.isMeshStandardMaterial ? scene.environment : null;
+      const fog = scene2.fog;
+      const environment = material.isMeshStandardMaterial ? scene2.environment : null;
       const encoding = _currentRenderTarget === null ? _this.outputEncoding : _currentRenderTarget.texture.encoding;
       const envMap = cubemaps.get(material.envMap || environment);
       const materialProperties = properties.get(material);
-      const lights = currentRenderState.state.lights;
+      const lights2 = currentRenderState.state.lights;
       if (_clippingEnabled === true) {
-        if (_localClippingEnabled === true || camera !== _currentCamera) {
-          const useCache = camera === _currentCamera && material.id === _currentMaterialId;
-          clipping.setState(material, camera, useCache);
+        if (_localClippingEnabled === true || camera3 !== _currentCamera) {
+          const useCache = camera3 === _currentCamera && material.id === _currentMaterialId;
+          clipping.setState(material, camera3, useCache);
         }
       }
       if (material.version === materialProperties.__version) {
         if (material.fog && materialProperties.fog !== fog) {
-          initMaterial(material, scene, object2);
+          initMaterial(material, scene2, object2);
         } else if (materialProperties.environment !== environment) {
-          initMaterial(material, scene, object2);
-        } else if (materialProperties.needsLights && materialProperties.lightsStateVersion !== lights.state.version) {
-          initMaterial(material, scene, object2);
+          initMaterial(material, scene2, object2);
+        } else if (materialProperties.needsLights && materialProperties.lightsStateVersion !== lights2.state.version) {
+          initMaterial(material, scene2, object2);
         } else if (materialProperties.numClippingPlanes !== void 0 && (materialProperties.numClippingPlanes !== clipping.numPlanes || materialProperties.numIntersection !== clipping.numIntersection)) {
-          initMaterial(material, scene, object2);
+          initMaterial(material, scene2, object2);
         } else if (materialProperties.outputEncoding !== encoding) {
-          initMaterial(material, scene, object2);
+          initMaterial(material, scene2, object2);
         } else if (materialProperties.envMap !== envMap) {
-          initMaterial(material, scene, object2);
+          initMaterial(material, scene2, object2);
         }
       } else {
-        initMaterial(material, scene, object2);
+        initMaterial(material, scene2, object2);
         materialProperties.__version = material.version;
       }
       let refreshProgram = false;
@@ -14151,27 +14151,27 @@
         _currentMaterialId = material.id;
         refreshMaterial = true;
       }
-      if (refreshProgram || _currentCamera !== camera) {
-        p_uniforms.setValue(_gl, "projectionMatrix", camera.projectionMatrix);
+      if (refreshProgram || _currentCamera !== camera3) {
+        p_uniforms.setValue(_gl, "projectionMatrix", camera3.projectionMatrix);
         if (capabilities.logarithmicDepthBuffer) {
-          p_uniforms.setValue(_gl, "logDepthBufFC", 2 / (Math.log(camera.far + 1) / Math.LN2));
+          p_uniforms.setValue(_gl, "logDepthBufFC", 2 / (Math.log(camera3.far + 1) / Math.LN2));
         }
-        if (_currentCamera !== camera) {
-          _currentCamera = camera;
+        if (_currentCamera !== camera3) {
+          _currentCamera = camera3;
           refreshMaterial = true;
           refreshLights = true;
         }
         if (material.isShaderMaterial || material.isMeshPhongMaterial || material.isMeshToonMaterial || material.isMeshStandardMaterial || material.envMap) {
           const uCamPos = p_uniforms.map.cameraPosition;
           if (uCamPos !== void 0) {
-            uCamPos.setValue(_gl, _vector3.setFromMatrixPosition(camera.matrixWorld));
+            uCamPos.setValue(_gl, _vector3.setFromMatrixPosition(camera3.matrixWorld));
           }
         }
         if (material.isMeshPhongMaterial || material.isMeshToonMaterial || material.isMeshLambertMaterial || material.isMeshBasicMaterial || material.isMeshStandardMaterial || material.isShaderMaterial) {
-          p_uniforms.setValue(_gl, "isOrthographic", camera.isOrthographicCamera === true);
+          p_uniforms.setValue(_gl, "isOrthographic", camera3.isOrthographicCamera === true);
         }
         if (material.isMeshPhongMaterial || material.isMeshToonMaterial || material.isMeshLambertMaterial || material.isMeshBasicMaterial || material.isMeshStandardMaterial || material.isShaderMaterial || material.isShadowMaterial || material.skinning) {
-          p_uniforms.setValue(_gl, "viewMatrix", camera.matrixWorldInverse);
+          p_uniforms.setValue(_gl, "viewMatrix", camera3.matrixWorldInverse);
         }
       }
       if (material.skinning) {
@@ -14933,12 +14933,12 @@
         this.getObjectForDistance(distance).raycast(raycaster2, intersects2);
       }
     }
-    update(camera) {
+    update(camera3) {
       const levels = this.levels;
       if (levels.length > 1) {
-        _v1$4.setFromMatrixPosition(camera.matrixWorld);
+        _v1$4.setFromMatrixPosition(camera3.matrixWorld);
         _v2$2.setFromMatrixPosition(this.matrixWorld);
-        const distance = _v1$4.distanceTo(_v2$2) / camera.zoom;
+        const distance = _v1$4.distanceTo(_v2$2) / camera3.zoom;
         levels[0].object.visible = true;
         let i, l;
         for (i = 1, l = levels.length; i < l; i++) {
@@ -16299,15 +16299,15 @@
             v(position2.x, position2.y, position2.z);
           }
         }
-        for (let s = 1; s <= steps; s++) {
+        for (let s2 = 1; s2 <= steps; s2++) {
           for (let i = 0; i < vlen; i++) {
             const vert = bevelEnabled ? scalePt2(vertices[i], verticesMovements[i], bs) : vertices[i];
             if (!extrudeByPath) {
-              v(vert.x, vert.y, depth / steps * s);
+              v(vert.x, vert.y, depth / steps * s2);
             } else {
-              normal.copy(splineTube.normals[s]).multiplyScalar(vert.x);
-              binormal.copy(splineTube.binormals[s]).multiplyScalar(vert.y);
-              position2.copy(extrudePts[s]).add(normal).add(binormal);
+              normal.copy(splineTube.normals[s2]).multiplyScalar(vert.x);
+              binormal.copy(splineTube.binormals[s2]).multiplyScalar(vert.y);
+              position2.copy(extrudePts[s2]).add(normal).add(binormal);
               v(position2.x, position2.y, position2.z);
             }
           }
@@ -16381,9 +16381,9 @@
             let k = i - 1;
             if (k < 0)
               k = contour2.length - 1;
-            for (let s = 0, sl = steps + bevelSegments * 2; s < sl; s++) {
-              const slen1 = vlen * s;
-              const slen2 = vlen * (s + 1);
+            for (let s2 = 0, sl = steps + bevelSegments * 2; s2 < sl; s2++) {
+              const slen1 = vlen * s2;
+              const slen2 = vlen * (s2 + 1);
               const a = layeroffset + j + slen1, b = layeroffset + k + slen1, c = layeroffset + k + slen2, d = layeroffset + j + slen2;
               f4(a, b, c, d);
             }
@@ -19546,8 +19546,8 @@
   var _lightPositionWorld = /* @__PURE__ */ new Vector3();
   var _lookTarget = /* @__PURE__ */ new Vector3();
   var LightShadow = class {
-    constructor(camera) {
-      this.camera = camera;
+    constructor(camera3) {
+      this.camera = camera3;
       this.bias = 0;
       this.normalBias = 0;
       this.radius = 1;
@@ -19621,15 +19621,15 @@
       this.focus = 1;
     }
     updateMatrices(light) {
-      const camera = this.camera;
+      const camera3 = this.camera;
       const fov2 = MathUtils.RAD2DEG * 2 * light.angle * this.focus;
-      const aspect2 = this.mapSize.width / this.mapSize.height;
-      const far = light.distance || camera.far;
-      if (fov2 !== camera.fov || aspect2 !== camera.aspect || far !== camera.far) {
-        camera.fov = fov2;
-        camera.aspect = aspect2;
-        camera.far = far;
-        camera.updateProjectionMatrix();
+      const aspect3 = this.mapSize.width / this.mapSize.height;
+      const far = light.distance || camera3.far;
+      if (fov2 !== camera3.fov || aspect3 !== camera3.aspect || far !== camera3.far) {
+        camera3.fov = fov2;
+        camera3.aspect = aspect3;
+        camera3.far = far;
+        camera3.updateProjectionMatrix();
       }
       super.updateMatrices(light);
     }
@@ -19700,17 +19700,17 @@
       ];
     }
     updateMatrices(light, viewportIndex = 0) {
-      const camera = this.camera;
+      const camera3 = this.camera;
       const shadowMatrix = this.matrix;
       _lightPositionWorld$1.setFromMatrixPosition(light.matrixWorld);
-      camera.position.copy(_lightPositionWorld$1);
-      _lookTarget$1.copy(camera.position);
+      camera3.position.copy(_lightPositionWorld$1);
+      _lookTarget$1.copy(camera3.position);
       _lookTarget$1.add(this._cubeDirections[viewportIndex]);
-      camera.up.copy(this._cubeUps[viewportIndex]);
-      camera.lookAt(_lookTarget$1);
-      camera.updateMatrixWorld();
+      camera3.up.copy(this._cubeUps[viewportIndex]);
+      camera3.lookAt(_lookTarget$1);
+      camera3.updateMatrixWorld();
       shadowMatrix.makeTranslation(-_lightPositionWorld$1.x, -_lightPositionWorld$1.y, -_lightPositionWorld$1.z);
-      _projScreenMatrix$1.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+      _projScreenMatrix$1.multiplyMatrices(camera3.projectionMatrix, camera3.matrixWorldInverse);
       this._frustum.setFromProjectionMatrix(_projScreenMatrix$1);
     }
   };
@@ -19930,15 +19930,15 @@
       }
       return this;
     }
-    addScaledSH(sh, s) {
+    addScaledSH(sh, s2) {
       for (let i = 0; i < 9; i++) {
-        this.coefficients[i].addScaledVector(sh.coefficients[i], s);
+        this.coefficients[i].addScaledVector(sh.coefficients[i], s2);
       }
       return this;
     }
-    scale(s) {
+    scale(s2) {
       for (let i = 0; i < 9; i++) {
-        this.coefficients[i].multiplyScalar(s);
+        this.coefficients[i].multiplyScalar(s2);
       }
       return this;
     }
@@ -20017,14 +20017,14 @@
       if (typeof TextDecoder !== "undefined") {
         return new TextDecoder().decode(array);
       }
-      let s = "";
+      let s2 = "";
       for (let i = 0, il = array.length; i < il; i++) {
-        s += String.fromCharCode(array[i]);
+        s2 += String.fromCharCode(array[i]);
       }
       try {
-        return decodeURIComponent(escape(s));
+        return decodeURIComponent(escape(s2));
       } catch (e) {
-        return s;
+        return s2;
       }
     },
     extractUrlBase: function(url) {
@@ -20405,8 +20405,8 @@
       loader.load(url, function(buffer) {
         try {
           const bufferCopy = buffer.slice(0);
-          const context = AudioContext.getContext();
-          context.decodeAudioData(bufferCopy, function(audioBuffer) {
+          const context2 = AudioContext.getContext();
+          context2.decodeAudioData(bufferCopy, function(audioBuffer) {
             onLoad(audioBuffer);
           });
         } catch (e) {
@@ -20662,11 +20662,11 @@
     }
   };
   var AudioAnalyser = class {
-    constructor(audio2, fftSize = 2048) {
-      this.analyser = audio2.context.createAnalyser();
+    constructor(audio, fftSize = 2048) {
+      this.analyser = audio.context.createAnalyser();
       this.analyser.fftSize = fftSize;
       this.data = new Uint8Array(this.analyser.frequencyBinCount);
-      audio2.getOutput().connect(this.analyser);
+      audio.getOutput().connect(this.analyser);
     }
     getFrequencyData() {
       this.analyser.getByteFrequencyData(this.data);
@@ -20807,10 +20807,10 @@
       Quaternion.slerpFlat(buffer, dstOffset, buffer, dstOffset, buffer, workOffset, t);
     }
     _lerp(buffer, dstOffset, srcOffset, t, stride) {
-      const s = 1 - t;
+      const s2 = 1 - t;
       for (let i = 0; i !== stride; ++i) {
         const j = dstOffset + i;
-        buffer[j] = buffer[j] * s + buffer[srcOffset + i] * t;
+        buffer[j] = buffer[j] * s2 + buffer[srcOffset + i] * t;
       }
     }
     _lerpAdditive(buffer, dstOffset, srcOffset, t, stride) {
@@ -22103,17 +22103,17 @@
     set: function(origin, direction) {
       this.ray.set(origin, direction);
     },
-    setFromCamera: function(coords, camera) {
-      if (camera && camera.isPerspectiveCamera) {
-        this.ray.origin.setFromMatrixPosition(camera.matrixWorld);
-        this.ray.direction.set(coords.x, coords.y, 0.5).unproject(camera).sub(this.ray.origin).normalize();
-        this.camera = camera;
-      } else if (camera && camera.isOrthographicCamera) {
-        this.ray.origin.set(coords.x, coords.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera);
-        this.ray.direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
-        this.camera = camera;
+    setFromCamera: function(coords, camera3) {
+      if (camera3 && camera3.isPerspectiveCamera) {
+        this.ray.origin.setFromMatrixPosition(camera3.matrixWorld);
+        this.ray.direction.set(coords.x, coords.y, 0.5).unproject(camera3).sub(this.ray.origin).normalize();
+        this.camera = camera3;
+      } else if (camera3 && camera3.isOrthographicCamera) {
+        this.ray.origin.set(coords.x, coords.y, (camera3.near + camera3.far) / (camera3.near - camera3.far)).unproject(camera3);
+        this.ray.direction.set(0, 0, -1).transformDirection(camera3.matrixWorld);
+        this.camera = camera3;
       } else {
-        console.error("THREE.Raycaster: Unsupported camera type: " + camera.type);
+        console.error("THREE.Raycaster: Unsupported camera type: " + camera3.type);
       }
     },
     intersectObject: function(object2, recursive = false, intersects2 = []) {
@@ -23468,13 +23468,13 @@
     console.warn("THREE.AudioAnalyser: .getData() is now .getFrequencyData().");
     return this.getFrequencyData();
   };
-  CubeCamera.prototype.updateCubeMap = function(renderer, scene) {
+  CubeCamera.prototype.updateCubeMap = function(renderer2, scene2) {
     console.warn("THREE.CubeCamera: .updateCubeMap() is now .update().");
-    return this.update(renderer, scene);
+    return this.update(renderer2, scene2);
   };
-  CubeCamera.prototype.clear = function(renderer, color, depth, stencil) {
+  CubeCamera.prototype.clear = function(renderer2, color, depth, stencil) {
     console.warn("THREE.CubeCamera: .clear() is now .renderTarget.clear().");
-    return this.renderTarget.clear(renderer, color, depth, stencil);
+    return this.renderTarget.clear(renderer2, color, depth, stencil);
   };
   ImageUtils.crossOrigin = void 0;
   ImageUtils.loadTexture = function(url, mapping, onLoad, onError) {
@@ -23511,184 +23511,6 @@
       console.warn("WARNING: Multiple instances of Three.js being imported.");
     } else {
       window.__THREE__ = REVISION;
-    }
-  }
-
-  // src/Framework.ts
-  var planes = clippingPlanes();
-  var cube = new BoxGeometry(1, 1, 1);
-  function cubeMesh(parent, material) {
-    let mesh = new Mesh(cube, material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
-    return object(parent).add(mesh);
-  }
-  function object(parent) {
-    let obj = new Object3D();
-    parent && parent.add(obj);
-    let o = {
-      obj,
-      remove: () => parent.remove(obj),
-      add: (child) => obj.add(child) && o,
-      scale: (x, y, z) => xyz(obj.scale, x, y, z) || o,
-      pos: (x, y, z) => xyz(obj.position, x, y, z) || o,
-      rot: (x, y, z) => xyz(obj.rotation, x, y, z) || o
-    };
-    return o;
-  }
-  function xyz(obj, x, y, z) {
-    obj.x = x;
-    obj.y = y;
-    obj.z = z;
-    return false;
-  }
-  function hsl(h, s, l, clip) {
-    let color = new Color(`hsl(${h || 0}, ${s || 50}%, ${l || 50}%)`);
-    return new MeshLambertMaterial({
-      color,
-      clippingPlanes: clip ? planes : [],
-      clipShadows: true
-    });
-  }
-  function threejs(f) {
-    let renderer = new WebGLRenderer({
-      antialias: true
-    });
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.setClearColor(new Color("hsl(34, 50%, 70%)"));
-    renderer.localClippingEnabled = true;
-    document.body.appendChild(renderer.domElement);
-    document.body.style.margin = "0";
-    document.body.style.overflow = "hidden";
-    let s = 10;
-    let camera = new OrthographicCamera(-s * aspect2(), s * aspect2(), s, -s, 0.1, 100);
-    camera.position.set(15, 15, 15);
-    camera.lookAt(0, 0, 0);
-    requestAnimationFrame(render);
-    addEventListener("resize", onWindowResize);
-    let scene = new Scene();
-    scene.add(lights());
-    return {
-      renderer,
-      camera,
-      scene
-    };
-    function lights(color) {
-      let lightsGroup = new Object3D("lights");
-      lightsGroup.add(new AmbientLight(color, 0.2));
-      let light = new DirectionalLight(color, 0.2);
-      light.position.set(-5, -15, -20);
-      lightsGroup.add(light);
-      light = new DirectionalLight(color, 0.8);
-      light.position.set(5, 15, 20);
-      lightsGroup.add(light);
-      light.castShadow = true;
-      light.shadow.mapSize.width = 4096;
-      light.shadow.mapSize.height = 4096;
-      light.shadow.camera.left = -s;
-      light.shadow.camera.right = s;
-      light.shadow.camera.top = s;
-      light.shadow.camera.bottom = -s;
-      light.shadow.bias = -16e-6;
-      return lightsGroup;
-    }
-    function aspect2() {
-      return innerWidth / innerHeight;
-    }
-    function render(t) {
-      renderer.render(scene, camera);
-      f && f(t);
-      requestAnimationFrame(render);
-    }
-    function onWindowResize() {
-      camera.left = -s * aspect2();
-      camera.right = s * aspect2();
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    }
-  }
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
-  function angleLerp(a0, a1, t) {
-    var max = Math.PI * 2;
-    var da = (a1 - a0) % max;
-    return a0 + (2 * da % max - da) * t;
-  }
-  function texture(svg3) {
-    let img = new Image();
-    let mat = new MeshLambertMaterial();
-    img.src = "data:image/svg+xml;base64," + btoa(svg3);
-    img.onload = () => {
-      let cnv = document.createElement("canvas");
-      cnv.width = img.width;
-      cnv.height = img.height;
-      let ctx = cnv.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      let texture3 = new Texture(cnv);
-      texture3.anisotropy = 32;
-      texture3.needsUpdate = true;
-      mat.needsUpdate = true;
-      mat.map = texture3;
-    };
-    return mat;
-  }
-  function svg(w, h, html) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}px" height="${h}px">${html}</svg>`;
-  }
-  function clippingPlanes() {
-    return [
-      [0, 0, 1],
-      [0, 0, -1],
-      [1, 0, 0],
-      [-1, 0, 0]
-    ].map((el) => new Plane(new Vector3(...el), 10.4));
-  }
-
-  // src/Inventory.ts
-  function inventory() {
-    let items = document.querySelectorAll(".grid div");
-    let el;
-    items.forEach((e) => {
-      e.id = "id_" + Math.random().toString(36).substring(2);
-      e.draggable = true;
-      e.ondragstart = () => {
-        el = e;
-        el.style.transform = "scale(0.5)";
-      };
-      e.ondragend = () => el.style.transform = "scale(1)";
-    });
-    document.querySelectorAll(".grid").forEach((e) => {
-      e.ondragover = (ev) => ev.preventDefault();
-      e.ondrop = (ev) => {
-        e.append(el);
-        console.log("move_to_" + e.id + "/" + el.id);
-      };
-    });
-  }
-
-  // src/Audio.ts
-  function audio() {
-    let AudioContext2 = window.AudioContext || window["webkitAudioContext"];
-    let context = new AudioContext2();
-    context.resume();
-    let gain = context.createGain();
-    gain.connect(context.destination);
-    gain.gain.value = 0.01;
-    return {
-      jump: () => {
-        for (let i = 0; i < 5; i++)
-          play(330 + i * 120, 0 + 0.02 * i, 0.02);
-      }
-    };
-    function play(freq, delay, duration) {
-      let oscillator = context.createOscillator();
-      oscillator.type = "sine";
-      oscillator.connect(gain);
-      oscillator.frequency.value = freq;
-      oscillator.start(context.currentTime + delay);
-      oscillator.stop(context.currentTime + duration + delay);
     }
   }
 
@@ -23768,7 +23590,7 @@
       grassCell(x, y, dy);
       let sign2 = object(getGround()).pos(y - 10, 1 + dy, x - 10);
       cubeMesh(sign2, brown).scale(0.1, 1, 0.1);
-      let mat = texture(svg(100, 70, `
+      let mat = texture2(svg2(100, 70, `
             <rect width="100" height="70" fill="hsl(33, 50%, 50%)" />
         ` + type.svg));
       cubeMesh(sign2, [
@@ -23780,6 +23602,102 @@
         brown
       ]).scale(1, 0.6, 0.15).pos(0, 0.5, 0);
     };
+  }
+
+  // src/Audio.ts
+  var AudioContext2 = window.AudioContext || window["webkitAudioContext"];
+  var context = new AudioContext2();
+  context.resume();
+  var gain = context.createGain();
+  gain.connect(context.destination);
+  gain.gain.value = 0.01;
+  function play(freq, delay, duration) {
+    let oscillator = context.createOscillator();
+    oscillator.type = "sine";
+    oscillator.connect(gain);
+    oscillator.frequency.value = freq;
+    oscillator.start(context.currentTime + delay);
+    oscillator.stop(context.currentTime + duration + delay);
+  }
+  function jumpSound() {
+    for (let i = 0; i < 5; i++)
+      play(330 + i * 120, 0 + 0.02 * i, 0.02);
+  }
+
+  // src/objects/Hare.ts
+  var moveStartTime = 0;
+  var currentLocation = [0, 0, 0];
+  var currentRotation = 0;
+  var targetLocation = [0, 1, 0];
+  var targetRotation = 0;
+  function getTargetLocation() {
+    return targetLocation;
+  }
+  var hare;
+  function getHare() {
+    return hare;
+  }
+  function createHare() {
+    hare = object(scene).pos(0, 1, 0);
+    cubeMesh(hare, white).scale(0.8, 0.8, 0.8);
+    cubeMesh(hare, white).scale(0.7, 0.7, 0.7).pos(0, -0.2, 0);
+    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(0.15, 0.6, -0.3);
+    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(-0.15, 0.6, -0.3);
+    cubeMesh(hare, white).scale(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
+    cubeMesh(hare, red).scale(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
+    return hare;
+  }
+  function moveHareAnimation() {
+    let dt = (Date.now() - moveStartTime) / 150;
+    if (dt < 1) {
+      hare.pos(lerp(currentLocation[0], targetLocation[0], dt), lerp(currentLocation[1], targetLocation[1], dt) + 1 - Math.abs(dt - 0.5) * 2, lerp(currentLocation[2], targetLocation[2], dt)).rot(0, angleLerp(currentRotation, targetRotation, dt), 0);
+    } else {
+      moveStartTime = 0;
+      currentLocation = targetLocation;
+      currentRotation = targetRotation;
+      hare.pos(...currentLocation).rot(0, targetRotation, 0);
+    }
+    return false;
+  }
+  function handeRaycast(pt, obj) {
+    if (moveStartTime !== 0)
+      return;
+    let p = obj.object.parent.position;
+    let dx = Math.sign(hare.obj.position.x - p.x);
+    let dz = Math.sign(hare.obj.position.z - p.z);
+    let x = hare.obj.position.x - dx;
+    let z = hare.obj.position.z - dz;
+    let loc = [x, 0, z];
+    let nextCell = getCell(loc);
+    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    targetLocation = [x, y, z];
+    if (dx * dx + dz * dz !== 0)
+      targetRotation = Math.atan2(-dx, -dz);
+    moveStartTime = Date.now();
+    jumpSound();
+    startSplashAnimation();
+    setTimeout(checkHareIsNearSign, 200);
+  }
+  function createSplashEffect(target) {
+    let splash = object(target);
+    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
+    return splash;
+  }
+  function startSplashAnimation() {
+    let p = targetLocation;
+    if (!isWater(getCell(p)))
+      return;
+    let splash = createSplashEffect(scene).pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
+    let splashAnimationStart = Date.now();
+    addAnimation(function() {
+      let dt = (Date.now() - splashAnimationStart) / 500;
+      if (dt < 1) {
+        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
+      } else {
+        splash.remove();
+        return true;
+      }
+    });
   }
 
   // src/signs/Signs.ts
@@ -23849,40 +23767,41 @@
       return ``;
     }
   }
-  function checkHareIsNearSign(targetLocation2, hare2, camera) {
+  function checkHareIsNearSign() {
+    let targetLocation2 = getTargetLocation();
     let baloon = document.querySelector(".balloon");
     baloon.style.display = "none";
     for (let x = -1; x <= 1; x++) {
       for (let z = -1; z <= 1; z++) {
         let cell = getCell([x + targetLocation2[0], targetLocation2[1], z + targetLocation2[2]]);
         if (signs[cell[0]]) {
-          updateBalloon(cell[0], hare2, camera);
+          updateBalloon(cell[0], getHare(), camera2);
           break;
         }
       }
     }
   }
-  function updateBalloon(type, hare2, camera) {
+  function updateBalloon(type, hare2, camera3) {
     let balloon = document.querySelector(".balloon");
     balloon.style.display = "block";
     let widthHalf = innerWidth / 2, heightHalf = innerHeight / 2;
     let pos = new Vector3();
     pos = pos.setFromMatrixPosition(hare2.obj.matrixWorld);
-    pos.project(camera);
+    pos.project(camera3);
     balloon.style.left = -20 + pos.x * widthHalf + widthHalf + "px";
     balloon.style.top = -100 - pos.y * heightHalf + heightHalf + "px";
     let link = document.querySelector("#balloon");
-    let s = signs[type];
-    link.textContent = s.text;
+    let s2 = signs[type];
+    link.textContent = s2.text;
     link.setAttribute("target", "_blank");
-    link.setAttribute("href", s.link);
+    link.setAttribute("href", s2.link);
     balloon.querySelector("path").setAttribute("d", `m5,10
                  a10,10,0,0,1,10,-10
-                 h${s.size[0]}
+                 h${s2.size[0]}
                  a10,10,0,0,1,10,10
-                 v${s.size[1]}
+                 v${s2.size[1]}
                  a10,10,0,0,1,-10,10
-                 h-${s.size[0]}
+                 h-${s2.size[0]}
                  a10,10,0,0,1,-10,-10
                  z`);
   }
@@ -23896,8 +23815,8 @@
   function getCell(pos) {
     return currentMap[pos[2] + 10][pos[0] + 10];
   }
-  function createGround(data, target) {
-    ground = object(target).pos(0, 0, 0);
+  function createGround(data) {
+    ground = object(scene).pos(0, 0, 0);
     ground.possibleToMove = [];
     let cells = {
       W: waterCell,
@@ -23937,6 +23856,173 @@
     return cell[0] === "W";
   }
 
+  // src/Framework.ts
+  var activeAnimations = [];
+  function addAnimation(a) {
+    activeAnimations.push(a);
+  }
+  var planes = clippingPlanes();
+  var cube = new BoxGeometry(1, 1, 1);
+  var renderer = new WebGLRenderer({
+    antialias: true
+  });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.setClearColor(new Color("hsl(34, 50%, 70%)"));
+  renderer.localClippingEnabled = true;
+  document.body.appendChild(renderer.domElement);
+  document.body.style.margin = "0";
+  document.body.style.overflow = "hidden";
+  var s = 10;
+  var camera2 = new OrthographicCamera(-s * aspect2(), s * aspect2(), s, -s, 0.1, 100);
+  camera2.position.set(15, 15, 15);
+  camera2.lookAt(0, 0, 0);
+  requestAnimationFrame(render);
+  addEventListener("resize", onWindowResize);
+  var scene = new Scene();
+  scene.add(lights());
+  function lights(color) {
+    let lightsGroup = new Object3D("lights");
+    lightsGroup.add(new AmbientLight(color, 0.2));
+    let light = new DirectionalLight(color, 0.2);
+    light.position.set(-5, -15, -20);
+    lightsGroup.add(light);
+    light = new DirectionalLight(color, 0.8);
+    light.position.set(5, 15, 20);
+    lightsGroup.add(light);
+    light.castShadow = true;
+    light.shadow.mapSize.width = 4096;
+    light.shadow.mapSize.height = 4096;
+    light.shadow.camera.left = -s;
+    light.shadow.camera.right = s;
+    light.shadow.camera.top = s;
+    light.shadow.camera.bottom = -s;
+    light.shadow.bias = -16e-6;
+    return lightsGroup;
+  }
+  function aspect2() {
+    return innerWidth / innerHeight;
+  }
+  function render(t) {
+    renderer.render(scene, camera2);
+    activeAnimations = activeAnimations.filter((play2) => !play2(t));
+    requestAnimationFrame(render);
+  }
+  function onWindowResize() {
+    camera2.left = -s * aspect2();
+    camera2.right = s * aspect2();
+    camera2.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+    checkHareIsNearSign(getTargetLocation());
+  }
+  function cubeMesh(parent, material) {
+    let mesh = new Mesh(cube, material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    return object(parent).add(mesh);
+  }
+  function object(parent) {
+    let obj = new Object3D();
+    parent && parent.add(obj);
+    let o = {
+      obj,
+      remove: () => parent.remove(obj),
+      add: (child) => obj.add(child) && o,
+      scale: (x, y, z) => xyz(obj.scale, x, y, z) || o,
+      pos: (x, y, z) => xyz(obj.position, x, y, z) || o,
+      rot: (x, y, z) => xyz(obj.rotation, x, y, z) || o
+    };
+    return o;
+  }
+  function xyz(obj, x, y, z) {
+    obj.x = x;
+    obj.y = y;
+    obj.z = z;
+    return false;
+  }
+  function hsl(h, s2, l, clip) {
+    let color = new Color(`hsl(${h || 0}, ${s2 || 50}%, ${l || 50}%)`);
+    return new MeshLambertMaterial({
+      color,
+      clippingPlanes: clip ? planes : [],
+      clipShadows: true
+    });
+  }
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+  function angleLerp(a0, a1, t) {
+    var max = Math.PI * 2;
+    var da = (a1 - a0) % max;
+    return a0 + (2 * da % max - da) * t;
+  }
+  function texture2(svg3) {
+    let img = new Image();
+    let mat = new MeshLambertMaterial();
+    img.src = "data:image/svg+xml;base64," + btoa(svg3);
+    img.onload = () => {
+      let cnv = document.createElement("canvas");
+      cnv.width = img.width;
+      cnv.height = img.height;
+      let ctx = cnv.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      let texture3 = new Texture(cnv);
+      texture3.anisotropy = 32;
+      texture3.needsUpdate = true;
+      mat.needsUpdate = true;
+      mat.map = texture3;
+    };
+    return mat;
+  }
+  function svg2(w, h, html) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}px" height="${h}px">${html}</svg>`;
+  }
+  function raycaster(cb) {
+    let cast = new Raycaster();
+    let mouse = new Vector2();
+    let handle = (e) => {
+      if (e.target.nodeName.toLowerCase() === "path")
+        return;
+      mouse.x = e.clientX / innerWidth * 2 - 1;
+      mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+      cast.setFromCamera(mouse, camera2);
+      let intersects2 = cast.intersectObjects(getGround().possibleToMove, true);
+      intersects2[0] && cb(intersects2[0].point, intersects2[0]);
+    };
+    addEventListener("click", handle);
+    addEventListener("touchstart", (e) => handle(e.touches[0]));
+  }
+  function clippingPlanes() {
+    return [
+      [0, 0, 1],
+      [0, 0, -1],
+      [1, 0, 0],
+      [-1, 0, 0]
+    ].map((el) => new Plane(new Vector3(...el), 10.4));
+  }
+
+  // src/Inventory.ts
+  function inventory() {
+    let items = document.querySelectorAll(".grid div");
+    let el;
+    items.forEach((e) => {
+      e.id = "id_" + Math.random().toString(36).substring(2);
+      e.draggable = true;
+      e.ondragstart = () => {
+        el = e;
+        el.style.transform = "scale(0.5)";
+      };
+      e.ondragend = () => el.style.transform = "scale(1)";
+    });
+    document.querySelectorAll(".grid").forEach((e) => {
+      e.ondragover = (ev) => ev.preventDefault();
+      e.ondrop = (ev) => {
+        e.append(el);
+        console.log("move_to_" + e.id + "/" + el.id);
+      };
+    });
+  }
+
   // src/ground/Map.ts
   function groundData() {
     return `
@@ -23964,24 +24050,12 @@
     `;
   }
 
-  // src/objects/Hare.ts
-  function createHare(target) {
-    let hare2 = object(target).pos(0, 1, 0);
-    cubeMesh(hare2, white).scale(0.8, 0.8, 0.8);
-    cubeMesh(hare2, white).scale(0.7, 0.7, 0.7).pos(0, -0.2, 0);
-    cubeMesh(hare2, white).scale(0.2, 0.6, 0.05).pos(0.15, 0.6, -0.3);
-    cubeMesh(hare2, white).scale(0.2, 0.6, 0.05).pos(-0.15, 0.6, -0.3);
-    cubeMesh(hare2, white).scale(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
-    cubeMesh(hare2, red).scale(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
-    return hare2;
-  }
-
   // src/objects/Clouds.ts
-  function createClouds(target, activeAnimations2) {
-    let allClouds = object(target);
+  function createClouds() {
+    let allClouds = object(scene);
     for (let i = 0; i < 3; i++) {
       let cloud = object(allClouds);
-      activeAnimations2.push((t) => {
+      addAnimation((t) => {
         cloud.pos(i * 6 - 2, 10 - i, (i * 1e4 + t) / (6e4 + i * 1e3) % 1 * 21 - 10);
         return false;
       });
@@ -23991,98 +24065,10 @@
   }
 
   // src/HareAndCarrots.ts
-  var activeAnimations = [moveHareAnimation];
-  var targetLocation = [0, 1, 0];
-  var targetRotation = 0;
-  var currentLocation = [0, 0, 0];
-  var currentRotation = 0;
-  var moveStartTime = 0;
-  var mapLocation = [0, 0];
-  var three = threejs((t) => {
-    activeAnimations = activeAnimations.filter((play) => !play(t));
-  });
-  createGround(groundData(), three.scene);
-  createClouds(three.scene, activeAnimations);
-  var hare = createHare(three.scene);
-  var sound = audio();
+  addAnimation(moveHareAnimation);
+  createGround(groundData());
+  createClouds();
+  createHare();
   raycaster(handeRaycast);
   inventory();
-  function handeRaycast(pt, obj) {
-    if (moveStartTime !== 0)
-      return;
-    let p = obj.object.parent.position;
-    let dx = Math.sign(hare.obj.position.x - p.x);
-    let dz = Math.sign(hare.obj.position.z - p.z);
-    let x = hare.obj.position.x - dx;
-    let z = hare.obj.position.z - dz;
-    let loc = [x, 0, z];
-    let nextCell = getCell(loc);
-    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
-    targetLocation = [x, y, z];
-    if (dx * dx + dz * dz !== 0)
-      targetRotation = Math.atan2(-dx, -dz);
-    moveStartTime = Date.now();
-    sound.jump();
-    startSplashAnimation(targetLocation, targetRotation);
-    setTimeout(() => {
-      nextMap(targetLocation);
-      checkHareIsNearSign(targetLocation, hare, three.camera);
-    }, 200);
-  }
-  function nextMap(p) {
-    let x = Math.abs(p[0]) === 10;
-    let y = Math.abs(p[2]) === 10;
-    x && (mapLocation[1] += Math.sign(p[0]));
-    y && (mapLocation[0] += Math.sign(p[2]));
-    if (x || y) {
-      console.log("next map");
-    }
-  }
-  function moveHareAnimation() {
-    let dt = (Date.now() - moveStartTime) / 150;
-    if (dt < 1) {
-      hare.pos(lerp(currentLocation[0], targetLocation[0], dt), lerp(currentLocation[1], targetLocation[1], dt) + 1 - Math.abs(dt - 0.5) * 2, lerp(currentLocation[2], targetLocation[2], dt)).rot(0, angleLerp(currentRotation, targetRotation, dt), 0);
-    } else {
-      moveStartTime = 0;
-      currentLocation = targetLocation;
-      currentRotation = targetRotation;
-      hare.pos(...currentLocation).rot(0, targetRotation, 0);
-    }
-    return false;
-  }
-  function createSplashEffect() {
-    let splash = object(three.scene);
-    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
-    return splash;
-  }
-  function startSplashAnimation(pos, rot) {
-    if (!isWater(getCell(pos)))
-      return;
-    let splash = createSplashEffect().pos(pos[0], pos[1], pos[2]).rot(0, rot, 0);
-    let splashAnimationStart = Date.now();
-    activeAnimations.push(function() {
-      let dt = (Date.now() - splashAnimationStart) / 500;
-      if (dt < 1) {
-        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(currentLocation[0], 0.6 - Math.abs(dt - 0.5), currentLocation[2]);
-      } else {
-        splash.remove();
-        return true;
-      }
-    });
-  }
-  function raycaster(cb) {
-    let cast = new Raycaster();
-    let mouse = new Vector2();
-    let handle = (e) => {
-      if (e.target.nodeName.toLowerCase() === "path")
-        return;
-      mouse.x = e.clientX / innerWidth * 2 - 1;
-      mouse.y = -(e.clientY / innerHeight) * 2 + 1;
-      cast.setFromCamera(mouse, three.camera);
-      let intersects2 = cast.intersectObjects(getGround().possibleToMove, true);
-      intersects2[0] && cb(intersects2[0].point, intersects2[0]);
-    };
-    addEventListener("click", handle);
-    addEventListener("touchstart", (e) => handle(e.touches[0]));
-  }
 })();

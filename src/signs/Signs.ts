@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import {getCell} from "../ground/Ground";
+import {camera} from "../Framework";
+import {getHare, getTargetLocation} from "../objects/Hare";
 
 export const signs = createSigns();
 
@@ -73,14 +75,15 @@ function createSigns() {
     }
 }
 
-export function checkHareIsNearSign(targetLocation, hare, camera) {
+export function checkHareIsNearSign() {
+    let targetLocation = getTargetLocation();
     let baloon : HTMLElement= document.querySelector('.balloon');
     baloon.style.display = "none"
     for(let x=-1;x<=1;x++){
         for(let z=-1;z<=1;z++) {
             let cell = getCell([x+targetLocation[0],targetLocation[1],z+targetLocation[2]]);
             if (signs[cell[0]]) {
-                updateBalloon(cell[0], hare, camera)
+                updateBalloon(cell[0], getHare(), camera)
                 break
             }
         }

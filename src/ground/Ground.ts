@@ -1,4 +1,4 @@
-import {object} from "../Framework";
+import {object, scene} from "../Framework";
 import {grassCell} from "./cells/grassCell";
 import {waterCell} from "./cells/waterCell";
 import {tree1Cell} from "./cells/tree1Cell";
@@ -20,9 +20,9 @@ export function getCell(pos) {
     return currentMap[pos[2]+10][pos[0]+10];
 }
 
-export function createGround(data, target) {
+export function createGround(data) {
 
-    ground = object(target).pos(0, 0, 0);
+    ground = object(scene).pos(0, 0, 0);
     ground.possibleToMove = [];
 
     let cells = {

@@ -1,20 +1,27 @@
-import {angleLerp, cubeMesh, lerp, object} from "../Framework";
+import {addAnimation, angleLerp, camera, cubeMesh, lerp, object, scene} from "../Framework";
 import {blue1, red, white} from "../Materials";
 import {cellElevetion, getCell, isWater} from "../ground/Ground";
 import {checkHareIsNearSign} from "../signs/Signs";
+import {jumpSound} from "../Audio";
 
 let moveStartTime = 0;
 let currentLocation = [0, 0, 0];
 let currentRotation = 0;
 let targetLocation = [0, 1, 0];
 let targetRotation = 0;
-let mapLocation = [0, 0];
+
+export function getTargetLocation(){
+    return targetLocation
+}
 
 let hare;
 
+export function getHare(){
+    return hare
+}
 
-export function createHare(target) {
-     hare = object(target).pos(0, 1, 0);
+export function createHare() {
+     hare = object(scene).pos(0, 1, 0);
     // body
     cubeMesh(hare, white).scale(0.8, 0.8, 0.8)
     // legs
@@ -67,16 +74,12 @@ export function handeRaycast(pt, obj){
     if (dx*dx + dz*dz !== 0)
         targetRotation = Math.atan2(-dx, -dz);
     moveStartTime = Date.now();
-    sound.jump()
+    jumpSound()
 
-    startSplashAnimation(three.scene, activeAnimations);
+    startSplashAnimation();
 
-    setTimeout(() => {
-        nextMap(targetLocation)
-        checkHareIsNearSign(targetLocation, hare, three.camera)
-    }, 200);
+    setTimeout(checkHareIsNearSign, 200);
 }
-
 
 function createSplashEffect(target) {
     let splash = object(target);
@@ -84,18 +87,20 @@ function createSplashEffect(target) {
     return splash;
 }
 
-export function startSplashAnimation( target, activeAnimations) {
-    if (!isWater(getCell(targetLocation)))
+export function startSplashAnimation( ) {
+    let p = targetLocation;
+    if (!isWater(getCell(p)))
         return;
-    let splash = createSplashEffect(target).pos(targetLocation[0],targetLocation[1],targetLocation[2]).rot(0, targetRotation, 0);
+    let splash = createSplashEffect(scene)
+        .pos(p[0],p[1],p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
-    activeAnimations.push(function(){
+    addAnimation(function(){
         let dt = (Date.now() - splashAnimationStart)/500;
         if (dt < 1) {
             splash.scale(0.8+dt*2, 1, 0.8+dt*2).pos(
-                targetLocation[0],
+                p[0],
                 0.6-Math.abs(dt-0.5),
-                targetLocation[2]
+                p[2]
             );
         } else {
             splash.remove();
