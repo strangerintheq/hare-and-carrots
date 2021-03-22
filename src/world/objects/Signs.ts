@@ -54,17 +54,17 @@ function createSigns() {
 
     function telegramSvg() {
         return `
-<svg xmlns="http://www.w3.org/2000/svg" height="80" width="120" viewBox="0 -30 312 360">
-<defs>
-<linearGradient gradientUnits="userSpaceOnUse" y2="180" y1="40.08" x2="100.08" x1="160.08" id="a">
-<stop stop-color="#37aee2" offset="0"/><stop stop-color="#1e96c8" offset="1"/></linearGradient>
-<linearGradient gradientUnits="userSpaceOnUse" gradientTransform="scale(1.0919 .91583)" y2="174.66" y1="131.039" x2="146.503" x1="123.677" id="b"><stop stop-color="#eff7fc" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient>
-</defs>
-<circle fill="url(#a)" r="120" cy="120" cx="120"/>
-<path d="M98 175c-3.888 0-3.227-1.468-4.568-5.17L82 132.207 170 80" fill="#c8daea"/>
-<path d="M98 175c3 0 4.325-1.372 6-3l16-15.558-19.958-12.035" fill="#a9c9dd"/>
-<path d="M100.04 144.41l48.36 35.729c5.519 3.045 9.501 1.468 10.876-5.123l19.685-92.763c2.015-8.08-3.08-11.746-8.36-9.349l-115.59 44.571c-7.89 3.165-7.843 7.567-1.438 9.528l29.663 9.259 68.673-43.325c3.242-1.966 6.218-.91 3.776 1.258" fill="url(#b)"/>
-</svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height="80" width="120" viewBox="0 -30 312 360">
+                <defs>
+                    <linearGradient gradientUnits="userSpaceOnUse" y2="180" y1="40.08" x2="100.08" x1="160.08" id="a">
+                        <stop stop-color="#37aee2" offset="0"/><stop stop-color="#1e96c8" offset="1"/></linearGradient>
+                    <linearGradient gradientUnits="userSpaceOnUse" gradientTransform="scale(1.0919 .91583)" y2="174.66" y1="131.039" x2="146.503" x1="123.677" id="b"><stop stop-color="#eff7fc" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient>
+                </defs>
+                <circle fill="url(#a)" r="120" cy="120" cx="120"/>
+                <path d="M98 175c-3.888 0-3.227-1.468-4.568-5.17L82 132.207 170 80" fill="#c8daea"/>
+                <path d="M98 175c3 0 4.325-1.372 6-3l16-15.558-19.958-12.035" fill="#a9c9dd"/>
+                <path d="M100.04 144.41l48.36 35.729c5.519 3.045 9.501 1.468 10.876-5.123l19.685-92.763c2.015-8.08-3.08-11.746-8.36-9.349l-115.59 44.571c-7.89 3.165-7.843 7.567-1.438 9.528l29.663 9.259 68.673-43.325c3.242-1.966 6.218-.91 3.776 1.258" fill="url(#b)"/>
+            </svg>
         `;
     }
 
@@ -75,9 +75,9 @@ function createSigns() {
 
 export function checkHareIsNearSign(p) {
     hideBalloon()
-    for(let x=-1;x<=1;x++){
-        for(let z=-1;z<=1;z++) {
-            let cell = getCell([x+p[0],p[1],z+p[2]]);
+    for (let x = -1; x <= 1; x++) {
+        for (let z = -1; z <= 1; z++) {
+            let cell = getCell([x + p[0], p[1], z + p[2]]);
             if (cell && signs[cell[0]]) {
                 let s = signs[cell[0]];
                 showBalloon(s.size, s.text, () => window.open(s.link))

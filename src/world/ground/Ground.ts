@@ -12,11 +12,8 @@ import {keyCell} from "../cells/keyCell";
 import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
 
-let currentMap;
-
-
-
 let mapCursor = restoreMapCursor();
+let currentMap;
 let ground;
 
 export function saveMapData(data?) {
