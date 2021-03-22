@@ -12,6 +12,7 @@
     "esbuild": "^0.9.6"
   },
   "devDependencies": {
+    "simplex-noise": "^2.4.0",
     "three": "^0.126.1"
   }
 }

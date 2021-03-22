@@ -1,5 +1,4 @@
 import {getCell} from "../ground/Ground";
-import { getTargetLocation} from "../objects/Hare";
 import {hideBalloon, showBalloon} from "../Balloon";
 
 export const signs = createSigns();

@@ -144,8 +144,8 @@ export function startSplashAnimation( ) {
 export function mirrorHarePosition(){
 
     if (Math.abs(currentLocation[0]) === 10)
-        targetLocation[0] = currentLocation[0] = - Math.sign(currentLocation[0]) * 10;
+        targetLocation[0] = currentLocation[0] = - Math.sign(currentLocation[0]) * 9;
 
     if (Math.abs(targetLocation[2]) === 10)
-        targetLocation[2] =currentLocation[2] = - Math.sign(currentLocation[2]) * 10;
+        targetLocation[2] = currentLocation[2] = - Math.sign(currentLocation[2]) * 9;
 }

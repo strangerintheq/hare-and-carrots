@@ -95,8 +95,8 @@ export function clearCell(pos){
 
 export function tryChangeMap(pos){
     if (Math.abs(pos[0]) === 10 || Math.abs(pos[2]) === 10) {
-        activeMapCoordinates[0] += (pos[0]/10)|0;
-        activeMapCoordinates[1] += (pos[2]/10)|0;
+        activeMapCoordinates[0] += (pos[2]/10)|0;
+        activeMapCoordinates[1] += (pos[0]/10)|0;
         reCreateGround();
         mirrorHarePosition()
     }
