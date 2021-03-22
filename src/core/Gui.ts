@@ -25,7 +25,7 @@ items.innerHTML = `
 // document.body.append(items)
 
 export function addItem(type){
-    items.querySelector(type)
+    // items.querySelector(type)
 }
 
 

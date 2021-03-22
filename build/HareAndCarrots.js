@@ -24240,7 +24240,6 @@
   var LOCATION_KEY = "hare-location";
   var currentLocation = restoreLocation();
   var targetLocation = [...currentLocation];
-  console.log(currentLocation);
   var moveStartTime = 0;
   var currentRotation = 0;
   var targetRotation = 0;
@@ -24516,12 +24515,14 @@
   function getMapKey(mapCursor2) {
     return MAP_KEY + JSON.stringify(mapCursor2);
   }
-  function getMapData(mapCursor2) {
+  function getMapData(mapCursor2, force = false) {
     const entryLocation = mapCursor2[0] === 0 && mapCursor2[1] === 0;
     const mapKey = getMapKey(mapCursor2);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
       return JSON.parse(savedData);
+    if (!force)
+      return null;
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
@@ -24566,6 +24567,8 @@
   }
   function clearMapSeed() {
     localStorage.removeItem(MAP_SEED_KEY);
+    seed = getSeed();
+    noises = {};
   }
 
   // src/core/MiniMap.ts
@@ -24577,11 +24580,15 @@
   ctx.translate(100, 100);
   ctx.rotate(Math.PI / 4);
   document.body.append(minimap);
-  function fillMiniMap(mapCursor2) {
+  function renderMiniMap(mapCursor2) {
+    ctx.clearRect(-1e5, -1e5, 2e5, 2e5);
     const s2 = 2.2;
     for (let y = -1; y <= 1; y++) {
       for (let x = -1; x <= 1; x++) {
-        let mapData = getMapData([x + mapCursor2[1], y + mapCursor2[0]]);
+        let cur = [x + mapCursor2[0], y + mapCursor2[1]];
+        let mapData = getMapData(cur);
+        if (!mapData)
+          continue;
         mapData.forEach((row, Y) => {
           return row.forEach((cell, X) => {
             ctx.fillStyle = cell[0] === "W" ? "blue" : "green";
@@ -24644,7 +24651,7 @@
     y: signCell(signs.y)
   };
   function reCreateGround() {
-    const data = getMapData(mapCursor);
+    const data = getMapData(mapCursor, true);
     if (ground) {
       ground.obj.parent.remove(ground.obj);
     }
@@ -24667,7 +24674,7 @@
         console.error("error creating row", row);
       }
     });
-    fillMiniMap(mapCursor);
+    renderMiniMap(mapCursor);
   }
   function cellElevation(cell) {
     return +cell[1] / 10;
@@ -24863,7 +24870,6 @@
     </svg>
 `;
   function addItem(type) {
-    items.querySelector(type);
   }
   var restart = document.createElement("div");
   restart.innerHTML = `

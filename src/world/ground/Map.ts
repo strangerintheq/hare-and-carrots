@@ -4,8 +4,8 @@ import {saveMapData} from "./Ground";
 const MAP_SEED_KEY = 'hare-seed';
 const MAP_KEY = 'hare-map-';
 
-const seed = getSeed();
-const noises = {};
+let seed = getSeed();
+let noises = {};
 
 function noise(cellType, x, y) {
     if (!noises[cellType])
@@ -17,12 +17,16 @@ export function getMapKey(mapCursor) {
     return MAP_KEY + JSON.stringify(mapCursor);
 }
 
-export function getMapData(mapCursor) {
+export function getMapData(mapCursor, force = false) {
+    // console.log('getMapData', mapCursor)
     const entryLocation = mapCursor[0] === 0 && mapCursor[1] === 0;
     const mapKey = getMapKey(mapCursor);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
         return JSON.parse(savedData);
+
+    if (!force)
+        return null
 
     let data = [];
     let mapSize = 19;
@@ -79,4 +83,6 @@ function getSeed() {
 
 export function clearMapSeed(){
     localStorage.removeItem(MAP_SEED_KEY)
+    seed = getSeed();
+    noises = {}
 }

@@ -9,7 +9,7 @@ const LOCATION_KEY = 'hare-location';
 
 let currentLocation = restoreLocation();
 let targetLocation = [...currentLocation];
-console.log(currentLocation)
+// console.log(currentLocation)
 let moveStartTime = 0;
 let currentRotation = 0;
 let targetRotation = 0;

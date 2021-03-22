@@ -11,7 +11,7 @@ import {signs} from "../objects/Signs";
 import {keyCell} from "../cells/keyCell";
 import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
-import {fillMiniMap} from "../../core/MiniMap";
+import {renderMiniMap} from "../../core/MiniMap";
 
 const MAPS_INDEX_KEY = 'hare-maps-index';
 const MAP_CURSOR_KEY = 'hare-map-cursor';
@@ -73,7 +73,7 @@ let cells = {
 
 export function reCreateGround() {
 
-    const data = getMapData(mapCursor);
+    const data = getMapData(mapCursor, true);
     if (ground){
         ground.obj.parent.remove(ground.obj)
     }
@@ -99,7 +99,7 @@ export function reCreateGround() {
         }
     });
 
-    fillMiniMap(mapCursor);
+    renderMiniMap(mapCursor);
 }
 
 export function cellElevation(cell) {
