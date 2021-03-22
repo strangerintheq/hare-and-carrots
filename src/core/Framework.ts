@@ -92,7 +92,6 @@ export function object(parent) {
     parent && parent.add(obj);
     let o = {
         obj,
-
         add: child => obj.add(child) && o,
         scale: (x, y, z): any => xyz(obj.scale, x, y, z) || o,
         pos: (x, y, z): any => xyz(obj.position, x, y, z) || o,
@@ -107,10 +106,6 @@ export function xyz(obj, x, y, z): boolean {
     obj.z = z;
     return false
 }
-
-
-
-
 
 export function texture(svg) {
     let img = new Image();
