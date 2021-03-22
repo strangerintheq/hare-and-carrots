@@ -24237,10 +24237,10 @@
   }
 
   // src/world/objects/Hare.ts
+  var currentLocation = restoreLocation();
+  var targetLocation = [...currentLocation];
   var moveStartTime = 0;
-  var currentLocation = [0, 0, 0];
   var currentRotation = 0;
-  var targetLocation = [0, 1, 0];
   var targetRotation = 0;
   function getTargetLocation() {
     return targetLocation;
@@ -24317,6 +24317,7 @@
       checkHareIsNearSign(targetLocation);
       checkForActiveAction(targetLocation);
       tryChangeMap(targetLocation);
+      saveLocation();
     }, 200);
   }
   function createSplashEffect(h) {
@@ -24355,6 +24356,13 @@
   }
   function lerp(a, b, t) {
     return a + (b - a) * t;
+  }
+  function saveLocation() {
+    localStorage.setItem("hare-location", JSON.stringify(currentLocation));
+  }
+  function restoreLocation() {
+    const locationData = localStorage.getItem("hare-location");
+    return locationData ? JSON.parse(locationData) : [0, 0, 0];
   }
 
   // src/core/Balloon.ts
@@ -24512,21 +24520,23 @@
       for (let x = -10; x <= 10; x++) {
         let cx = y + mapCursor2[0] * mapSize;
         let cy = x + mapCursor2[1] * mapSize;
-        row.push(singleCell(cx, cy));
+        row.push(singleCell(cx, cy, x, y));
       }
       data.push(row);
     }
     saveMapData(data);
     return data;
   }
-  function singleCell(cx, cy) {
+  function singleCell(cx, cy, x, y) {
+    let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise("G", cx / 25, cy / 25);
+    let nearWater = cellHeight < 0.2;
     let cellType = "W";
     if (cellHeight > 0) {
       cellType = "G";
-      if (noise("C", cx, cy) > 0.9)
+      if (!onEdge && noise("C", cx, cy) > 0.9)
         cellType = "C";
-      else if (noise("S", cx, cy) > 0.9)
+      else if (!onEdge && noise("S", cx, cy) > 0.9)
         cellType = "S";
       else if (noise("B", cx / 9, cy / 9) > 0.8)
         cellType = "B";
@@ -24547,7 +24557,7 @@
 
   // src/world/ground/Ground.ts
   var currentMap;
-  var mapCursor = [0, 0];
+  var mapCursor = restoreMapCursor();
   var ground;
   function saveMapData(data) {
     const mapKey = getMapKey(mapCursor);
@@ -24629,8 +24639,16 @@
       mapCursor[0] += pos[2] / 10 | 0;
       mapCursor[1] += pos[0] / 10 | 0;
       reCreateGround();
+      saveMapCursor();
       mirrorHarePosition();
     }
+  }
+  function saveMapCursor() {
+    localStorage.setItem("hare-map-cursor", JSON.stringify(mapCursor));
+  }
+  function restoreMapCursor() {
+    const cursorData = localStorage.getItem("hare-map-cursor");
+    return cursorData ? JSON.parse(cursorData) : [0, 0];
   }
 
   // src/core/Framework.ts

@@ -13,7 +13,10 @@ import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
 
 let currentMap;
-let mapCursor = [0,0];
+
+
+
+let mapCursor = restoreMapCursor();
 let ground;
 
 export function saveMapData(data?) {
@@ -111,6 +114,16 @@ export function tryChangeMap(pos){
         mapCursor[0] += (pos[2]/10)|0;
         mapCursor[1] += (pos[0]/10)|0;
         reCreateGround();
+        saveMapCursor();
         mirrorHarePosition()
     }
+}
+
+function saveMapCursor() {
+    localStorage.setItem('hare-map-cursor', JSON.stringify(mapCursor))
+}
+
+function restoreMapCursor() {
+    const cursorData = localStorage.getItem('hare-map-cursor')
+    return cursorData ? JSON.parse(cursorData) : [0,0]
 }

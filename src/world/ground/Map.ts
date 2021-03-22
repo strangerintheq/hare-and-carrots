@@ -28,7 +28,7 @@ export function getMapData(mapCursor) {
         for (let x = -10; x <= 10; x++) {
             let cx = y+mapCursor[0]*mapSize;
             let cy = x+mapCursor[1]*mapSize;
-            row.push(singleCell(cx,cy));
+            row.push(singleCell(cx,cy,x,y));
         }
         data.push(row);
     }
@@ -39,15 +39,16 @@ export function getMapData(mapCursor) {
 }
 
 
-function singleCell(cx, cy) {
-
+function singleCell(cx, cy,x,y) {
+    let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise('G', cx/25, cy/25);
+    let nearWater = cellHeight < 0.2;
     let cellType = 'W';
     if (cellHeight > 0) {
         cellType = 'G'
-        if (noise('C', cx, cy) > 0.9)
+        if (!onEdge && noise('C', cx, cy) > 0.9)
             cellType = 'C'
-        else if (noise('S', cx, cy) > 0.9)
+        else if (!onEdge && noise('S', cx, cy) > 0.9)
             cellType = 'S'
         else if (noise( 'B', cx/9, cy/9) > 0.8)
             cellType = 'B'

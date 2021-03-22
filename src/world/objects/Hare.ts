@@ -5,10 +5,11 @@ import {checkHareIsNearSign} from "./Signs";
 import {jumpSound} from "../../core/Audio";
 import {hideBalloon, showBalloon} from "../../core/Balloon";
 
+let currentLocation = restoreLocation();
+let targetLocation = [...currentLocation];
+
 let moveStartTime = 0;
-let currentLocation = [0, 0, 0];
 let currentRotation = 0;
-let targetLocation = [0, 1, 0];
 let targetRotation = 0;
 
 export function getTargetLocation(){
@@ -113,6 +114,7 @@ export function tryJump(p){
         checkHareIsNearSign(targetLocation);
         checkForActiveAction(targetLocation);
         tryChangeMap(targetLocation);
+        saveLocation();
     }, 200);
 }
 
@@ -162,4 +164,13 @@ function angleLerp(a0,a1,t) {
 
 export function lerp(a, b, t) {
     return a + (b-a)*t
+}
+
+function saveLocation() {
+    localStorage.setItem('hare-location', JSON.stringify(currentLocation))
+}
+
+function restoreLocation() {
+    const locationData = localStorage.getItem('hare-location')
+    return locationData ? JSON.parse(locationData) : [0, 0, 0]
 }
