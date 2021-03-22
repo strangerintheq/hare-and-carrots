@@ -9,12 +9,17 @@ import {bushCell} from "../cells/bushCell";
 import {signCell} from "../cells/signCell";
 import {signs} from "../objects/Signs";
 import {keyCell} from "../cells/keyCell";
-import {getMapData} from "./Map";
+import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
 
 let currentMap;
-let activeMapCoordinates = [0,0];
+let mapCursor = [0,0];
 let ground;
+
+export function saveMapData(data = currentMap){
+    const mapKey = getMapKey(mapCursor);
+    localStorage.setItem(mapKey, JSON.stringify(data))
+}
 
 export function getGround(){
     return ground;
@@ -46,7 +51,7 @@ let cells = {
 
 export function reCreateGround() {
 
-    const data = getMapData(activeMapCoordinates);
+    const data = getMapData(mapCursor);
     if (ground){
         ground.obj.parent.remove(ground.obj)
     }
@@ -86,17 +91,17 @@ export function isWater(cell) {
     return cell[0] === 'W'
 }
 
-
-export function clearCell(pos){
-    let obj = currentMap[pos[2]+10][pos[0]+10][1].obj;
+export function clearCell(x,y) {
+    let cell = currentMap[y+10][x+10];
+    let obj = cell[1].obj;
     obj.parent.remove(obj);
-    currentMap[pos[2]+10][pos[0]+10][0] = 'G0'
+    cell[0] = 'G' + cell[0][1];
 }
 
 export function tryChangeMap(pos){
     if (Math.abs(pos[0]) === 10 || Math.abs(pos[2]) === 10) {
-        activeMapCoordinates[0] += (pos[2]/10)|0;
-        activeMapCoordinates[1] += (pos[0]/10)|0;
+        mapCursor[0] += (pos[2]/10)|0;
+        mapCursor[1] += (pos[0]/10)|0;
         reCreateGround();
         mirrorHarePosition()
     }

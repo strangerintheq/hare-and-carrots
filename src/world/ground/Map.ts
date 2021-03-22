@@ -1,6 +1,10 @@
 import SimplexNoise from 'simplex-noise'
+import {saveMapData} from "./Ground";
 
-const seed = Math.random().toString(36).substring(2);
+let seed = localStorage.getItem('hare-seed');
+if (!seed)
+    seed = Math.random().toString(36).substring(2);
+
 const noises = {};
 
 function noise(cellType, x, y) {
@@ -9,7 +13,17 @@ function noise(cellType, x, y) {
     return noises[cellType].noise2D(x,y)
 }
 
+export function getMapKey(mapCursor) {
+    return 'hare-map-' + JSON.stringify(mapCursor);
+}
+
 export function getMapData(mapCursor) {
+
+    const mapKey = getMapKey(mapCursor);
+    const savedData = localStorage.getItem(mapKey);
+    if (savedData)
+        return JSON.parse(savedData);
+
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
@@ -21,8 +35,12 @@ export function getMapData(mapCursor) {
         }
         data.push(row);
     }
-    return data
+
+    saveMapData(data)
+
+    return data;
 }
+
 
 function singleCell(cx, cy) {
 

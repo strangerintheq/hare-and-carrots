@@ -24281,8 +24281,10 @@
     S: "\u{1F4A9}"
   };
   function doAction() {
+    let p = targetLocation;
     hideBalloon();
-    clearCell(targetLocation);
+    clearCell(p[0], p[2]);
+    saveMapData();
   }
   function checkActiveAction(code) {
     const action = actions[code];
@@ -24488,25 +24490,35 @@
 
   // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
-  var seed = Math.random().toString(36).substring(2);
+  var seed = localStorage.getItem("hare-seed");
+  if (!seed)
+    seed = Math.random().toString(36).substring(2);
   var noises = {};
   function noise(cellType, x, y) {
     if (!noises[cellType])
       noises[cellType] = new import_simplex_noise.default(seed + cellType);
     return noises[cellType].noise2D(x, y);
   }
-  function getMapData(mapCursor) {
+  function getMapKey(mapCursor2) {
+    return "hare-map-" + JSON.stringify(mapCursor2);
+  }
+  function getMapData(mapCursor2) {
+    const mapKey = getMapKey(mapCursor2);
+    const savedData = localStorage.getItem(mapKey);
+    if (savedData)
+      return JSON.parse(savedData);
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
       let row = [];
       for (let x = -10; x <= 10; x++) {
-        let cx = y + mapCursor[0] * mapSize;
-        let cy = x + mapCursor[1] * mapSize;
+        let cx = y + mapCursor2[0] * mapSize;
+        let cy = x + mapCursor2[1] * mapSize;
         row.push(singleCell(cx, cy));
       }
       data.push(row);
     }
+    saveMapData(data);
     return data;
   }
   function singleCell(cx, cy) {
@@ -24529,8 +24541,12 @@
 
   // src/world/ground/Ground.ts
   var currentMap;
-  var activeMapCoordinates = [0, 0];
+  var mapCursor = [0, 0];
   var ground;
+  function saveMapData(data = currentMap) {
+    const mapKey = getMapKey(mapCursor);
+    localStorage.setItem(mapKey, JSON.stringify(data));
+  }
   function getGround() {
     return ground;
   }
@@ -24556,7 +24572,7 @@
     y: signCell(signs.y)
   };
   function reCreateGround() {
-    const data = getMapData(activeMapCoordinates);
+    const data = getMapData(mapCursor);
     if (ground) {
       ground.obj.parent.remove(ground.obj);
     }
@@ -24589,15 +24605,16 @@
   function isWater(cell) {
     return cell[0] === "W";
   }
-  function clearCell(pos) {
-    let obj = currentMap[pos[2] + 10][pos[0] + 10][1].obj;
+  function clearCell(x, y) {
+    let cell = currentMap[y + 10][x + 10];
+    let obj = cell[1].obj;
     obj.parent.remove(obj);
-    currentMap[pos[2] + 10][pos[0] + 10][0] = "G0";
+    cell[0] = "G" + cell[0][1];
   }
   function tryChangeMap(pos) {
     if (Math.abs(pos[0]) === 10 || Math.abs(pos[2]) === 10) {
-      activeMapCoordinates[0] += pos[2] / 10 | 0;
-      activeMapCoordinates[1] += pos[0] / 10 | 0;
+      mapCursor[0] += pos[2] / 10 | 0;
+      mapCursor[1] += pos[0] / 10 | 0;
       reCreateGround();
       mirrorHarePosition();
     }

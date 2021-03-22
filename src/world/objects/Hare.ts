@@ -1,6 +1,6 @@
 import {addAnimation,  cubeMesh, object, scene} from "../../core/Framework";
 import {blueClipped1, blueClipped2, red, white} from "../../core/Materials";
-import {cellElevation, clearCell, getCell, isWater, tryChangeMap} from "../ground/Ground";
+import {cellElevation, clearCell, getCell, isWater, saveMapData, tryChangeMap} from "../ground/Ground";
 import {checkHareIsNearSign} from "./Signs";
 import {jumpSound} from "../../core/Audio";
 import {hideBalloon, showBalloon} from "../../core/Balloon";
@@ -73,8 +73,10 @@ const actions = {
 }
 
 function doAction() {
+    let p = targetLocation;
     hideBalloon();
-    clearCell(targetLocation);
+    clearCell(p[0], p[2]);
+    saveMapData()
 }
 
 function checkActiveAction(code) {
@@ -91,7 +93,6 @@ function jump(p) {
     let z = hare.obj.position.z - dz;
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
-
     let y = cellElevation(nextCell) + (isWater(nextCell) ? -0.1 : 1);
     targetLocation = [x, y, z];
     if (dx * dx + dz * dz !== 0)
