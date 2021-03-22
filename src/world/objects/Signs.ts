@@ -1,5 +1,5 @@
 import {getCell} from "../ground/Ground";
-import {hideBalloon, showBalloon} from "../Balloon";
+import {hideBalloon, showBalloon} from "../../core/Balloon";
 
 export const signs = createSigns();
 

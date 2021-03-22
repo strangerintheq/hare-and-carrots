@@ -1,7 +1,7 @@
-import {cubeMesh, object} from "../../Framework";
-import {getGround} from "../Ground";
+import {cubeMesh, object} from "../../core/Framework";
+import {getGround} from "../ground/Ground";
 import {grassCell} from "./grassCell";
-import {gold, gray} from "../../Materials";
+import {gold} from "../../core/Materials";
 
 export function keyCell(x, y, dy) {
     grassCell(x, y, dy)

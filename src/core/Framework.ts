@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import {getGround} from "./ground/Ground";
-import {checkHareIsNearSign} from "./signs/Signs";
-import {getTargetLocation} from "./objects/Hare";
+import {getGround} from "../world/ground/Ground";
+import {checkHareIsNearSign} from "../world/objects/Signs";
+import {getTargetLocation} from "../world/objects/Hare";
 
 let activeAnimations : Array<(t:number) => boolean> = [];
 
@@ -108,15 +108,9 @@ export function xyz(obj, x, y, z): boolean {
     return false
 }
 
-export function lerp(a, b, t) {
-    return a + (b-a)*t
-}
 
-export function angleLerp(a0,a1,t) {
-    var max = Math.PI*2;
-    var da = (a1 - a0) % max;
-    return a0 + (2*da % max - da)*t;
-}
+
+
 
 export function texture(svg) {
     let img = new Image();

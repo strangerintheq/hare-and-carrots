@@ -1,9 +1,9 @@
-import {addAnimation, angleLerp,  cubeMesh, lerp, object, scene} from "../Framework";
-import {blue1, red, white} from "../Materials";
-import {cellElevetion, clearCell, getCell, isWater, tryChangeMap} from "../ground/Ground";
-import {checkHareIsNearSign} from "../signs/Signs";
-import {jumpSound} from "../Audio";
-import {hideBalloon, showBalloon} from "../Balloon";
+import {addAnimation,  cubeMesh, object, scene} from "../../core/Framework";
+import {blueClipped1, blueClipped2, red, white} from "../../core/Materials";
+import {cellElevation, clearCell, getCell, isWater, tryChangeMap} from "../ground/Ground";
+import {checkHareIsNearSign} from "./Signs";
+import {jumpSound} from "../../core/Audio";
+import {hideBalloon, showBalloon} from "../../core/Balloon";
 
 let moveStartTime = 0;
 let currentLocation = [0, 0, 0];
@@ -92,7 +92,7 @@ function jump(p) {
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
 
-    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    let y = cellElevation(nextCell) + (isWater(nextCell) ? -0.1 : 1);
     targetLocation = [x, y, z];
     if (dx * dx + dz * dz !== 0)
         targetRotation = Math.atan2(-dx, -dz);
@@ -116,17 +116,21 @@ export function tryJump(p){
     }, 200);
 }
 
-function createSplashEffect() {
+function createSplashEffect(h) {
+    let material = h<-3?blueClipped2:blueClipped1;
     let splash = object(scene);
-    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0,-0.2,0)
+    cubeMesh(splash, material)
+        .scale(1.1, 0.1, 1.1)
+        .pos(0,-0.2,0)
     return splash;
 }
 
 export function startSplashAnimation( ) {
     let p = targetLocation;
-    if (!isWater(getCell(p)))
+    let cell = getCell(p);
+    if (!isWater(cell))
         return;
-    let splash = createSplashEffect()
+    let splash = createSplashEffect(+cell[1])
         .pos(p[0],p[1],p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
     addAnimation(function(){
@@ -148,4 +152,14 @@ export function mirrorHarePosition(){
 
     if (Math.abs(targetLocation[2]) === 10)
         targetLocation[2] = currentLocation[2] = - Math.sign(currentLocation[2]) * 9;
+}
+
+function angleLerp(a0,a1,t) {
+    var max = Math.PI*2;
+    var da = (a1 - a0) % max;
+    return a0 + (2*da % max - da)*t;
+}
+
+export function lerp(a, b, t) {
+    return a + (b-a)*t
 }

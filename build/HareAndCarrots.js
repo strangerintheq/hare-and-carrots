@@ -24097,15 +24097,17 @@
     }
   }
 
-  // src/Materials.ts
+  // src/core/Materials.ts
   var planes = clippingPlanes();
   var green = hsl(90, 50, 70);
   var green2 = hsl(90, 50, 60);
   var green3 = hsl(90, 50, 30);
   var white = hsl(0, 0, 100);
   var brown = hsl(33, 50, 50);
-  var blue = hsl(222, 50, 50);
-  var blue1 = hsl(222, 50, 60, true);
+  var blue1 = hsl(222, 50, 50);
+  var blueClipped1 = hsl(222, 50, 60, true);
+  var blue2 = hsl(222, 50, 30);
+  var blueClipped2 = hsl(222, 50, 40, true);
   var gray = hsl(44, 0, 30);
   var gold = hsl(50, 70, 60);
   var red = hsl(0, 100, 50);
@@ -24127,7 +24129,7 @@
     });
   }
 
-  // src/ground/cells/grassCell.ts
+  // src/world/cells/grassCell.ts
   function grassCell(x, y, dy, cantStandOn) {
     let obj = cubeMesh(getGround(), green).scale(1, 0.1, 1).pos(y - 10, 0.45 + dy, x - 10);
     cubeMesh(getGround(), brown).scale(1, 0.8, 1).pos(y - 10, dy, x - 10);
@@ -24135,14 +24137,16 @@
     return obj;
   }
 
-  // src/ground/cells/waterCell.ts
-  function waterCell(x, y) {
-    let obj = cubeMesh(getGround(), blue).scale(1, 0.6, 1).pos(y - 10, -0.1, x - 10);
+  // src/world/cells/waterCell.ts
+  function waterCell(x, y, dy) {
+    console.log(dy);
+    let material = dy > 0.6 ? blue2 : blue1;
+    let obj = cubeMesh(getGround(), material).scale(1, 0.6, 1).pos(y - 10, -0.1, x - 10);
     getGround().possibleToMove.push(obj.obj);
     return obj;
   }
 
-  // src/ground/cells/tree1Cell.ts
+  // src/world/cells/tree1Cell.ts
   function tree1Cell(x, y, dy) {
     grassCell(x, y, dy, true);
     let tree = object(getGround()).pos(y - 10, 1 + dy, x - 10);
@@ -24154,7 +24158,7 @@
     return tree;
   }
 
-  // src/ground/cells/tree2Cell.ts
+  // src/world/cells/tree2Cell.ts
   function tree2Cell(x, y, dy) {
     grassCell(x, y, dy, true);
     let tree = object(getGround()).pos(y - 10, 1 + dy, x - 10);
@@ -24167,7 +24171,7 @@
     return tree;
   }
 
-  // src/ground/cells/stoneCell.ts
+  // src/world/cells/stoneCell.ts
   function stoneCell(x, y, dy) {
     grassCell(x, y, dy);
     let stone = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
@@ -24175,7 +24179,7 @@
     return stone;
   }
 
-  // src/ground/cells/carrotCell.ts
+  // src/world/cells/carrotCell.ts
   function carrotCell(x, y, dy) {
     grassCell(x, y, dy);
     let carrot = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
@@ -24184,7 +24188,7 @@
     return carrot;
   }
 
-  // src/ground/cells/bushCell.ts
+  // src/world/cells/bushCell.ts
   function bushCell(x, y, dy) {
     grassCell(x, y, dy);
     let bush = object(getGround()).pos(y - 10, 1 + dy, x - 10);
@@ -24192,7 +24196,7 @@
     return bush;
   }
 
-  // src/ground/cells/signCell.ts
+  // src/world/cells/signCell.ts
   function signCell(type) {
     return function(x, y, dy) {
       grassCell(x, y, dy);
@@ -24213,7 +24217,7 @@
     };
   }
 
-  // src/Audio.ts
+  // src/core/Audio.ts
   var AudioContext2 = window.AudioContext || window["webkitAudioContext"];
   var context = new AudioContext2();
   context.resume();
@@ -24233,7 +24237,7 @@
       play(330 + i * 120, 0 + 0.02 * i, 0.02);
   }
 
-  // src/objects/Hare.ts
+  // src/world/objects/Hare.ts
   var moveStartTime = 0;
   var currentLocation = [0, 0, 0];
   var currentRotation = 0;
@@ -24294,7 +24298,7 @@
     let z = hare.obj.position.z - dz;
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
-    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    let y = cellElevation(nextCell) + (isWater(nextCell) ? -0.1 : 1);
     targetLocation = [x, y, z];
     if (dx * dx + dz * dz !== 0)
       targetRotation = Math.atan2(-dx, -dz);
@@ -24314,16 +24318,18 @@
       tryChangeMap(targetLocation);
     }, 200);
   }
-  function createSplashEffect() {
+  function createSplashEffect(h) {
+    let material = h < -3 ? blueClipped2 : blueClipped1;
     let splash = object(scene);
-    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
+    cubeMesh(splash, material).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
     return splash;
   }
   function startSplashAnimation() {
     let p = targetLocation;
-    if (!isWater(getCell(p)))
+    let cell = getCell(p);
+    if (!isWater(cell))
       return;
-    let splash = createSplashEffect().pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
+    let splash = createSplashEffect(+cell[1]).pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
     let splashAnimationStart = Date.now();
     addAnimation(function() {
       let dt = (Date.now() - splashAnimationStart) / 500;
@@ -24341,8 +24347,16 @@
     if (Math.abs(targetLocation[2]) === 10)
       targetLocation[2] = currentLocation[2] = -Math.sign(currentLocation[2]) * 9;
   }
+  function angleLerp(a0, a1, t) {
+    var max = Math.PI * 2;
+    var da = (a1 - a0) % max;
+    return a0 + (2 * da % max - da) * t;
+  }
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
 
-  // src/Balloon.ts
+  // src/core/Balloon.ts
   var balloon = document.createElement("div");
   balloon.style.position = "fixed";
   function showBalloon(size, content, action) {
@@ -24383,7 +24397,7 @@
     `;
   }
 
-  // src/signs/Signs.ts
+  // src/world/objects/Signs.ts
   var signs = createSigns();
   function createSigns() {
     return {
@@ -24464,7 +24478,7 @@
     }
   }
 
-  // src/ground/cells/keyCell.ts
+  // src/world/cells/keyCell.ts
   function keyCell(x, y, dy) {
     grassCell(x, y, dy);
     let key = object(getGround()).pos(y - 10, 0.55 + dy, x - 10);
@@ -24473,16 +24487,16 @@
     return key;
   }
 
-  // src/ground/Map.ts
+  // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
-  var seed = "0";
+  var seed = "1";
   var noises = {};
   function noise(cellType, x, y) {
     if (!noises[cellType])
       noises[cellType] = new import_simplex_noise.default(seed + cellType);
     return noises[cellType].noise2D(x, y);
   }
-  function noiseMapData(mapCursor) {
+  function getMapData(mapCursor) {
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
@@ -24497,8 +24511,7 @@
     return data;
   }
   function singleCell(cx, cy) {
-    let groundNoiseScale = 15;
-    let cellHeight = noise("G", cx / groundNoiseScale, cy / groundNoiseScale);
+    let cellHeight = noise("G", cx / 25, cy / 25);
     let cellType = "W";
     if (cellHeight > 0) {
       cellType = "G";
@@ -24506,19 +24519,16 @@
         cellType = "C";
       else if (noise("S", cx, cy) > 0.9)
         cellType = "S";
-      else if (noise("B", cx, cy) > 0.8)
+      else if (noise("B", cx / 9, cy / 9) > 0.8)
         cellType = "B";
-      else if (noise("T", cx, cy) > 0.8)
+      else if (noise("T", cx / 9, cy / 9) > 0.8)
         cellType = noise("t", cx, cy) > 0 ? "T" : "t";
     }
-    let heightValue = cellHeight * 10 | 0;
+    let heightValue = Math.abs(cellHeight * 10) | 0;
     return `${cellType}${heightValue}`;
   }
-  function getMapData(mapCursor) {
-    return noiseMapData(mapCursor);
-  }
 
-  // src/ground/Ground.ts
+  // src/world/ground/Ground.ts
   var currentMap;
   var activeMapCoordinates = [0, 0];
   var ground;
@@ -24560,7 +24570,8 @@
       try {
         return row.map((cell, y) => {
           try {
-            return [cell, cells[cell[0]](x, y, cellElevetion(cell))];
+            let dy = cellElevation(cell);
+            return [cell, cells[cell[0]](x, y, dy)];
           } catch (e) {
             console.error("error creating cell", cell);
           }
@@ -24570,7 +24581,7 @@
       }
     });
   }
-  function cellElevetion(cell) {
+  function cellElevation(cell) {
     return +cell[1] / 5;
   }
   function split(data) {
@@ -24593,7 +24604,7 @@
     }
   }
 
-  // src/Framework.ts
+  // src/core/Framework.ts
   var activeAnimations = [];
   function addAnimation(a) {
     activeAnimations.push(a);
@@ -24676,14 +24687,6 @@
     obj.z = z;
     return false;
   }
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
-  function angleLerp(a0, a1, t) {
-    var max = Math.PI * 2;
-    var da = (a1 - a0) % max;
-    return a0 + (2 * da % max - da) * t;
-  }
   function texture2(svg3) {
     let img = new Image();
     let mat = new MeshLambertMaterial();
@@ -24721,7 +24724,7 @@
     addEventListener("touchstart", (e) => handle(e.touches[0]));
   }
 
-  // src/objects/Clouds.ts
+  // src/world/objects/Clouds.ts
   function createClouds() {
     let allClouds = object(scene);
     for (let i = 0; i < 3; i++) {

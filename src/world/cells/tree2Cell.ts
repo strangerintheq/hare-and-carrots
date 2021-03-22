@@ -1,7 +1,7 @@
-import {cubeMesh, object} from "../../Framework";
-import {getGround} from "../Ground";
+import {cubeMesh, object} from "../../core/Framework";
+import {getGround} from "../ground/Ground";
 import {grassCell} from "./grassCell";
-import {brown, green3} from "../../Materials";
+import {brown, green3} from "../../core/Materials";
 
 export function tree2Cell(x, y, dy) {
     grassCell(x,y,dy,true);

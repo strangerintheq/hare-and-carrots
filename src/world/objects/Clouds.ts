@@ -1,5 +1,5 @@
-import {addAnimation, cubeMesh, object, scene} from "../Framework";
-import {white} from "../Materials";
+import {addAnimation, cubeMesh, object, scene} from "../../core/Framework";
+import {white} from "../../core/Materials";
 
 export function createClouds() {
     let allClouds = object(scene);

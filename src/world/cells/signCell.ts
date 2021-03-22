@@ -1,7 +1,7 @@
-import {cubeMesh, object, svg, texture} from "../../Framework";
-import {getGround} from "../Ground";
+import {cubeMesh, object, svg, texture} from "../../core/Framework";
+import {getGround} from "../ground/Ground";
 import {grassCell} from "./grassCell";
-import {brown} from "../../Materials";
+import {brown} from "../../core/Materials";
 
 export function signCell(type) {
     return function (x, y, dy){

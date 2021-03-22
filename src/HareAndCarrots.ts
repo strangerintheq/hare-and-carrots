@@ -1,7 +1,7 @@
-import {addAnimation, raycaster} from "./Framework";
-import {reCreateGround} from "./ground/Ground";
-import {createHare, moveHareAnimation, tryJump} from "./objects/Hare";
-import {createClouds} from "./objects/Clouds";
+import {addAnimation, raycaster} from "./core/Framework";
+import {reCreateGround} from "./world/ground/Ground";
+import {createHare, moveHareAnimation, tryJump} from "./world/objects/Hare";
+import {createClouds} from "./world/objects/Clouds";
 
 addAnimation(moveHareAnimation);
 reCreateGround();

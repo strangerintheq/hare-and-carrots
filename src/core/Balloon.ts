@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import {getHare} from "./objects/Hare";
+import {getHare} from "../world/objects/Hare";
 import {camera} from "./Framework";
 
 const balloon : HTMLDivElement = document.createElement('div')

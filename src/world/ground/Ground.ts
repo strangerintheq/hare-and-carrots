@@ -1,14 +1,14 @@
-import {object, scene} from "../Framework";
-import {grassCell} from "./cells/grassCell";
-import {waterCell} from "./cells/waterCell";
-import {tree1Cell} from "./cells/tree1Cell";
-import {tree2Cell} from "./cells/tree2Cell";
-import {stoneCell} from "./cells/stoneCell";
-import {carrotCell} from "./cells/carrotCell";
-import {bushCell} from "./cells/bushCell";
-import {signCell} from "./cells/signCell";
-import {signs} from "../signs/Signs";
-import {keyCell} from "./cells/keyCell";
+import {object, scene} from "../../core/Framework";
+import {grassCell} from "../cells/grassCell";
+import {waterCell} from "../cells/waterCell";
+import {tree1Cell} from "../cells/tree1Cell";
+import {tree2Cell} from "../cells/tree2Cell";
+import {stoneCell} from "../cells/stoneCell";
+import {carrotCell} from "../cells/carrotCell";
+import {bushCell} from "../cells/bushCell";
+import {signCell} from "../cells/signCell";
+import {signs} from "../objects/Signs";
+import {keyCell} from "../cells/keyCell";
 import {getMapData} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
 
@@ -47,7 +47,6 @@ let cells = {
 export function reCreateGround() {
 
     const data = getMapData(activeMapCoordinates);
-    // console.log('create ground',data)
     if (ground){
         ground.obj.parent.remove(ground.obj)
     }
@@ -62,7 +61,8 @@ export function reCreateGround() {
         try {
             return row.map((cell, y) => {
                 try {
-                    return [cell, cells[cell[0]](x, y, cellElevetion(cell))]
+                    let dy = cellElevation(cell);
+                    return [cell, cells[cell[0]](x, y, dy)]
                 } catch (e) {
                     console.error('error creating cell', cell)
                 }
@@ -73,7 +73,7 @@ export function reCreateGround() {
     });
 }
 
-export function cellElevetion(cell) {
+export function cellElevation(cell) {
     return +cell[1]/5
 }
 
