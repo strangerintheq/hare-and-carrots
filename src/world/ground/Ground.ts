@@ -19,7 +19,7 @@ let ground;
 export function saveMapData(data?){
     const mapKey = getMapKey(mapCursor);
     if (!data)
-        data = data.map(row => row.map(cell => cell[0]))
+        data = currentMap.map(row => row.map(cell => cell[0]))
     localStorage.setItem(mapKey, JSON.stringify(data))
 }
 
