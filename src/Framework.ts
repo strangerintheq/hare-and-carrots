@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import {getGround} from "./ground/Ground";
 import {checkHareIsNearSign} from "./signs/Signs";
+import {getTargetLocation} from "./objects/Hare";
 
 let activeAnimations : Array<(t:number) => boolean> = [];
 
@@ -76,7 +77,7 @@ function onWindowResize() {
     camera.right = s*aspect();
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    checkHareIsNearSign()
+    checkHareIsNearSign(getTargetLocation())
 }
 
 export function cubeMesh (parent, material) {
@@ -91,6 +92,7 @@ export function object(parent) {
     parent && parent.add(obj);
     let o = {
         obj,
+
         add: child => obj.add(child) && o,
         scale: (x, y, z): any => xyz(obj.scale, x, y, z) || o,
         pos: (x, y, z): any => xyz(obj.position, x, y, z) || o,

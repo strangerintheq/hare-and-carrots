@@ -1,11 +1,10 @@
 import {addAnimation, raycaster} from "./Framework";
-import {createGround} from "./ground/Ground";
-import {groundData} from "./ground/Map";
+import {reCreateGround} from "./ground/Ground";
 import {createHare, moveHareAnimation, tryJump} from "./objects/Hare";
 import {createClouds} from "./objects/Clouds";
 
 addAnimation(moveHareAnimation);
-createGround(groundData());
+reCreateGround();
 createClouds();
 createHare();
 raycaster((pt, obj) => {

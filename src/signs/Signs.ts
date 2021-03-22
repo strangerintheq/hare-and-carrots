@@ -74,13 +74,12 @@ function createSigns() {
     }
 }
 
-export function checkHareIsNearSign() {
-    let targetLocation = getTargetLocation();
+export function checkHareIsNearSign(p) {
     hideBalloon()
     for(let x=-1;x<=1;x++){
         for(let z=-1;z<=1;z++) {
-            let cell = getCell([x+targetLocation[0],targetLocation[1],z+targetLocation[2]]);
-            if (signs[cell[0]]) {
+            let cell = getCell([x+p[0],p[1],z+p[2]]);
+            if (cell && signs[cell[0]]) {
                 let s = signs[cell[0]];
                 showBalloon(s.size, s.text, () => window.open(s.link))
                 break

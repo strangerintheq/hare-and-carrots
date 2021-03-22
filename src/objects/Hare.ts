@@ -1,6 +1,6 @@
 import {addAnimation, angleLerp,  cubeMesh, lerp, object, scene} from "../Framework";
 import {blue1, red, white} from "../Materials";
-import {cellElevetion, clearCell, getCell, isWater} from "../ground/Ground";
+import {cellElevetion, clearCell, getCell, isWater, tryChangeMap} from "../ground/Ground";
 import {checkHareIsNearSign} from "../signs/Signs";
 import {jumpSound} from "../Audio";
 import {hideBalloon, showBalloon} from "../Balloon";
@@ -59,10 +59,10 @@ export function moveHareAnimation(): boolean {
     return false;
 }
 
-function checkForActiveAction() {
-    let p = getTargetLocation();
+function checkForActiveAction(p) {
+
     let cell = getCell([p[0],p[1],p[2]]);
-        checkActiveAction(cell[0])
+    checkActiveAction(cell[0])
 
 }
 
@@ -84,29 +84,35 @@ function checkActiveAction(code) {
     showBalloon([20, 20], action, () => doAction())
 }
 
-export function tryJump(p){
-    if (moveStartTime !== 0)
-        return
-
+function jump(p) {
     let dx = Math.sign(hare.obj.position.x - p.x);
     let dz = Math.sign(hare.obj.position.z - p.z);
     let x = hare.obj.position.x - dx;
     let z = hare.obj.position.z - dz;
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
-    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
 
+    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
     targetLocation = [x, y, z];
-    if (dx*dx + dz*dz !== 0)
+    if (dx * dx + dz * dz !== 0)
         targetRotation = Math.atan2(-dx, -dz);
     moveStartTime = Date.now();
+}
+
+export function tryJump(p){
+    if (moveStartTime !== 0)
+        return
+    jump(p);
     jumpSound()
 
-    startSplashAnimation();
+    setTimeout(() => {
+        startSplashAnimation();
+    }, 50)
 
-    setTimeout(()=>{
-        checkHareIsNearSign();
-        checkForActiveAction()
+    setTimeout(() => {
+        checkHareIsNearSign(targetLocation);
+        checkForActiveAction(targetLocation);
+        tryChangeMap(targetLocation);
     }, 200);
 }
 
@@ -126,14 +132,20 @@ export function startSplashAnimation( ) {
     addAnimation(function(){
         let dt = (Date.now() - splashAnimationStart)/500;
         if (dt < 1) {
-            splash.scale(0.8+dt*2, 1, 0.8+dt*2).pos(
-                p[0],
-                0.6-Math.abs(dt-0.5),
-                p[2]
-            );
+            splash.scale(0.8+dt*2, 1, 0.8+dt*2)
+                .pos(p[0], 0.6-Math.abs(dt-0.5), p[2]);
         } else {
-            splash.obj.parent.remove(splash);
+            splash.obj.parent.remove(splash.obj);
             return true
         }
     })
+}
+
+export function mirrorHarePosition(){
+
+    if (Math.abs(currentLocation[0]) === 10)
+        targetLocation[0] = currentLocation[0] = - Math.sign(currentLocation[0]) * 10;
+
+    if (Math.abs(targetLocation[2]) === 10)
+        targetLocation[2] =currentLocation[2] = - Math.sign(currentLocation[2]) * 10;
 }

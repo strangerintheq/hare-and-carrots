@@ -2451,30 +2451,30 @@
       this.clampPoint(sphere.center, _vector$1);
       return _vector$1.distanceToSquared(sphere.center) <= sphere.radius * sphere.radius;
     }
-    intersectsPlane(plane) {
+    intersectsPlane(plane2) {
       let min, max;
-      if (plane.normal.x > 0) {
-        min = plane.normal.x * this.min.x;
-        max = plane.normal.x * this.max.x;
+      if (plane2.normal.x > 0) {
+        min = plane2.normal.x * this.min.x;
+        max = plane2.normal.x * this.max.x;
       } else {
-        min = plane.normal.x * this.max.x;
-        max = plane.normal.x * this.min.x;
+        min = plane2.normal.x * this.max.x;
+        max = plane2.normal.x * this.min.x;
       }
-      if (plane.normal.y > 0) {
-        min += plane.normal.y * this.min.y;
-        max += plane.normal.y * this.max.y;
+      if (plane2.normal.y > 0) {
+        min += plane2.normal.y * this.min.y;
+        max += plane2.normal.y * this.max.y;
       } else {
-        min += plane.normal.y * this.max.y;
-        max += plane.normal.y * this.min.y;
+        min += plane2.normal.y * this.max.y;
+        max += plane2.normal.y * this.min.y;
       }
-      if (plane.normal.z > 0) {
-        min += plane.normal.z * this.min.z;
-        max += plane.normal.z * this.max.z;
+      if (plane2.normal.z > 0) {
+        min += plane2.normal.z * this.min.z;
+        max += plane2.normal.z * this.max.z;
       } else {
-        min += plane.normal.z * this.max.z;
-        max += plane.normal.z * this.min.z;
+        min += plane2.normal.z * this.max.z;
+        max += plane2.normal.z * this.min.z;
       }
-      return min <= -plane.constant && max >= -plane.constant;
+      return min <= -plane2.constant && max >= -plane2.constant;
     }
     intersectsTriangle(triangle) {
       if (this.isEmpty()) {
@@ -2669,8 +2669,8 @@
     intersectsBox(box) {
       return box.intersectsSphere(this);
     }
-    intersectsPlane(plane) {
-      return Math.abs(plane.distanceToPoint(this.center)) <= this.radius;
+    intersectsPlane(plane2) {
+      return Math.abs(plane2.distanceToPoint(this.center)) <= this.radius;
     }
     clampPoint(point, target) {
       const deltaLengthSq = this.center.distanceToSquared(point);
@@ -2853,30 +2853,30 @@
     intersectsSphere(sphere) {
       return this.distanceSqToPoint(sphere.center) <= sphere.radius * sphere.radius;
     }
-    distanceToPlane(plane) {
-      const denominator = plane.normal.dot(this.direction);
+    distanceToPlane(plane2) {
+      const denominator = plane2.normal.dot(this.direction);
       if (denominator === 0) {
-        if (plane.distanceToPoint(this.origin) === 0) {
+        if (plane2.distanceToPoint(this.origin) === 0) {
           return 0;
         }
         return null;
       }
-      const t = -(this.origin.dot(plane.normal) + plane.constant) / denominator;
+      const t = -(this.origin.dot(plane2.normal) + plane2.constant) / denominator;
       return t >= 0 ? t : null;
     }
-    intersectPlane(plane, target) {
-      const t = this.distanceToPlane(plane);
+    intersectPlane(plane2, target) {
+      const t = this.distanceToPlane(plane2);
       if (t === null) {
         return null;
       }
       return this.at(t, target);
     }
-    intersectsPlane(plane) {
-      const distToPoint = plane.distanceToPoint(this.origin);
+    intersectsPlane(plane2) {
+      const distToPoint = plane2.distanceToPoint(this.origin);
       if (distToPoint === 0) {
         return true;
       }
-      const denominator = plane.normal.dot(this.direction);
+      const denominator = plane2.normal.dot(this.direction);
       if (denominator * distToPoint < 0) {
         return true;
       }
@@ -4289,9 +4289,9 @@
       this.setFromNormalAndCoplanarPoint(normal, a);
       return this;
     }
-    copy(plane) {
-      this.normal.copy(plane.normal);
-      this.constant = plane.constant;
+    copy(plane2) {
+      this.normal.copy(plane2.normal);
+      this.constant = plane2.constant;
       return this;
     }
     normalize() {
@@ -4366,8 +4366,8 @@
       this.constant -= offset.dot(this.normal);
       return this;
     }
-    equals(plane) {
-      return plane.normal.equals(this.normal) && plane.constant === this.constant;
+    equals(plane2) {
+      return plane2.normal.equals(this.normal) && plane2.constant === this.constant;
     }
     clone() {
       return new this.constructor().copy(this);
@@ -7153,11 +7153,11 @@
     intersectsBox(box) {
       const planes2 = this.planes;
       for (let i = 0; i < 6; i++) {
-        const plane = planes2[i];
-        _vector$5.x = plane.normal.x > 0 ? box.max.x : box.min.x;
-        _vector$5.y = plane.normal.y > 0 ? box.max.y : box.min.y;
-        _vector$5.z = plane.normal.z > 0 ? box.max.z : box.min.z;
-        if (plane.distanceToPoint(_vector$5) < 0) {
+        const plane2 = planes2[i];
+        _vector$5.x = plane2.normal.x > 0 ? box.max.x : box.min.x;
+        _vector$5.y = plane2.normal.y > 0 ? box.max.y : box.min.y;
+        _vector$5.z = plane2.normal.z > 0 ? box.max.z : box.min.z;
+        if (plane2.distanceToPoint(_vector$5) < 0) {
           return false;
         }
       }
@@ -8538,7 +8538,7 @@
   function WebGLClipping(properties) {
     const scope = this;
     let globalState = null, numGlobalPlanes = 0, localClippingEnabled = false, renderingShadows = false;
-    const plane = new Plane(), viewNormalMatrix = new Matrix3(), uniform = {value: null, needsUpdate: false};
+    const plane2 = new Plane(), viewNormalMatrix = new Matrix3(), uniform = {value: null, needsUpdate: false};
     this.uniform = uniform;
     this.numPlanes = 0;
     this.numIntersection = 0;
@@ -8599,9 +8599,9 @@
             dstArray = new Float32Array(flatSize);
           }
           for (let i = 0, i4 = dstOffset; i !== nPlanes; ++i, i4 += 4) {
-            plane.copy(planes2[i]).applyMatrix4(viewMatrix, viewNormalMatrix);
-            plane.normal.toArray(dstArray, i4);
-            dstArray[i4 + 3] = plane.constant;
+            plane2.copy(planes2[i]).applyMatrix4(viewMatrix, viewNormalMatrix);
+            plane2.normal.toArray(dstArray, i4);
+            dstArray[i4 + 3] = plane2.constant;
           }
         }
         uniform.value = dstArray;
@@ -22660,9 +22660,9 @@
     console.warn("THREE.Ray: .isIntersectionBox() has been renamed to .intersectsBox().");
     return this.intersectsBox(box);
   };
-  Ray.prototype.isIntersectionPlane = function(plane) {
+  Ray.prototype.isIntersectionPlane = function(plane2) {
     console.warn("THREE.Ray: .isIntersectionPlane() has been renamed to .intersectsPlane().");
-    return this.intersectsPlane(plane);
+    return this.intersectsPlane(plane2);
   };
   Ray.prototype.isIntersectionSphere = function(sphere) {
     console.warn("THREE.Ray: .isIntersectionSphere() has been renamed to .intersectsSphere().");
@@ -23650,6 +23650,115 @@
       play(330 + i * 120, 0 + 0.02 * i, 0.02);
   }
 
+  // src/objects/Hare.ts
+  var moveStartTime = 0;
+  var currentLocation = [0, 0, 0];
+  var currentRotation = 0;
+  var targetLocation = [0, 1, 0];
+  var targetRotation = 0;
+  function getTargetLocation() {
+    return targetLocation;
+  }
+  var hare;
+  function getHare() {
+    return hare;
+  }
+  function createHare() {
+    hare = object(scene).pos(0, 1, 0);
+    cubeMesh(hare, white).scale(0.8, 0.8, 0.8);
+    cubeMesh(hare, white).scale(0.7, 0.7, 0.7).pos(0, -0.2, 0);
+    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(0.15, 0.6, -0.3);
+    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(-0.15, 0.6, -0.3);
+    cubeMesh(hare, white).scale(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
+    cubeMesh(hare, red).scale(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
+    return hare;
+  }
+  function moveHareAnimation() {
+    let dt = (Date.now() - moveStartTime) / 150;
+    if (dt < 1) {
+      hare.pos(lerp(currentLocation[0], targetLocation[0], dt), lerp(currentLocation[1], targetLocation[1], dt) + 1 - Math.abs(dt - 0.5) * 2, lerp(currentLocation[2], targetLocation[2], dt)).rot(0, angleLerp(currentRotation, targetRotation, dt), 0);
+    } else {
+      moveStartTime = 0;
+      currentLocation = targetLocation;
+      currentRotation = targetRotation;
+      hare.pos(...currentLocation).rot(0, targetRotation, 0);
+    }
+    return false;
+  }
+  function checkForActiveAction(p) {
+    let cell = getCell([p[0], p[1], p[2]]);
+    checkActiveAction(cell[0]);
+  }
+  var actions = {
+    C: "\u{1F955}",
+    K: "\u{1F511}",
+    S: "\u{1F4A9}"
+  };
+  function doAction() {
+    hideBalloon();
+    clearCell(targetLocation);
+  }
+  function checkActiveAction(code) {
+    const action = actions[code];
+    if (!action)
+      return;
+    showBalloon([20, 20], action, () => doAction());
+  }
+  function jump(p) {
+    let dx = Math.sign(hare.obj.position.x - p.x);
+    let dz = Math.sign(hare.obj.position.z - p.z);
+    let x = hare.obj.position.x - dx;
+    let z = hare.obj.position.z - dz;
+    let loc = [x, 0, z];
+    let nextCell = getCell(loc);
+    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    targetLocation = [x, y, z];
+    if (dx * dx + dz * dz !== 0)
+      targetRotation = Math.atan2(-dx, -dz);
+    moveStartTime = Date.now();
+  }
+  function tryJump(p) {
+    if (moveStartTime !== 0)
+      return;
+    jump(p);
+    jumpSound();
+    setTimeout(() => {
+      startSplashAnimation();
+    }, 50);
+    setTimeout(() => {
+      checkHareIsNearSign(targetLocation);
+      checkForActiveAction(targetLocation);
+      tryChangeMap(targetLocation);
+    }, 200);
+  }
+  function createSplashEffect() {
+    let splash = object(scene);
+    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
+    return splash;
+  }
+  function startSplashAnimation() {
+    let p = targetLocation;
+    if (!isWater(getCell(p)))
+      return;
+    let splash = createSplashEffect().pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
+    let splashAnimationStart = Date.now();
+    addAnimation(function() {
+      let dt = (Date.now() - splashAnimationStart) / 500;
+      if (dt < 1) {
+        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
+      } else {
+        splash.obj.parent.remove(splash.obj);
+        return true;
+      }
+    });
+  }
+  function mirrorHarePosition() {
+    if (Math.abs(currentLocation[0]) === 10)
+      targetLocation[0] = currentLocation[0] = -Math.sign(currentLocation[0]) * 10;
+    if (Math.abs(targetLocation[2]) === 10)
+      targetLocation[2] = currentLocation[2] = -Math.sign(currentLocation[2]) * 10;
+  }
+
   // src/Balloon.ts
   var balloon = document.createElement("div");
   balloon.style.position = "fixed";
@@ -23689,104 +23798,6 @@
             </g>
         </svg>
     `;
-  }
-
-  // src/objects/Hare.ts
-  var moveStartTime = 0;
-  var currentLocation = [0, 0, 0];
-  var currentRotation = 0;
-  var targetLocation = [0, 1, 0];
-  var targetRotation = 0;
-  function getTargetLocation() {
-    return targetLocation;
-  }
-  var hare;
-  function getHare() {
-    return hare;
-  }
-  function createHare() {
-    hare = object(scene).pos(0, 1, 0);
-    cubeMesh(hare, white).scale(0.8, 0.8, 0.8);
-    cubeMesh(hare, white).scale(0.7, 0.7, 0.7).pos(0, -0.2, 0);
-    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(0.15, 0.6, -0.3);
-    cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(-0.15, 0.6, -0.3);
-    cubeMesh(hare, white).scale(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
-    cubeMesh(hare, red).scale(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
-    return hare;
-  }
-  function moveHareAnimation() {
-    let dt = (Date.now() - moveStartTime) / 150;
-    if (dt < 1) {
-      hare.pos(lerp(currentLocation[0], targetLocation[0], dt), lerp(currentLocation[1], targetLocation[1], dt) + 1 - Math.abs(dt - 0.5) * 2, lerp(currentLocation[2], targetLocation[2], dt)).rot(0, angleLerp(currentRotation, targetRotation, dt), 0);
-    } else {
-      moveStartTime = 0;
-      currentLocation = targetLocation;
-      currentRotation = targetRotation;
-      hare.pos(...currentLocation).rot(0, targetRotation, 0);
-    }
-    return false;
-  }
-  function checkForActiveAction() {
-    let p = getTargetLocation();
-    let cell = getCell([p[0], p[1], p[2]]);
-    checkActiveAction(cell[0]);
-  }
-  var actions = {
-    C: "\u{1F955}",
-    K: "\u{1F511}",
-    S: "\u{1F4A9}"
-  };
-  function doAction() {
-    hideBalloon();
-    clearCell(targetLocation);
-  }
-  function checkActiveAction(code) {
-    const action = actions[code];
-    if (!action)
-      return;
-    showBalloon([20, 20], action, () => doAction());
-  }
-  function tryJump(p) {
-    if (moveStartTime !== 0)
-      return;
-    let dx = Math.sign(hare.obj.position.x - p.x);
-    let dz = Math.sign(hare.obj.position.z - p.z);
-    let x = hare.obj.position.x - dx;
-    let z = hare.obj.position.z - dz;
-    let loc = [x, 0, z];
-    let nextCell = getCell(loc);
-    let y = cellElevetion(nextCell) + (isWater(nextCell) ? -0.1 : 1);
-    targetLocation = [x, y, z];
-    if (dx * dx + dz * dz !== 0)
-      targetRotation = Math.atan2(-dx, -dz);
-    moveStartTime = Date.now();
-    jumpSound();
-    startSplashAnimation();
-    setTimeout(() => {
-      checkHareIsNearSign();
-      checkForActiveAction();
-    }, 200);
-  }
-  function createSplashEffect() {
-    let splash = object(scene);
-    cubeMesh(splash, blue1).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
-    return splash;
-  }
-  function startSplashAnimation() {
-    let p = targetLocation;
-    if (!isWater(getCell(p)))
-      return;
-    let splash = createSplashEffect().pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
-    let splashAnimationStart = Date.now();
-    addAnimation(function() {
-      let dt = (Date.now() - splashAnimationStart) / 500;
-      if (dt < 1) {
-        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
-      } else {
-        splash.obj.parent.remove(splash);
-        return true;
-      }
-    });
   }
 
   // src/signs/Signs.ts
@@ -23856,13 +23867,12 @@
       return ``;
     }
   }
-  function checkHareIsNearSign() {
-    let targetLocation2 = getTargetLocation();
+  function checkHareIsNearSign(p) {
     hideBalloon();
     for (let x = -1; x <= 1; x++) {
       for (let z = -1; z <= 1; z++) {
-        let cell = getCell([x + targetLocation2[0], targetLocation2[1], z + targetLocation2[2]]);
-        if (signs[cell[0]]) {
+        let cell = getCell([x + p[0], p[1], z + p[2]]);
+        if (cell && signs[cell[0]]) {
           let s2 = signs[cell[0]];
           showBalloon(s2.size, s2.text, () => window.open(s2.link));
           break;
@@ -23880,32 +23890,111 @@
     return key;
   }
 
+  // src/ground/Map.ts
+  var maps = [
+    [ocean, plane, ocean],
+    [ocean, startingLocation, startingLocation1],
+    [ocean, ocean, ocean]
+  ];
+  function getMapData(mapCursor) {
+    return maps[mapCursor[1] + 1][mapCursor[0] + 1]();
+  }
+  function startingLocation() {
+    return `
+        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
+        G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
+        G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
+        G0 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G1 G2
+        G0 G1 T2 G1 G0 G0 G0 G0 c0 G0 G0 G0 G0 G0 B0 B1 G0 G0 G0 G1 G1
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G1 G1 T1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 T0 G0 G0 S0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G2 G3 G2 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
+        G1 G1 G1 G1 G0 G0 G0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G1 G1 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G1 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 K0 G0 G0 W0 W2
+        G0 G0 G0 G0 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W0 W0
+        W0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 C1 G0 G0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 G0 G0 G0 G0 G0 G0 G0 G1 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 C0 G0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+    `;
+  }
+  function startingLocation1() {
+    return `
+        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
+        G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
+        G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
+        G0 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G1 G2
+        G0 G1 T2 G1 G0 G0 G0 G0 c0 G0 G0 G0 G0 G0 B0 B1 G0 G0 G0 G1 G1
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G1 G1 T1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 T0 G0 G0 S0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G2 G3 G2 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
+        G1 G1 G1 G1 G0 G0 G0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G1 G1 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G1 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 K0 G0 G0 W0 W2
+        G0 G0 G0 G0 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W0 W0
+        W0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 C1 G0 G0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 G0 G0 G0 G0 G0 G0 G0 G1 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 C0 G0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+    `;
+  }
+  function ocean() {
+    return [...Array(21)].map(() => {
+      return [...Array(21)].map(() => "W0").join(" ");
+    }).join("\n");
+  }
+  function plane() {
+    return [...Array(21)].map(() => {
+      return [...Array(21)].map(() => "G0").join(" ");
+    }).join("\n");
+  }
+
   // src/ground/Ground.ts
   var currentMap;
+  var activeMapCoordinates = [0, 0];
   var ground;
   function getGround() {
     return ground;
   }
   function getCell(pos) {
-    return currentMap[pos[2] + 10][pos[0] + 10][0];
+    try {
+      return currentMap[pos[2] + 10][pos[0] + 10][0];
+    } catch (e) {
+      return void 0;
+    }
   }
-  function createGround(data) {
-    ground = object(scene).pos(0, 0, 0);
+  var cells = {
+    W: waterCell,
+    G: grassCell,
+    T: tree1Cell,
+    t: tree2Cell,
+    S: stoneCell,
+    C: carrotCell,
+    B: bushCell,
+    K: keyCell,
+    s: signCell(signs.s),
+    c: signCell(signs.c),
+    g: signCell(signs.g),
+    y: signCell(signs.y)
+  };
+  function reCreateGround() {
+    const data = getMapData(activeMapCoordinates);
+    if (ground) {
+      ground.obj.parent.remove(ground.obj);
+    }
+    ground = object(scene);
     ground.possibleToMove = [];
-    let cells = {
-      W: waterCell,
-      G: grassCell,
-      T: tree1Cell,
-      t: tree2Cell,
-      S: stoneCell,
-      C: carrotCell,
-      B: bushCell,
-      K: keyCell,
-      s: signCell(signs.s),
-      c: signCell(signs.c),
-      g: signCell(signs.g),
-      y: signCell(signs.y)
-    };
     currentMap = data;
     if (!Array.isArray(data))
       currentMap = split(currentMap);
@@ -23915,9 +24004,11 @@
           try {
             return [cell, cells[cell[0]](x, y, cellElevetion(cell))];
           } catch (e) {
+            console.error("error creating cell", cell);
           }
         });
       } catch (e) {
+        console.error("error creating row", row);
       }
     });
   }
@@ -23934,6 +24025,14 @@
     let obj = currentMap[pos[2] + 10][pos[0] + 10][1].obj;
     obj.parent.remove(obj);
     currentMap[pos[2] + 10][pos[0] + 10][0] = "G0";
+  }
+  function tryChangeMap(pos) {
+    if (Math.abs(pos[0]) === 10 || Math.abs(pos[2]) === 10) {
+      activeMapCoordinates[0] += pos[0] / 10 | 0;
+      activeMapCoordinates[1] += pos[2] / 10 | 0;
+      reCreateGround();
+      mirrorHarePosition();
+    }
   }
 
   // src/Framework.ts
@@ -23993,7 +24092,7 @@
     camera.right = s * aspect2();
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    checkHareIsNearSign();
+    checkHareIsNearSign(getTargetLocation());
   }
   function cubeMesh(parent, material) {
     let mesh = new Mesh(cube, material);
@@ -24064,33 +24163,6 @@
     addEventListener("touchstart", (e) => handle(e.touches[0]));
   }
 
-  // src/ground/Map.ts
-  function groundData() {
-    return `
-        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
-        G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
-        G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
-        G0 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G1 G2
-        G0 G1 T2 G1 G0 G0 G0 G0 c0 G0 G0 G0 G0 G0 B0 B1 G0 G0 G0 G1 G1
-        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 G0 G0 G1 G1 T1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 T0 G0 G0 S0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 G0 G0 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G0 G0 G0 G0 G0 G0 G0 G2 G3 G2 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
-        G1 G1 G1 G1 G0 G0 G0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G2 G2 G2 G1 G1 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
-        G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
-        G1 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0
-        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 K0 G0 G0 W0 W2
-        G0 G0 G0 G0 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W0 W0
-        W0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 C1 G0 G0 W0 W0 W0 W0 W0 W0
-        W0 W0 W0 G0 G0 G0 G0 G0 G0 G0 G1 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
-        W0 W0 W0 W0 C0 G0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
-        W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
-    `;
-  }
-
   // src/objects/Clouds.ts
   function createClouds() {
     let allClouds = object(scene);
@@ -24107,7 +24179,7 @@
 
   // src/HareAndCarrots.ts
   addAnimation(moveHareAnimation);
-  createGround(groundData());
+  reCreateGround();
   createClouds();
   createHare();
   raycaster((pt, obj) => {

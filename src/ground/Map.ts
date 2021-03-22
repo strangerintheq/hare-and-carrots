@@ -1,4 +1,15 @@
-export function groundData() {
+const maps = [
+    [ocean, plane, ocean],
+    [ocean, startingLocation, startingLocation1],
+    [ocean, ocean, ocean],
+]
+
+
+export function getMapData(mapCursor){
+    return maps[mapCursor[1]+1][mapCursor[0]+1]()
+}
+
+function startingLocation() {
     return `
         G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
         G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
@@ -24,7 +35,34 @@ export function groundData() {
     `;
 }
 
-export function groundData1() {
+
+function startingLocation1() {
+    return `
+        G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
+        G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
+        G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G2
+        G0 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G1 G2
+        G0 G1 T2 G1 G0 G0 G0 G0 c0 G0 G0 G0 G0 G0 B0 B1 G0 G0 G0 G1 G1
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G1 G1 T1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 T0 G0 G0 S0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G0 G0 G0 G0 G0 G0 G0 G2 G3 G2 G1 G0 G0 G0 s0 G0 G0 G0 G0 G0 G0
+        G1 G1 G1 G1 G0 G0 G0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G1 G1 G0 G0 G0 G0 G0 C0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G2 G2 G2 G2 S1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
+        G1 G2 S2 G2 G1 G0 G0 G0 C0 G0 G0 g0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G1 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0
+        G0 G1 G1 G1 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 K0 G0 G0 W0 W2
+        G0 G0 G0 G0 G1 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 W0 W0 W0
+        W0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 C1 G0 G0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 G0 G0 G0 G0 G0 G0 G0 G1 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 C0 G0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+        W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0 W0
+    `;
+}
+
+function groundData1() {
     return `
         G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 G2 G2 G3 G4
         G0 G0 G0 G0 G0 G0 G0 T0 G0 G0 G0 G0 G0 G0 G0 G0 G1 G1 t2 C3 G3
@@ -49,4 +87,24 @@ export function groundData1() {
         G0 G0 G0 G0 G0 G0 G0 G0 G0 C0 G1 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
 
     `;
+}
+
+function ocean(){
+    return [...Array(21)]
+        .map(() => {
+            return [...Array(21)]
+                .map(() => 'W0')
+                .join(' ')
+            })
+        .join('\n')
+}
+
+function plane(){
+    return [...Array(21)]
+        .map(() => {
+            return [...Array(21)]
+                .map(() => 'G0')
+                .join(' ')
+        })
+        .join('\n')
 }
