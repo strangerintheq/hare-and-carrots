@@ -74,7 +74,7 @@ export function reCreateGround() {
 }
 
 export function cellElevation(cell) {
-    return +cell[1]/5
+    return +cell[1]/10
 }
 
 export function split(data){

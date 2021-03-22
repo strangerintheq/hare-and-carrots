@@ -1,6 +1,6 @@
 import SimplexNoise from 'simplex-noise'
 
-const seed = '1';
+const seed = Math.random().toString(36).substring(2);
 const noises = {};
 
 function noise(cellType, x, y) {

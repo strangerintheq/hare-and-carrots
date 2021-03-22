@@ -4,7 +4,6 @@ import {blue1} from "../../core/Materials";
 import {blue2} from "../../core/Materials";
 
 export function waterCell(x, y, dy) {
-    console.log(dy)
     let material = dy > 0.6 ? blue2 : blue1;
     let obj = cubeMesh(getGround(), material)
         .scale(1, 0.6, 1)

@@ -24139,7 +24139,6 @@
 
   // src/world/cells/waterCell.ts
   function waterCell(x, y, dy) {
-    console.log(dy);
     let material = dy > 0.6 ? blue2 : blue1;
     let obj = cubeMesh(getGround(), material).scale(1, 0.6, 1).pos(y - 10, -0.1, x - 10);
     getGround().possibleToMove.push(obj.obj);
@@ -24489,7 +24488,7 @@
 
   // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
-  var seed = "1";
+  var seed = Math.random().toString(36).substring(2);
   var noises = {};
   function noise(cellType, x, y) {
     if (!noises[cellType])
@@ -24582,7 +24581,7 @@
     });
   }
   function cellElevation(cell) {
-    return +cell[1] / 5;
+    return +cell[1] / 10;
   }
   function split(data) {
     return data.trim().split("\n").map((row) => row.trim().split(" ").map((c) => c));
