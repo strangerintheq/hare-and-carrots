@@ -24476,9 +24476,11 @@
   // src/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
   var seed = "0";
-  var noises = [...Array(10)].map((e, i) => new import_simplex_noise.default(seed + i));
-  function noisedCellHeight(x, y) {
-    return noises[0].noise2D(x / 15, y / 15);
+  var noises = {};
+  function noise(cellType, x, y) {
+    if (!noises[cellType])
+      noises[cellType] = new import_simplex_noise.default(seed + cellType);
+    return noises[cellType].noise2D(x, y);
   }
   function noiseMapData(mapCursor) {
     let data = [];
@@ -24488,23 +24490,29 @@
       for (let x = -10; x <= 10; x++) {
         let cx = y + mapCursor[0] * mapSize;
         let cy = x + mapCursor[1] * mapSize;
-        let cellHeight = noisedCellHeight(cx, cy);
-        let cellType = "W";
-        if (cellHeight > 0) {
-          cellType = "G";
-          if (noises[1].noise2D(cx, cy) > 0.9)
-            cellType = "C";
-          if (cellHeight > 0.2 && noises[2].noise2D(cx, cy) > 0.8)
-            cellType = "B";
-          if (cellHeight > 0.2 && noises[3].noise2D(cx, cy) > 0.9)
-            cellType = noises[4].noise2D(cx, cy) > 0 ? "T" : "t";
-        }
-        let heightValue = cellHeight * 10 | 0;
-        row.push(`${cellType}${heightValue}`);
+        row.push(singleCell(cx, cy));
       }
       data.push(row);
     }
     return data;
+  }
+  function singleCell(cx, cy) {
+    let groundNoiseScale = 15;
+    let cellHeight = noise("G", cx / groundNoiseScale, cy / groundNoiseScale);
+    let cellType = "W";
+    if (cellHeight > 0) {
+      cellType = "G";
+      if (noise("C", cx, cy) > 0.9)
+        cellType = "C";
+      else if (noise("S", cx, cy) > 0.9)
+        cellType = "S";
+      else if (noise("B", cx, cy) > 0.8)
+        cellType = "B";
+      else if (noise("T", cx, cy) > 0.8)
+        cellType = noise("t", cx, cy) > 0 ? "T" : "t";
+    }
+    let heightValue = cellHeight * 10 | 0;
+    return `${cellType}${heightValue}`;
   }
   function getMapData(mapCursor) {
     return noiseMapData(mapCursor);
