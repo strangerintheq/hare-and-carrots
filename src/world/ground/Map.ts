@@ -1,10 +1,7 @@
 import SimplexNoise from 'simplex-noise'
 import {saveMapData} from "./Ground";
 
-let seed = localStorage.getItem('hare-seed');
-if (!seed)
-    seed = Math.random().toString(36).substring(2);
-
+const seed = getSeed();
 const noises = {};
 
 function noise(cellType, x, y) {
@@ -63,4 +60,13 @@ function singleCell(cx, cy) {
     let heightValue = Math.abs(cellHeight*10) | 0;
 
     return `${cellType}${heightValue}`;
+}
+
+function getSeed() {
+    let seedKey = 'hare-seed';
+    let seed = localStorage.getItem(seedKey);
+    if (!seed)
+        seed = Math.random().toString(36).substring(2);
+    localStorage.setItem(seedKey, seed);
+    return seed;
 }

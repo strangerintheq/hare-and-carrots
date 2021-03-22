@@ -60,7 +60,6 @@ export function moveHareAnimation(): boolean {
 }
 
 function checkForActiveAction(p) {
-
     let cell = getCell([p[0],p[1],p[2]]);
     checkActiveAction(cell[0])
 

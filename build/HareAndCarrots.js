@@ -24490,9 +24490,7 @@
 
   // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
-  var seed = localStorage.getItem("hare-seed");
-  if (!seed)
-    seed = Math.random().toString(36).substring(2);
+  var seed = getSeed();
   var noises = {};
   function noise(cellType, x, y) {
     if (!noises[cellType])
@@ -24538,13 +24536,23 @@
     let heightValue = Math.abs(cellHeight * 10) | 0;
     return `${cellType}${heightValue}`;
   }
+  function getSeed() {
+    let seedKey = "hare-seed";
+    let seed2 = localStorage.getItem(seedKey);
+    if (!seed2)
+      seed2 = Math.random().toString(36).substring(2);
+    localStorage.setItem(seedKey, seed2);
+    return seed2;
+  }
 
   // src/world/ground/Ground.ts
   var currentMap;
   var mapCursor = [0, 0];
   var ground;
-  function saveMapData(data = currentMap) {
+  function saveMapData(data) {
     const mapKey = getMapKey(mapCursor);
+    if (!data)
+      data = data.map((row) => row.map((cell) => cell[0]));
     localStorage.setItem(mapKey, JSON.stringify(data));
   }
   function getGround() {
