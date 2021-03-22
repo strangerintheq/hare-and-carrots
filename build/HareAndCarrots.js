@@ -24364,7 +24364,7 @@
   }
   function restoreLocation() {
     const locationData = localStorage.getItem(LOCATION_KEY);
-    return locationData ? JSON.parse(locationData) : [0, 0, 0];
+    return locationData ? JSON.parse(locationData) : [0, 1, 0];
   }
   function clearLocation() {
     localStorage.removeItem(LOCATION_KEY);
@@ -24542,10 +24542,17 @@
     let cellHeight = noise("G", cx / 25, cy / 25);
     let nearWater = cellHeight < 0.2;
     let cellType = "W";
-    if (cellHeight > 0) {
+    const isEntry = entryLocation && x * x + y * y < 25;
+    if (isEntry || cellHeight > 0) {
       cellType = "G";
-      if (entryLocation && noise("s", cx / 5, cy / 5) > 0.9)
+      if (isEntry && x === -2 && y === -2)
         cellType = "s";
+      else if (isEntry && x === 2 && y === -2)
+        cellType = "c";
+      else if (isEntry && x === -2 && y === 2)
+        cellType = "g";
+      else if (isEntry)
+        cellType = "G";
       else if (!onEdge && noise("C", cx, cy) > 0.9)
         cellType = "C";
       else if (!onEdge && noise("S", cx, cy) > 0.9)
@@ -24556,6 +24563,8 @@
         cellType = noise("t", cx, cy) > 0 ? "T" : "t";
     }
     let heightValue = Math.abs(cellHeight * 10) | 0;
+    if (isEntry)
+      heightValue = Math.max(0, cellHeight * 10) | 0;
     return `${cellType}${heightValue}`;
   }
   function getSeed() {

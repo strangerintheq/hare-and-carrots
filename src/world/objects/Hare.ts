@@ -177,7 +177,7 @@ function saveLocation() {
 
 function restoreLocation() {
     const locationData = localStorage.getItem(LOCATION_KEY)
-    return locationData ? JSON.parse(locationData) : [0, 0, 0]
+    return locationData ? JSON.parse(locationData) : [0, 1, 0]
 }
 
 export function clearLocation(){

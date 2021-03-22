@@ -7,7 +7,6 @@ import {renderMiniMap} from "./core/MiniMap";
 
 addAnimation(moveHareAnimation);
 reCreateGround();
-
 createClouds();
 createHare();
 raycaster((pt, obj) => {
