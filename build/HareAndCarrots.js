@@ -24237,8 +24237,10 @@
   }
 
   // src/world/objects/Hare.ts
+  var LOCATION_KEY = "hare-location";
   var currentLocation = restoreLocation();
   var targetLocation = [...currentLocation];
+  console.log(currentLocation);
   var moveStartTime = 0;
   var currentRotation = 0;
   var targetRotation = 0;
@@ -24358,11 +24360,14 @@
     return a + (b - a) * t;
   }
   function saveLocation() {
-    localStorage.setItem("hare-location", JSON.stringify(currentLocation));
+    localStorage.setItem(LOCATION_KEY, JSON.stringify(currentLocation));
   }
   function restoreLocation() {
-    const locationData = localStorage.getItem("hare-location");
+    const locationData = localStorage.getItem(LOCATION_KEY);
     return locationData ? JSON.parse(locationData) : [0, 0, 0];
+  }
+  function clearLocation() {
+    localStorage.removeItem(LOCATION_KEY);
   }
 
   // src/core/Balloon.ts
@@ -24456,17 +24461,17 @@
     }
     function telegramSvg() {
       return `
-<svg xmlns="http://www.w3.org/2000/svg" height="80" width="120" viewBox="0 -30 312 360">
-<defs>
-<linearGradient gradientUnits="userSpaceOnUse" y2="180" y1="40.08" x2="100.08" x1="160.08" id="a">
-<stop stop-color="#37aee2" offset="0"/><stop stop-color="#1e96c8" offset="1"/></linearGradient>
-<linearGradient gradientUnits="userSpaceOnUse" gradientTransform="scale(1.0919 .91583)" y2="174.66" y1="131.039" x2="146.503" x1="123.677" id="b"><stop stop-color="#eff7fc" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient>
-</defs>
-<circle fill="url(#a)" r="120" cy="120" cx="120"/>
-<path d="M98 175c-3.888 0-3.227-1.468-4.568-5.17L82 132.207 170 80" fill="#c8daea"/>
-<path d="M98 175c3 0 4.325-1.372 6-3l16-15.558-19.958-12.035" fill="#a9c9dd"/>
-<path d="M100.04 144.41l48.36 35.729c5.519 3.045 9.501 1.468 10.876-5.123l19.685-92.763c2.015-8.08-3.08-11.746-8.36-9.349l-115.59 44.571c-7.89 3.165-7.843 7.567-1.438 9.528l29.663 9.259 68.673-43.325c3.242-1.966 6.218-.91 3.776 1.258" fill="url(#b)"/>
-</svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height="80" width="120" viewBox="0 -30 312 360">
+                <defs>
+                    <linearGradient gradientUnits="userSpaceOnUse" y2="180" y1="40.08" x2="100.08" x1="160.08" id="a">
+                        <stop stop-color="#37aee2" offset="0"/><stop stop-color="#1e96c8" offset="1"/></linearGradient>
+                    <linearGradient gradientUnits="userSpaceOnUse" gradientTransform="scale(1.0919 .91583)" y2="174.66" y1="131.039" x2="146.503" x1="123.677" id="b"><stop stop-color="#eff7fc" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient>
+                </defs>
+                <circle fill="url(#a)" r="120" cy="120" cx="120"/>
+                <path d="M98 175c-3.888 0-3.227-1.468-4.568-5.17L82 132.207 170 80" fill="#c8daea"/>
+                <path d="M98 175c3 0 4.325-1.372 6-3l16-15.558-19.958-12.035" fill="#a9c9dd"/>
+                <path d="M100.04 144.41l48.36 35.729c5.519 3.045 9.501 1.468 10.876-5.123l19.685-92.763c2.015-8.08-3.08-11.746-8.36-9.349l-115.59 44.571c-7.89 3.165-7.843 7.567-1.438 9.528l29.663 9.259 68.673-43.325c3.242-1.966 6.218-.91 3.776 1.258" fill="url(#b)"/>
+            </svg>
         `;
     }
     function youtubeSvg() {
@@ -24498,6 +24503,8 @@
 
   // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
+  var MAP_SEED_KEY = "hare-seed";
+  var MAP_KEY = "hare-map-";
   var seed = getSeed();
   var noises = {};
   function noise(cellType, x, y) {
@@ -24506,7 +24513,7 @@
     return noises[cellType].noise2D(x, y);
   }
   function getMapKey(mapCursor2) {
-    return "hare-map-" + JSON.stringify(mapCursor2);
+    return MAP_KEY + JSON.stringify(mapCursor2);
   }
   function getMapData(mapCursor2) {
     const mapKey = getMapKey(mapCursor2);
@@ -24547,28 +24554,40 @@
     return `${cellType}${heightValue}`;
   }
   function getSeed() {
-    let seedKey = "hare-seed";
-    let seed2 = localStorage.getItem(seedKey);
+    let seed2 = localStorage.getItem(MAP_SEED_KEY);
     if (!seed2)
       seed2 = Math.random().toString(36).substring(2);
-    localStorage.setItem(seedKey, seed2);
+    localStorage.setItem(MAP_SEED_KEY, seed2);
     return seed2;
+  }
+  function clearMapSeed() {
+    localStorage.removeItem(MAP_SEED_KEY);
   }
 
   // src/world/ground/Ground.ts
-  var currentMap;
+  var MAPS_INDEX_KEY = "hare-maps-index";
+  var MAP_CURSOR_KEY = "hare-map-cursor";
   var mapCursor = restoreMapCursor();
+  var currentMap;
   var ground;
   function saveMapData(data) {
     const mapKey = getMapKey(mapCursor);
     if (!data)
       data = currentMap.map((row) => row.map((cell) => cell[0]));
     localStorage.setItem(mapKey, JSON.stringify(data));
-    const key = "hare-maps-index";
-    const indexData = localStorage.getItem(key);
+    const indexData = localStorage.getItem(MAPS_INDEX_KEY);
     const index = indexData ? JSON.parse(indexData) : {};
     index[mapKey] = 1;
-    localStorage.setItem(key, JSON.stringify(index));
+    localStorage.setItem(MAPS_INDEX_KEY, JSON.stringify(index));
+  }
+  function clearMapData() {
+    const indexData = localStorage.getItem(MAPS_INDEX_KEY);
+    if (!indexData)
+      return;
+    Object.keys(JSON.parse(indexData)).forEach((k) => {
+      localStorage.removeItem(k);
+    });
+    localStorage.removeItem(MAPS_INDEX_KEY);
   }
   function getGround() {
     return ground;
@@ -24644,11 +24663,14 @@
     }
   }
   function saveMapCursor() {
-    localStorage.setItem("hare-map-cursor", JSON.stringify(mapCursor));
+    localStorage.setItem(MAP_CURSOR_KEY, JSON.stringify(mapCursor));
   }
   function restoreMapCursor() {
-    const cursorData = localStorage.getItem("hare-map-cursor");
+    const cursorData = localStorage.getItem(MAP_CURSOR_KEY);
     return cursorData ? JSON.parse(cursorData) : [0, 0];
+  }
+  function clearMapCursor() {
+    localStorage.removeItem(MAP_CURSOR_KEY);
   }
 
   // src/core/Framework.ts
@@ -24668,10 +24690,11 @@
   document.body.style.margin = "0";
   document.body.style.overflow = "hidden";
   document.body.style.userSelect = "none";
-  var s = 10;
-  var camera = new OrthographicCamera(-s * aspect2(), s * aspect2(), s, -s, 0.1, 100);
-  camera.position.set(15, 15, 15);
-  camera.lookAt(0, 0, 0);
+  var s = 11;
+  var camera = new OrthographicCamera(1, 1, 1, 1, 0.1, 100);
+  camera.position.set(15, 16, 15);
+  camera.lookAt(0, 1, 0);
+  onWindowResize();
   requestAnimationFrame(render);
   addEventListener("resize", onWindowResize);
   var scene = new Scene();
@@ -24704,8 +24727,11 @@
     requestAnimationFrame(render);
   }
   function onWindowResize() {
-    camera.left = -s * aspect2();
-    camera.right = s * aspect2();
+    let a = aspect2();
+    camera.left = -s * (a > 1 ? a : 1);
+    camera.right = s * (a > 1 ? a : 1);
+    camera.top = s / (a < 1 ? a : 1);
+    camera.bottom = -s / (a < 1 ? a : 1);
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
     checkHareIsNearSign(getTargetLocation());
@@ -24785,6 +24811,46 @@
     }
   }
 
+  // src/core/Gui.ts
+  var items = document.createElement("div");
+  items.innerHTML = `
+    <svg viewBox="0,0,200,50" 
+        width="200" height="50" 
+        style="position: fixed;top:5px;left:5px" 
+        text-anchor="middle" dominant-baseline="central"
+    >
+        <g font-size="40px">
+            <text x="25" y="25">\u{1F955}</text>
+            <text x="75" y="25">\u{1F511}</text>
+            <text x="125" y="25">\u{1F4A9}</text>
+        </g>
+        <g font-size="25px" fill="red" stroke="black" stroke-width="0.5">
+            <text class="C" x="35" y="40">22</text>
+            <text class="K" x="65" y="40">22</text>
+            <text class="S" x="125" y="40">22</text>
+        </g>
+    </svg>
+`;
+  function addItem(type) {
+    items.querySelector(type);
+  }
+  var restart = document.createElement("div");
+  restart.innerHTML = `
+    <svg viewBox="0,0,50,50" width="50" height="50" style="position: fixed;top:5px;right:5px;cursor:pointer ">
+        <g text-anchor="middle" dominant-baseline="central" font-size="40px">
+            <text x="25" y="25">\u{1F504}</text>
+        </g>
+    </svg>
+`;
+  document.body.append(restart);
+  restart.querySelector("svg").onclick = () => {
+    clearMapSeed();
+    clearMapData();
+    clearMapCursor();
+    clearLocation();
+    document.location.reload();
+  };
+
   // src/HareAndCarrots.ts
   addAnimation(moveHareAnimation);
   reCreateGround();
@@ -24793,4 +24859,5 @@
   raycaster((pt, obj) => {
     tryJump(obj.object.parent.position);
   });
+  addItem(1);
 })();

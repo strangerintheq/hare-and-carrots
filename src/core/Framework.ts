@@ -24,12 +24,13 @@ document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 document.body.style.userSelect = 'none';
 
-let s = 10;
-export const camera = new THREE.OrthographicCamera(-s*aspect(), s*aspect(), s, -s, 0.1, 100);
+let s = 11;
+export const camera = new THREE.OrthographicCamera(1, 1, 1, 1, 0.1, 100);
 
-camera.position.set(15, 15, 15);
-camera.lookAt(0,0,0)
+camera.position.set(15, 16, 15);
+camera.lookAt(0,1,0)
 
+onWindowResize();
 requestAnimationFrame(render);
 addEventListener("resize", onWindowResize);
 
@@ -73,8 +74,14 @@ function render(t) {
 }
 
 function onWindowResize() {
-    camera.left = -s*aspect();
-    camera.right = s*aspect();
+    let a = aspect();
+
+    camera.left = -s*(a>1?a:1);
+    camera.right = s*(a>1?a:1);
+    camera.top = s/(a<1?a:1)
+    camera.bottom = -s/(a<1?a:1)
+
+
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
     checkHareIsNearSign(getTargetLocation())

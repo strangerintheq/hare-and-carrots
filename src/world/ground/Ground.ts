@@ -12,6 +12,9 @@ import {keyCell} from "../cells/keyCell";
 import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
 
+const MAPS_INDEX_KEY = 'hare-maps-index';
+const MAP_CURSOR_KEY = 'hare-map-cursor';
+
 let mapCursor = restoreMapCursor();
 let currentMap;
 let ground;
@@ -22,11 +25,20 @@ export function saveMapData(data?) {
         data = currentMap.map(row => row.map(cell => cell[0]))
     localStorage.setItem(mapKey, JSON.stringify(data))
 
-    const key = 'hare-maps-index';
-    const indexData = localStorage.getItem(key);
+    const indexData = localStorage.getItem(MAPS_INDEX_KEY);
     const index = indexData ? JSON.parse(indexData) : {};
     index[mapKey] = 1;
-    localStorage.setItem(key, JSON.stringify(index));
+    localStorage.setItem(MAPS_INDEX_KEY, JSON.stringify(index));
+}
+
+export function clearMapData(){
+    const indexData = localStorage.getItem(MAPS_INDEX_KEY);
+    if (!indexData)
+        return
+    Object.keys(JSON.parse(indexData)).forEach(k => {
+        localStorage.removeItem(k)
+    })
+    localStorage.removeItem(MAPS_INDEX_KEY)
 }
 
 export function getGround(){
@@ -117,10 +129,14 @@ export function tryChangeMap(pos){
 }
 
 function saveMapCursor() {
-    localStorage.setItem('hare-map-cursor', JSON.stringify(mapCursor))
+    localStorage.setItem(MAP_CURSOR_KEY, JSON.stringify(mapCursor))
 }
 
 function restoreMapCursor() {
-    const cursorData = localStorage.getItem('hare-map-cursor')
+    const cursorData = localStorage.getItem(MAP_CURSOR_KEY)
     return cursorData ? JSON.parse(cursorData) : [0,0]
+}
+
+export function clearMapCursor(){
+    localStorage.removeItem(MAP_CURSOR_KEY)
 }

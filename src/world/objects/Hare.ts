@@ -5,9 +5,11 @@ import {checkHareIsNearSign} from "./Signs";
 import {jumpSound} from "../../core/Audio";
 import {hideBalloon, showBalloon} from "../../core/Balloon";
 
+const LOCATION_KEY = 'hare-location';
+
 let currentLocation = restoreLocation();
 let targetLocation = [...currentLocation];
-
+console.log(currentLocation)
 let moveStartTime = 0;
 let currentRotation = 0;
 let targetRotation = 0;
@@ -166,11 +168,17 @@ export function lerp(a, b, t) {
     return a + (b-a)*t
 }
 
+
+
 function saveLocation() {
-    localStorage.setItem('hare-location', JSON.stringify(currentLocation))
+    localStorage.setItem(LOCATION_KEY, JSON.stringify(currentLocation))
 }
 
 function restoreLocation() {
-    const locationData = localStorage.getItem('hare-location')
+    const locationData = localStorage.getItem(LOCATION_KEY)
     return locationData ? JSON.parse(locationData) : [0, 0, 0]
+}
+
+export function clearLocation(){
+    localStorage.removeItem(LOCATION_KEY)
 }

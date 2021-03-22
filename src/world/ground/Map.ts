@@ -1,6 +1,9 @@
 import SimplexNoise from 'simplex-noise'
 import {saveMapData} from "./Ground";
 
+const MAP_SEED_KEY = 'hare-seed';
+const MAP_KEY = 'hare-map-';
+
 const seed = getSeed();
 const noises = {};
 
@@ -11,7 +14,7 @@ function noise(cellType, x, y) {
 }
 
 export function getMapKey(mapCursor) {
-    return 'hare-map-' + JSON.stringify(mapCursor);
+    return MAP_KEY + JSON.stringify(mapCursor);
 }
 
 export function getMapData(mapCursor) {
@@ -64,10 +67,13 @@ function singleCell(cx, cy,x,y) {
 }
 
 function getSeed() {
-    let seedKey = 'hare-seed';
-    let seed = localStorage.getItem(seedKey);
+    let seed = localStorage.getItem(MAP_SEED_KEY);
     if (!seed)
         seed = Math.random().toString(36).substring(2);
-    localStorage.setItem(seedKey, seed);
+    localStorage.setItem(MAP_SEED_KEY, seed);
     return seed;
+}
+
+export function clearMapSeed(){
+    localStorage.removeItem(MAP_SEED_KEY)
 }
