@@ -16,11 +16,17 @@ let currentMap;
 let mapCursor = [0,0];
 let ground;
 
-export function saveMapData(data?){
+export function saveMapData(data?) {
     const mapKey = getMapKey(mapCursor);
     if (!data)
         data = currentMap.map(row => row.map(cell => cell[0]))
     localStorage.setItem(mapKey, JSON.stringify(data))
+
+    const key = 'hare-maps-index';
+    const indexData = localStorage.getItem(key);
+    const index = indexData ? JSON.parse(indexData) : {};
+    index[mapKey] = 1;
+    localStorage.setItem(key, JSON.stringify(index));
 }
 
 export function getGround(){
