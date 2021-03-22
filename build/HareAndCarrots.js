@@ -24601,12 +24601,15 @@
         mapData.forEach((row, Y) => {
           return row.forEach((cell, X) => {
             ctx.fillStyle = cell[0] === "W" ? "blue" : "green";
-            let x1 = (X - 10) * s2 - 0.5 + 22 * y * s2;
-            let y1 = (Y - 10) * s2 - 0.5 + 22 * x * s2;
+            let x1 = (X - 10) * s2 + 21 * y * s2;
+            let y1 = (Y - 10) * s2 + 21 * x * s2;
             ctx.fillRect(x1, y1, s2 + 1, s2 + 1);
           });
         });
       }
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-10 * s2, -10 * s2, 21 * s2, 21 * s2);
     }
   }
 

@@ -25,17 +25,20 @@ export function renderMiniMap(mapCursor){
             mapData.forEach((row, Y) => {
                 return row.forEach((cell, X) => {
                     ctx.fillStyle = cell[0] === 'W' ? 'blue' : 'green';
-                    let x1 = (X - 10) * s-0.5+22*y*s;
-                    let y1 = (Y - 10) * s-0.5+22*x*s;
+                    let x1 = (X - 10) * s+21*y*s;
+                    let y1 = (Y - 10) * s+21*x*s;
                     ctx.fillRect(x1, y1, s+1, s+1);
                 });
             });
-         //   ctx.font='20px Arial'
+
+           // ctx.font='20px Arial'
            // ctx.fillStyle ='red';
            // ctx.textAlign = 'center'
-
-            //ctx.fillText(cur[0]+' '+cur[1], 22*y*s, 22*x*s)
+           // ctx.fillText(cur[0]+' '+cur[1], 22*y*s, 22*x*s)
         }
+        ctx.strokeStyle = 'red'
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-10*s, -10*s, 21*s, 21*s)
     }
 
 
