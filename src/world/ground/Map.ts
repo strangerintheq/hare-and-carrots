@@ -18,7 +18,7 @@ export function getMapKey(mapCursor) {
 }
 
 export function getMapData(mapCursor) {
-
+    const entryLocation = mapCursor[0] === 0 && mapCursor[1] === 0;
     const mapKey = getMapKey(mapCursor);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
@@ -31,7 +31,7 @@ export function getMapData(mapCursor) {
         for (let x = -10; x <= 10; x++) {
             let cx = y+mapCursor[0]*mapSize;
             let cy = x+mapCursor[1]*mapSize;
-            row.push(singleCell(cx,cy,x,y));
+            row.push(singleCell(cx,cy,x,y, entryLocation));
         }
         data.push(row);
     }
@@ -42,14 +42,17 @@ export function getMapData(mapCursor) {
 }
 
 
-function singleCell(cx, cy,x,y) {
+function singleCell(cx, cy, x, y, entryLocation) {
     let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise('G', cx/25, cy/25);
     let nearWater = cellHeight < 0.2;
     let cellType = 'W';
     if (cellHeight > 0) {
         cellType = 'G'
-        if (!onEdge && noise('C', cx, cy) > 0.9)
+
+        if (entryLocation && noise('s', cx/5, cy/5) > 0.9)
+            cellType = 's'
+        else if (!onEdge && noise('C', cx, cy) > 0.9)
             cellType = 'C'
         else if (!onEdge && noise('S', cx, cy) > 0.9)
             cellType = 'S'

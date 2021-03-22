@@ -11,6 +11,7 @@ import {signs} from "../objects/Signs";
 import {keyCell} from "../cells/keyCell";
 import {getMapData, getMapKey} from "./Map";
 import {mirrorHarePosition} from "../objects/Hare";
+import {fillMiniMap} from "../../core/MiniMap";
 
 const MAPS_INDEX_KEY = 'hare-maps-index';
 const MAP_CURSOR_KEY = 'hare-map-cursor';
@@ -18,6 +19,7 @@ const MAP_CURSOR_KEY = 'hare-map-cursor';
 let mapCursor = restoreMapCursor();
 let currentMap;
 let ground;
+
 
 export function saveMapData(data?) {
     const mapKey = getMapKey(mapCursor);
@@ -96,6 +98,8 @@ export function reCreateGround() {
             console.error('error creating row', row)
         }
     });
+
+    fillMiniMap(mapCursor);
 }
 
 export function cellElevation(cell) {

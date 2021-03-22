@@ -24301,7 +24301,8 @@
     let z = hare.obj.position.z - dz;
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
-    let y = cellElevation(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    let w = isWater(nextCell);
+    let y = cellElevation(nextCell) * (w ? -1 : 1) + (w ? 0.55 : 1);
     targetLocation = [x, y, z];
     if (dx * dx + dz * dz !== 0)
       targetRotation = Math.atan2(-dx, -dz);
@@ -24316,9 +24317,9 @@
       startSplashAnimation();
     }, 50);
     setTimeout(() => {
-      checkHareIsNearSign(targetLocation);
-      checkForActiveAction(targetLocation);
-      tryChangeMap(targetLocation);
+      checkHareIsNearSign(currentLocation);
+      checkForActiveAction(currentLocation);
+      tryChangeMap(currentLocation);
       saveLocation();
     }, 200);
   }
@@ -24516,6 +24517,7 @@
     return MAP_KEY + JSON.stringify(mapCursor2);
   }
   function getMapData(mapCursor2) {
+    const entryLocation = mapCursor2[0] === 0 && mapCursor2[1] === 0;
     const mapKey = getMapKey(mapCursor2);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
@@ -24527,21 +24529,23 @@
       for (let x = -10; x <= 10; x++) {
         let cx = y + mapCursor2[0] * mapSize;
         let cy = x + mapCursor2[1] * mapSize;
-        row.push(singleCell(cx, cy, x, y));
+        row.push(singleCell(cx, cy, x, y, entryLocation));
       }
       data.push(row);
     }
     saveMapData(data);
     return data;
   }
-  function singleCell(cx, cy, x, y) {
+  function singleCell(cx, cy, x, y, entryLocation) {
     let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise("G", cx / 25, cy / 25);
     let nearWater = cellHeight < 0.2;
     let cellType = "W";
     if (cellHeight > 0) {
       cellType = "G";
-      if (!onEdge && noise("C", cx, cy) > 0.9)
+      if (entryLocation && noise("s", cx / 5, cy / 5) > 0.9)
+        cellType = "s";
+      else if (!onEdge && noise("C", cx, cy) > 0.9)
         cellType = "C";
       else if (!onEdge && noise("S", cx, cy) > 0.9)
         cellType = "S";
@@ -24562,6 +24566,32 @@
   }
   function clearMapSeed() {
     localStorage.removeItem(MAP_SEED_KEY);
+  }
+
+  // src/core/MiniMap.ts
+  var minimap = document.createElement("div");
+  minimap.innerHTML = `
+    <canvas style="position: fixed;right: 5px;bottom: 5px;" width="200" height="200"></canvas>
+`;
+  var ctx = minimap.querySelector("canvas").getContext("2d");
+  ctx.translate(100, 100);
+  ctx.rotate(Math.PI / 4);
+  document.body.append(minimap);
+  function fillMiniMap(mapCursor2) {
+    const s2 = 2.2;
+    for (let y = -1; y <= 1; y++) {
+      for (let x = -1; x <= 1; x++) {
+        let mapData = getMapData([x + mapCursor2[1], y + mapCursor2[0]]);
+        mapData.forEach((row, Y) => {
+          return row.forEach((cell, X) => {
+            ctx.fillStyle = cell[0] === "W" ? "blue" : "green";
+            let x1 = (X - 10) * s2 - 0.5 + 22 * y * s2;
+            let y1 = (Y - 10) * s2 - 0.5 + 22 * x * s2;
+            ctx.fillRect(x1, y1, s2 + 1, s2 + 1);
+          });
+        });
+      }
+    }
   }
 
   // src/world/ground/Ground.ts
@@ -24637,6 +24667,7 @@
         console.error("error creating row", row);
       }
     });
+    fillMiniMap(mapCursor);
   }
   function cellElevation(cell) {
     return +cell[1] / 10;
@@ -24768,8 +24799,8 @@
       let cnv = document.createElement("canvas");
       cnv.width = img.width;
       cnv.height = img.height;
-      let ctx = cnv.getContext("2d");
-      ctx.drawImage(img, 0, 0);
+      let ctx2 = cnv.getContext("2d");
+      ctx2.drawImage(img, 0, 0);
       let texture3 = new Texture(cnv);
       texture3.anisotropy = 32;
       texture3.needsUpdate = true;

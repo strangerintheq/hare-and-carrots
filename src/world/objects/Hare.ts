@@ -95,7 +95,8 @@ function jump(p) {
     let z = hare.obj.position.z - dz;
     let loc = [x, 0, z];
     let nextCell = getCell(loc);
-    let y = cellElevation(nextCell) + (isWater(nextCell) ? -0.1 : 1);
+    let w = isWater(nextCell);
+    let y = cellElevation(nextCell) * (w ? -1 : 1) + (w ? 0.55 : 1);
     targetLocation = [x, y, z];
     if (dx * dx + dz * dz !== 0)
         targetRotation = Math.atan2(-dx, -dz);
@@ -113,9 +114,9 @@ export function tryJump(p){
     }, 50)
 
     setTimeout(() => {
-        checkHareIsNearSign(targetLocation);
-        checkForActiveAction(targetLocation);
-        tryChangeMap(targetLocation);
+        checkHareIsNearSign(currentLocation);
+        checkForActiveAction(currentLocation);
+        tryChangeMap(currentLocation);
         saveLocation();
     }, 200);
 }
