@@ -113,14 +113,13 @@ export function tryJump(p){
 
     setTimeout(() => {
         startSplashAnimation(targetLocation, targetRotation);
-
     }, 50)
 
     setTimeout(() => {
-        startGroundStepsAnimation(currentLocation, targetRotation)
+        tryChangeMap(currentLocation);
         checkHareIsNearSign(currentLocation);
         checkForActiveAction(currentLocation);
-        tryChangeMap(currentLocation);
+        startGroundStepsAnimation(currentLocation, targetRotation)
         saveLocation();
     }, 200);
 }

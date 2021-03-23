@@ -7520,7 +7520,7 @@
       cameraNZ.lookAt(new Vector3(0, 0, -1));
       this.add(cameraNZ);
     }
-    update(renderer2, scene2) {
+    update(renderer2, scene4) {
       if (this.parent === null)
         this.updateMatrixWorld();
       const renderTarget = this.renderTarget;
@@ -7531,18 +7531,18 @@
       const generateMipmaps = renderTarget.texture.generateMipmaps;
       renderTarget.texture.generateMipmaps = false;
       renderer2.setRenderTarget(renderTarget, 0);
-      renderer2.render(scene2, cameraPX);
+      renderer2.render(scene4, cameraPX);
       renderer2.setRenderTarget(renderTarget, 1);
-      renderer2.render(scene2, cameraNX);
+      renderer2.render(scene4, cameraNX);
       renderer2.setRenderTarget(renderTarget, 2);
-      renderer2.render(scene2, cameraPY);
+      renderer2.render(scene4, cameraPY);
       renderer2.setRenderTarget(renderTarget, 3);
-      renderer2.render(scene2, cameraNY);
+      renderer2.render(scene4, cameraNY);
       renderer2.setRenderTarget(renderTarget, 4);
-      renderer2.render(scene2, cameraPZ);
+      renderer2.render(scene4, cameraPZ);
       renderTarget.texture.generateMipmaps = generateMipmaps;
       renderer2.setRenderTarget(renderTarget, 5);
-      renderer2.render(scene2, cameraNZ);
+      renderer2.render(scene4, cameraNZ);
       renderer2.setRenderTarget(currentRenderTarget);
       renderer2.xr.enabled = currentXrEnabled;
     }
@@ -8573,8 +8573,8 @@
     let currentBackground = null;
     let currentBackgroundVersion = 0;
     let currentTonemapping = null;
-    function render2(renderList, scene2, camera2, forceClear) {
-      let background = scene2.isScene === true ? scene2.background : null;
+    function render2(renderList, scene4, camera2, forceClear) {
+      let background = scene4.isScene === true ? scene4.background : null;
       if (background && background.isTexture) {
         background = cubemaps.get(background);
       }
@@ -8606,7 +8606,7 @@
           }));
           boxMesh.geometry.deleteAttribute("normal");
           boxMesh.geometry.deleteAttribute("uv");
-          boxMesh.onBeforeRender = function(renderer3, scene3, camera3) {
+          boxMesh.onBeforeRender = function(renderer3, scene5, camera3) {
             this.matrixWorld.copyPosition(camera3.matrixWorld);
           };
           Object.defineProperty(boxMesh.material, "envMap", {
@@ -10726,9 +10726,9 @@
       }
       return encoding;
     }
-    function getParameters(material, lights2, shadows, scene2, object2) {
-      const fog = scene2.fog;
-      const environment = material.isMeshStandardMaterial ? scene2.environment : null;
+    function getParameters(material, lights2, shadows, scene4, object2) {
+      const fog = scene4.fog;
+      const environment = material.isMeshStandardMaterial ? scene4.environment : null;
       const envMap = cubemaps.get(material.envMap || environment);
       const shaderID = shaderIDs[material.type];
       const maxBones = object2.isSkinnedMesh ? getMaxBones(object2) : 0;
@@ -11040,17 +11040,17 @@
   }
   function WebGLRenderLists(properties) {
     let lists = new WeakMap();
-    function get(scene2, renderCallDepth) {
+    function get(scene4, renderCallDepth) {
       let list;
-      if (lists.has(scene2) === false) {
+      if (lists.has(scene4) === false) {
         list = new WebGLRenderList(properties);
-        lists.set(scene2, [list]);
+        lists.set(scene4, [list]);
       } else {
-        if (renderCallDepth >= lists.get(scene2).length) {
+        if (renderCallDepth >= lists.get(scene4).length) {
           list = new WebGLRenderList(properties);
-          lists.get(scene2).push(list);
+          lists.get(scene4).push(list);
         } else {
-          list = lists.get(scene2)[renderCallDepth];
+          list = lists.get(scene4)[renderCallDepth];
         }
       }
       return list;
@@ -11444,17 +11444,17 @@
   }
   function WebGLRenderStates(extensions, capabilities) {
     let renderStates = new WeakMap();
-    function get(scene2, renderCallDepth = 0) {
+    function get(scene4, renderCallDepth = 0) {
       let renderState;
-      if (renderStates.has(scene2) === false) {
+      if (renderStates.has(scene4) === false) {
         renderState = new WebGLRenderState(extensions, capabilities);
-        renderStates.set(scene2, [renderState]);
+        renderStates.set(scene4, [renderState]);
       } else {
-        if (renderCallDepth >= renderStates.get(scene2).length) {
+        if (renderCallDepth >= renderStates.get(scene4).length) {
           renderState = new WebGLRenderState(extensions, capabilities);
-          renderStates.get(scene2).push(renderState);
+          renderStates.get(scene4).push(renderState);
         } else {
-          renderState = renderStates.get(scene2)[renderCallDepth];
+          renderState = renderStates.get(scene4)[renderCallDepth];
         }
       }
       return renderState;
@@ -11562,7 +11562,7 @@
     this.autoUpdate = true;
     this.needsUpdate = false;
     this.type = PCFShadowMap;
-    this.render = function(lights2, scene2, camera2) {
+    this.render = function(lights2, scene4, camera2) {
       if (scope.enabled === false)
         return;
       if (scope.autoUpdate === false && scope.needsUpdate === false)
@@ -11624,7 +11624,7 @@
           _state.viewport(_viewport);
           shadow.updateMatrices(light, vp);
           _frustum = shadow.getFrustum();
-          renderObject(scene2, camera2, shadow.camera, light, this.type);
+          renderObject(scene4, camera2, shadow.camera, light, this.type);
         }
         if (!shadow.isPointLightShadow && this.type === VSMShadowMap) {
           VSMPass(shadow, camera2);
@@ -14315,11 +14315,11 @@
       _gl.drawArrays(4, 0, object2.count);
       object2.count = 0;
     };
-    this.renderBufferDirect = function(camera2, scene2, geometry, material, object2, group) {
-      if (scene2 === null)
-        scene2 = _emptyScene;
+    this.renderBufferDirect = function(camera2, scene4, geometry, material, object2, group) {
+      if (scene4 === null)
+        scene4 = _emptyScene;
       const frontFaceCW = object2.isMesh && object2.matrixWorld.determinant() < 0;
-      const program = setProgram(camera2, scene2, material, object2);
+      const program = setProgram(camera2, scene4, material, object2);
       state.setMaterial(material, frontFaceCW);
       let index = geometry.index;
       const position = geometry.attributes.position;
@@ -14388,10 +14388,10 @@
         renderer2.render(drawStart, drawCount);
       }
     };
-    this.compile = function(scene2, camera2) {
-      currentRenderState = renderStates.get(scene2);
+    this.compile = function(scene4, camera2) {
+      currentRenderState = renderStates.get(scene4);
       currentRenderState.init();
-      scene2.traverseVisible(function(object2) {
+      scene4.traverseVisible(function(object2) {
         if (object2.isLight && object2.layers.test(camera2.layers)) {
           currentRenderState.pushLight(object2);
           if (object2.castShadow) {
@@ -14401,19 +14401,19 @@
       });
       currentRenderState.setupLights();
       const compiled = new WeakMap();
-      scene2.traverse(function(object2) {
+      scene4.traverse(function(object2) {
         const material = object2.material;
         if (material) {
           if (Array.isArray(material)) {
             for (let i = 0; i < material.length; i++) {
               const material2 = material[i];
               if (compiled.has(material2) === false) {
-                initMaterial(material2, scene2, object2);
+                initMaterial(material2, scene4, object2);
                 compiled.set(material2);
               }
             }
           } else if (compiled.has(material) === false) {
-            initMaterial(material, scene2, object2);
+            initMaterial(material, scene4, object2);
             compiled.set(material);
           }
         }
@@ -14435,7 +14435,7 @@
       xr.setAnimationLoop(callback);
       callback === null ? animation.stop() : animation.start();
     };
-    this.render = function(scene2, camera2) {
+    this.render = function(scene4, camera2) {
       let renderTarget, forceClear;
       if (arguments[2] !== void 0) {
         console.warn("THREE.WebGLRenderer.render(): the renderTarget argument has been removed. Use .setRenderTarget() instead.");
@@ -14454,26 +14454,26 @@
       bindingStates.resetDefaultState();
       _currentMaterialId = -1;
       _currentCamera = null;
-      if (scene2.autoUpdate === true)
-        scene2.updateMatrixWorld();
+      if (scene4.autoUpdate === true)
+        scene4.updateMatrixWorld();
       if (camera2.parent === null)
         camera2.updateMatrixWorld();
       if (xr.enabled === true && xr.isPresenting === true) {
         camera2 = xr.getCamera(camera2);
       }
-      if (scene2.isScene === true)
-        scene2.onBeforeRender(_this, scene2, camera2, renderTarget || _currentRenderTarget);
-      currentRenderState = renderStates.get(scene2, renderStateStack.length);
+      if (scene4.isScene === true)
+        scene4.onBeforeRender(_this, scene4, camera2, renderTarget || _currentRenderTarget);
+      currentRenderState = renderStates.get(scene4, renderStateStack.length);
       currentRenderState.init();
       renderStateStack.push(currentRenderState);
       _projScreenMatrix2.multiplyMatrices(camera2.projectionMatrix, camera2.matrixWorldInverse);
       _frustum.setFromProjectionMatrix(_projScreenMatrix2);
       _localClippingEnabled = this.localClippingEnabled;
       _clippingEnabled = clipping.init(this.clippingPlanes, _localClippingEnabled, camera2);
-      currentRenderList = renderLists.get(scene2, renderListStack.length);
+      currentRenderList = renderLists.get(scene4, renderListStack.length);
       currentRenderList.init();
       renderListStack.push(currentRenderList);
-      projectObject(scene2, camera2, 0, _this.sortObjects);
+      projectObject(scene4, camera2, 0, _this.sortObjects);
       currentRenderList.finish();
       if (_this.sortObjects === true) {
         currentRenderList.sort(_opaqueSort, _transparentSort);
@@ -14481,7 +14481,7 @@
       if (_clippingEnabled === true)
         clipping.beginShadows();
       const shadowsArray = currentRenderState.state.shadowsArray;
-      shadowMap.render(shadowsArray, scene2, camera2);
+      shadowMap.render(shadowsArray, scene4, camera2);
       currentRenderState.setupLights();
       currentRenderState.setupLightsView(camera2);
       if (_clippingEnabled === true)
@@ -14491,15 +14491,15 @@
       if (renderTarget !== void 0) {
         this.setRenderTarget(renderTarget);
       }
-      background.render(currentRenderList, scene2, camera2, forceClear);
+      background.render(currentRenderList, scene4, camera2, forceClear);
       const opaqueObjects = currentRenderList.opaque;
       const transparentObjects = currentRenderList.transparent;
       if (opaqueObjects.length > 0)
-        renderObjects(opaqueObjects, scene2, camera2);
+        renderObjects(opaqueObjects, scene4, camera2);
       if (transparentObjects.length > 0)
-        renderObjects(transparentObjects, scene2, camera2);
-      if (scene2.isScene === true)
-        scene2.onAfterRender(_this, scene2, camera2);
+        renderObjects(transparentObjects, scene4, camera2);
+      if (scene4.isScene === true)
+        scene4.onAfterRender(_this, scene4, camera2);
       if (_currentRenderTarget !== null) {
         textures.updateRenderTargetMipmap(_currentRenderTarget);
         textures.updateMultisampleRenderTarget(_currentRenderTarget);
@@ -14585,8 +14585,8 @@
         projectObject(children[i], camera2, groupOrder, sortObjects);
       }
     }
-    function renderObjects(renderList, scene2, camera2) {
-      const overrideMaterial = scene2.isScene === true ? scene2.overrideMaterial : null;
+    function renderObjects(renderList, scene4, camera2) {
+      const overrideMaterial = scene4.isScene === true ? scene4.overrideMaterial : null;
       for (let i = 0, l = renderList.length; i < l; i++) {
         const renderItem = renderList[i];
         const object2 = renderItem.object;
@@ -14600,41 +14600,41 @@
             if (object2.layers.test(camera22.layers)) {
               state.viewport(_currentViewport.copy(camera22.viewport));
               currentRenderState.setupLightsView(camera22);
-              renderObject(object2, scene2, camera22, geometry, material, group);
+              renderObject(object2, scene4, camera22, geometry, material, group);
             }
           }
         } else {
-          renderObject(object2, scene2, camera2, geometry, material, group);
+          renderObject(object2, scene4, camera2, geometry, material, group);
         }
       }
     }
-    function renderObject(object2, scene2, camera2, geometry, material, group) {
-      object2.onBeforeRender(_this, scene2, camera2, geometry, material, group);
+    function renderObject(object2, scene4, camera2, geometry, material, group) {
+      object2.onBeforeRender(_this, scene4, camera2, geometry, material, group);
       object2.modelViewMatrix.multiplyMatrices(camera2.matrixWorldInverse, object2.matrixWorld);
       object2.normalMatrix.getNormalMatrix(object2.modelViewMatrix);
       if (object2.isImmediateRenderObject) {
-        const program = setProgram(camera2, scene2, material, object2);
+        const program = setProgram(camera2, scene4, material, object2);
         state.setMaterial(material);
         bindingStates.reset();
         renderObjectImmediate(object2, program);
       } else {
-        _this.renderBufferDirect(camera2, scene2, geometry, material, object2, group);
+        _this.renderBufferDirect(camera2, scene4, geometry, material, object2, group);
       }
-      object2.onAfterRender(_this, scene2, camera2, geometry, material, group);
+      object2.onAfterRender(_this, scene4, camera2, geometry, material, group);
     }
-    function initMaterial(material, scene2, object2) {
-      if (scene2.isScene !== true)
-        scene2 = _emptyScene;
+    function initMaterial(material, scene4, object2) {
+      if (scene4.isScene !== true)
+        scene4 = _emptyScene;
       const materialProperties = properties.get(material);
       const lights2 = currentRenderState.state.lights;
       const shadowsArray = currentRenderState.state.shadowsArray;
       const lightsStateVersion = lights2.state.version;
-      const parameters2 = programCache.getParameters(material, lights2.state, shadowsArray, scene2, object2);
+      const parameters2 = programCache.getParameters(material, lights2.state, shadowsArray, scene4, object2);
       const programCacheKey = programCache.getProgramCacheKey(parameters2);
       let program = materialProperties.program;
       let programChange = true;
-      materialProperties.environment = material.isMeshStandardMaterial ? scene2.environment : null;
-      materialProperties.fog = scene2.fog;
+      materialProperties.environment = material.isMeshStandardMaterial ? scene4.environment : null;
+      materialProperties.fog = scene4.fog;
       materialProperties.envMap = cubemaps.get(material.envMap || materialProperties.environment);
       if (program === void 0) {
         material.addEventListener("dispose", onMaterialDispose);
@@ -14687,12 +14687,12 @@
       const uniformsList = WebGLUniforms.seqWithValue(progUniforms.seq, uniforms);
       materialProperties.uniformsList = uniformsList;
     }
-    function setProgram(camera2, scene2, material, object2) {
-      if (scene2.isScene !== true)
-        scene2 = _emptyScene;
+    function setProgram(camera2, scene4, material, object2) {
+      if (scene4.isScene !== true)
+        scene4 = _emptyScene;
       textures.resetTextureUnits();
-      const fog = scene2.fog;
-      const environment = material.isMeshStandardMaterial ? scene2.environment : null;
+      const fog = scene4.fog;
+      const environment = material.isMeshStandardMaterial ? scene4.environment : null;
       const encoding = _currentRenderTarget === null ? _this.outputEncoding : _currentRenderTarget.texture.encoding;
       const envMap = cubemaps.get(material.envMap || environment);
       const materialProperties = properties.get(material);
@@ -14705,20 +14705,20 @@
       }
       if (material.version === materialProperties.__version) {
         if (material.fog && materialProperties.fog !== fog) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         } else if (materialProperties.environment !== environment) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         } else if (materialProperties.needsLights && materialProperties.lightsStateVersion !== lights2.state.version) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         } else if (materialProperties.numClippingPlanes !== void 0 && (materialProperties.numClippingPlanes !== clipping.numPlanes || materialProperties.numIntersection !== clipping.numIntersection)) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         } else if (materialProperties.outputEncoding !== encoding) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         } else if (materialProperties.envMap !== envMap) {
-          initMaterial(material, scene2, object2);
+          initMaterial(material, scene4, object2);
         }
       } else {
-        initMaterial(material, scene2, object2);
+        initMaterial(material, scene4, object2);
         materialProperties.__version = material.version;
       }
       let refreshProgram = false;
@@ -24051,9 +24051,9 @@
     console.warn("THREE.AudioAnalyser: .getData() is now .getFrequencyData().");
     return this.getFrequencyData();
   };
-  CubeCamera.prototype.updateCubeMap = function(renderer2, scene2) {
+  CubeCamera.prototype.updateCubeMap = function(renderer2, scene4) {
     console.warn("THREE.CubeCamera: .updateCubeMap() is now .update().");
-    return this.update(renderer2, scene2);
+    return this.update(renderer2, scene4);
   };
   CubeCamera.prototype.clear = function(renderer2, color, depth, stencil) {
     console.warn("THREE.CubeCamera: .clear() is now .renderTarget.clear().");
@@ -24239,7 +24239,7 @@
   // src/world/animations/WaterSplash.ts
   function createSplashEffect(h) {
     let material = h > 6 ? blueClipped2 : blueClipped1;
-    let splash = object(scene);
+    let splash = object(getGround());
     cubeMesh(splash, material).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
     return splash;
   }
@@ -24269,7 +24269,7 @@
       return;
     let h = +cell[1];
     let material = h > 6 ? blueClipped2 : blueClipped1;
-    let steps = object(scene);
+    let steps = object(getGround());
     cubeMesh(steps, material).scale(0.25, 0.1, 0.6).pos(-0.2, -0.5, 0);
     cubeMesh(steps, material).scale(0.25, 0.1, 0.6).pos(0.2, -0.5, 0);
     steps.pos(p[0], p[1], p[2]).rot(0, targetRotation2, 0);
@@ -24299,7 +24299,7 @@
     return hare;
   }
   function createHare() {
-    hare = object(scene).pos(0, 1, 0);
+    hare = object(scene3).pos(0, 1, 0);
     cubeMesh(hare, white).scale(0.8, 0.8, 0.8);
     cubeMesh(hare, white).scale(0.7, 0.7, 0.7).pos(0, -0.2, 0);
     cubeMesh(hare, white).scale(0.2, 0.6, 0.05).pos(0.15, 0.6, -0.3);
@@ -24364,10 +24364,10 @@
       startSplashAnimation(targetLocation, targetRotation);
     }, 50);
     setTimeout(() => {
-      startGroundStepsAnimation(currentLocation, targetRotation);
+      tryChangeMap(currentLocation);
       checkHareIsNearSign(currentLocation);
       checkForActiveAction(currentLocation);
-      tryChangeMap(currentLocation);
+      startGroundStepsAnimation(currentLocation, targetRotation);
       saveLocation();
     }, 200);
   }
@@ -24755,7 +24755,7 @@
     if (ground) {
       ground.obj.parent.remove(ground.obj);
     }
-    ground = object(scene);
+    ground = object(scene3);
     ground.possibleToMove = [];
     currentMap = data;
     if (!Array.isArray(data))
@@ -24835,8 +24835,8 @@
   onWindowResize();
   requestAnimationFrame(render);
   addEventListener("resize", onWindowResize);
-  var scene = new Scene();
-  scene.add(lights());
+  var scene3 = new Scene();
+  scene3.add(lights());
   function lights(color) {
     let lightsGroup = new Object3D("lights");
     lightsGroup.add(new AmbientLight(color, 0.2));
@@ -24860,7 +24860,7 @@
     return innerWidth / innerHeight;
   }
   function render(t) {
-    renderer.render(scene, camera);
+    renderer.render(scene3, camera);
     activeAnimations = activeAnimations.filter((play2) => !play2(t));
     requestAnimationFrame(render);
   }
@@ -24937,7 +24937,7 @@
 
   // src/world/objects/Clouds.ts
   function createClouds() {
-    let allClouds = object(scene);
+    let allClouds = object(scene3);
     for (let i = 0; i < 3; i++) {
       let cloud = object(allClouds);
       addAnimation((t) => {

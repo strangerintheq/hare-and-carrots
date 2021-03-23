@@ -1,6 +1,6 @@
 import {blueClipped1, blueClipped2} from "../../core/Materials";
 import {addAnimation, cubeMesh, object, scene} from "../../core/Framework";
-import {getCell, isWater} from "../ground/Ground";
+import {getCell, getGround, isWater} from "../ground/Ground";
 
 
 export function startGroundStepsAnimation(targetLocation, targetRotation ) {
@@ -12,7 +12,7 @@ export function startGroundStepsAnimation(targetLocation, targetRotation ) {
 
     let material = h>6?blueClipped2:blueClipped1;
 
-    let steps = object(scene);
+    let steps = object(getGround());
 
     cubeMesh(steps, material)
         .scale(0.25, 0.1, 0.6)

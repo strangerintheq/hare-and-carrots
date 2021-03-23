@@ -1,10 +1,10 @@
 import {blueClipped1, blueClipped2} from "../../core/Materials";
 import {addAnimation, cubeMesh, object, scene} from "../../core/Framework";
-import {getCell, isWater} from "../ground/Ground";
+import {getCell, getGround, isWater} from "../ground/Ground";
 
 function createSplashEffect(h) {
     let material = h>6?blueClipped2:blueClipped1;
-    let splash = object(scene);
+    let splash = object(getGround());
     cubeMesh(splash, material)
         .scale(1.1, 0.1, 1.1)
         .pos(0,-0.2,0)
