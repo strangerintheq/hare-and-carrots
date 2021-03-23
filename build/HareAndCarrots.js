@@ -24236,6 +24236,54 @@
       play(330 + i * 120, 0 + 0.02 * i, 0.02);
   }
 
+  // src/world/animations/WaterSplash.ts
+  function createSplashEffect(h) {
+    let material = h > 6 ? blueClipped2 : blueClipped1;
+    let splash = object(scene);
+    cubeMesh(splash, material).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
+    return splash;
+  }
+  function startSplashAnimation(targetLocation2, targetRotation2) {
+    let p = targetLocation2;
+    let cell = getCell(p);
+    if (!isWater(cell))
+      return;
+    let splash = createSplashEffect(+cell[1]).pos(p[0], p[1], p[2]).rot(0, targetRotation2, 0);
+    let splashAnimationStart = Date.now();
+    addAnimation(function() {
+      let dt = (Date.now() - splashAnimationStart) / 500;
+      if (dt < 1) {
+        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
+      } else {
+        splash.obj.parent.remove(splash.obj);
+        return true;
+      }
+    });
+  }
+
+  // src/world/animations/GroundSteps.ts
+  function startGroundStepsAnimation(targetLocation2, targetRotation2) {
+    let p = targetLocation2;
+    let cell = getCell(p);
+    if (isWater(cell))
+      return;
+    let h = +cell[1];
+    let material = h > 6 ? blueClipped2 : blueClipped1;
+    let steps = object(scene);
+    cubeMesh(steps, material).scale(0.25, 0.1, 0.6).pos(-0.2, -0.5, 0);
+    cubeMesh(steps, material).scale(0.25, 0.1, 0.6).pos(0.2, -0.5, 0);
+    steps.pos(p[0], p[1], p[2]).rot(0, targetRotation2, 0);
+    let splashAnimationStart = Date.now();
+    addAnimation(function() {
+      let dt = (Date.now() - splashAnimationStart) / 2e3;
+      if (dt < 1) {
+      } else {
+        steps.obj.parent.remove(steps.obj);
+        return true;
+      }
+    });
+  }
+
   // src/world/objects/Hare.ts
   var LOCATION_KEY = "hare-location";
   var currentLocation = restoreLocation();
@@ -24313,37 +24361,15 @@
     jump(p);
     jumpSound();
     setTimeout(() => {
-      startSplashAnimation();
+      startSplashAnimation(targetLocation, targetRotation);
     }, 50);
     setTimeout(() => {
+      startGroundStepsAnimation(currentLocation, targetRotation);
       checkHareIsNearSign(currentLocation);
       checkForActiveAction(currentLocation);
       tryChangeMap(currentLocation);
       saveLocation();
     }, 200);
-  }
-  function createSplashEffect(h) {
-    let material = h < -3 ? blueClipped2 : blueClipped1;
-    let splash = object(scene);
-    cubeMesh(splash, material).scale(1.1, 0.1, 1.1).pos(0, -0.2, 0);
-    return splash;
-  }
-  function startSplashAnimation() {
-    let p = targetLocation;
-    let cell = getCell(p);
-    if (!isWater(cell))
-      return;
-    let splash = createSplashEffect(+cell[1]).pos(p[0], p[1], p[2]).rot(0, targetRotation, 0);
-    let splashAnimationStart = Date.now();
-    addAnimation(function() {
-      let dt = (Date.now() - splashAnimationStart) / 500;
-      if (dt < 1) {
-        splash.scale(0.8 + dt * 2, 1, 0.8 + dt * 2).pos(p[0], 0.6 - Math.abs(dt - 0.5), p[2]);
-      } else {
-        splash.obj.parent.remove(splash.obj);
-        return true;
-      }
-    });
   }
   function mirrorHarePosition() {
     if (Math.abs(currentLocation[0]) === 10)
