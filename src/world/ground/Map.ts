@@ -1,5 +1,6 @@
 import SimplexNoise from 'simplex-noise'
 import {saveMapData} from "./Ground";
+import {SpecialLocations} from "./SpecialLocations";
 
 const MAP_SEED_KEY = 'hare-seed';
 const MAP_KEY = 'hare-map-';
@@ -18,7 +19,7 @@ export function getMapKey(mapCursor) {
 }
 
 export function getMapData(mapCursor, force = false) {
-    const entryLocation = mapCursor[0] === 0 && mapCursor[1] === 0;
+
     const mapKey = getMapKey(mapCursor);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
@@ -27,6 +28,8 @@ export function getMapData(mapCursor, force = false) {
     if (!force)
         return null
 
+    const location = SpecialLocations[JSON.stringify(mapCursor)]
+
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
@@ -34,7 +37,7 @@ export function getMapData(mapCursor, force = false) {
         for (let x = -10; x <= 10; x++) {
             let cx = y + mapCursor[0] * mapSize;
             let cy = x + mapCursor[1] * mapSize;
-            row.push(singleCell(cx, cy, x, y, entryLocation));
+            row.push(singleCell(cx, cy, x, y, location));
         }
         data.push(row);
     }
@@ -45,26 +48,20 @@ export function getMapData(mapCursor, force = false) {
 }
 
 
-function singleCell(cx, cy, x, y, entryLocation) {
+function singleCell(cx, cy, x, y, specialLocation) {
     let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise('G', cx / 25, cy / 25);
     let nearWater = cellHeight < 0.2;
     let cellType = 'W';
 
-
-    const isEntry = entryLocation && x * x + y * y < 25;
-
-    if (isEntry || cellHeight > 0) {
+    const specialLocationCell = specialLocation && specialLocation(x,y);
+    const specialLocationGround = specialLocationCell && specialLocationCell !== '-';
+    if (specialLocationGround){
+        cellType = specialLocationCell === 'X' ? 'G' : specialLocationCell
+    } else if (cellHeight > 0) {
         cellType = 'G'
-        if (isEntry && x === -2 && y === -2)
-            cellType = 's'
-        else if (isEntry && x === 2 && y === -2)
-            cellType = 'c'
-        else if (isEntry && x === -2 && y === 2)
-            cellType = 'g'
-        else if (isEntry)
-            cellType = 'G'
-        else if (!onEdge && noise('C', cx, cy) > 0.9)
+
+        if (!onEdge && noise('C', cx, cy) > 0.9)
             cellType = 'C'
         else if (!onEdge && noise('S', cx, cy) > 0.9)
             cellType = 'S'
@@ -74,12 +71,10 @@ function singleCell(cx, cy, x, y, entryLocation) {
             cellType = 'B'
         else if (noise('T', cx / 5, cy / 5) > 0.8)
             cellType = noise('t', cx, cy) > 0 ? 'T' : 't'
-        // else if (noises[4].noise2D(cx, cy) > 0.9)
-        //     cellType =  't'
     }
 
     let heightValue = Math.abs(cellHeight * 10) | 0;
-    if (isEntry)
+    if (specialLocationGround)
         heightValue = Math.max(0, cellHeight*10)|0
     return `${cellType}${heightValue}`;
 }

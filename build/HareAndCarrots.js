@@ -228,9 +228,9 @@
           var n0 = 0;
           var n1 = 0;
           var n2 = 0;
-          var s2 = (xin + yin) * F2;
-          var i = Math.floor(xin + s2);
-          var j = Math.floor(yin + s2);
+          var s3 = (xin + yin) * F2;
+          var i = Math.floor(xin + s3);
+          var j = Math.floor(yin + s3);
           var t = (i + j) * G2;
           var X0 = i - t;
           var Y0 = j - t;
@@ -275,10 +275,10 @@
           var perm = this.perm;
           var grad3 = this.grad3;
           var n0, n1, n2, n3;
-          var s2 = (xin + yin + zin) * F3;
-          var i = Math.floor(xin + s2);
-          var j = Math.floor(yin + s2);
-          var k = Math.floor(zin + s2);
+          var s3 = (xin + yin + zin) * F3;
+          var i = Math.floor(xin + s3);
+          var j = Math.floor(yin + s3);
+          var k = Math.floor(zin + s3);
           var t = (i + j + k) * G3;
           var X0 = i - t;
           var Y0 = j - t;
@@ -385,11 +385,11 @@
           var perm = this.perm;
           var grad4 = this.grad4;
           var n0, n1, n2, n3, n4;
-          var s2 = (x + y + z + w) * F4;
-          var i = Math.floor(x + s2);
-          var j = Math.floor(y + s2);
-          var k = Math.floor(z + s2);
-          var l = Math.floor(w + s2);
+          var s3 = (x + y + z + w) * F4;
+          var i = Math.floor(x + s3);
+          var j = Math.floor(y + s3);
+          var k = Math.floor(z + s3);
+          var l = Math.floor(w + s3);
           var t = (i + j + k + l) * G4;
           var X0 = i - t;
           var Y0 = j - t;
@@ -523,12 +523,12 @@
       function alea() {
         var s0 = 0;
         var s1 = 0;
-        var s2 = 0;
+        var s22 = 0;
         var c = 1;
         var mash = masher();
         s0 = mash(" ");
         s1 = mash(" ");
-        s2 = mash(" ");
+        s22 = mash(" ");
         for (var i = 0; i < arguments.length; i++) {
           s0 -= mash(arguments[i]);
           if (s0 < 0) {
@@ -538,17 +538,17 @@
           if (s1 < 0) {
             s1 += 1;
           }
-          s2 -= mash(arguments[i]);
-          if (s2 < 0) {
-            s2 += 1;
+          s22 -= mash(arguments[i]);
+          if (s22 < 0) {
+            s22 += 1;
           }
         }
         mash = null;
         return function() {
           var t = 2091639 * s0 + c * 23283064365386963e-26;
           s0 = s1;
-          s1 = s2;
-          return s2 = t - (c = t | 0);
+          s1 = s22;
+          return s22 = t - (c = t | 0);
         };
       }
       function masher() {
@@ -848,9 +848,9 @@
     randFloatSpread: function(range) {
       return range * (0.5 - Math.random());
     },
-    seededRandom: function(s2) {
-      if (s2 !== void 0)
-        _seed = s2 % 2147483647;
+    seededRandom: function(s3) {
+      if (s3 !== void 0)
+        _seed = s3 % 2147483647;
       _seed = _seed * 16807 % 2147483647;
       return (_seed - 1) / 2147483646;
     },
@@ -873,7 +873,7 @@
       const cos = Math.cos;
       const sin = Math.sin;
       const c2 = cos(b / 2);
-      const s2 = sin(b / 2);
+      const s22 = sin(b / 2);
       const c13 = cos((a + c) / 2);
       const s13 = sin((a + c) / 2);
       const c1_3 = cos((a - c) / 2);
@@ -882,22 +882,22 @@
       const s3_1 = sin((c - a) / 2);
       switch (order) {
         case "XYX":
-          q.set(c2 * s13, s2 * c1_3, s2 * s1_3, c2 * c13);
+          q.set(c2 * s13, s22 * c1_3, s22 * s1_3, c2 * c13);
           break;
         case "YZY":
-          q.set(s2 * s1_3, c2 * s13, s2 * c1_3, c2 * c13);
+          q.set(s22 * s1_3, c2 * s13, s22 * c1_3, c2 * c13);
           break;
         case "ZXZ":
-          q.set(s2 * c1_3, s2 * s1_3, c2 * s13, c2 * c13);
+          q.set(s22 * c1_3, s22 * s1_3, c2 * s13, c2 * c13);
           break;
         case "XZX":
-          q.set(c2 * s13, s2 * s3_1, s2 * c3_1, c2 * c13);
+          q.set(c2 * s13, s22 * s3_1, s22 * c3_1, c2 * c13);
           break;
         case "YXY":
-          q.set(s2 * c3_1, c2 * s13, s2 * s3_1, c2 * c13);
+          q.set(s22 * c3_1, c2 * s13, s22 * s3_1, c2 * c13);
           break;
         case "ZYZ":
-          q.set(s2 * s3_1, s2 * c3_1, c2 * s13, c2 * c13);
+          q.set(s22 * s3_1, s22 * c3_1, c2 * s13, c2 * c13);
           break;
         default:
           console.warn("THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: " + order);
@@ -979,9 +979,9 @@
       this.y += v.y;
       return this;
     }
-    addScalar(s2) {
-      this.x += s2;
-      this.y += s2;
+    addScalar(s3) {
+      this.x += s3;
+      this.y += s3;
       return this;
     }
     addVectors(a, b) {
@@ -989,9 +989,9 @@
       this.y = a.y + b.y;
       return this;
     }
-    addScaledVector(v, s2) {
-      this.x += v.x * s2;
-      this.y += v.y * s2;
+    addScaledVector(v, s3) {
+      this.x += v.x * s3;
+      this.y += v.y * s3;
       return this;
     }
     sub(v, w) {
@@ -1003,9 +1003,9 @@
       this.y -= v.y;
       return this;
     }
-    subScalar(s2) {
-      this.x -= s2;
-      this.y -= s2;
+    subScalar(s3) {
+      this.x -= s3;
+      this.y -= s3;
       return this;
     }
     subVectors(a, b) {
@@ -1154,11 +1154,11 @@
       return this;
     }
     rotateAround(center, angle) {
-      const c = Math.cos(angle), s2 = Math.sin(angle);
+      const c = Math.cos(angle), s3 = Math.sin(angle);
       const x = this.x - center.x;
       const y = this.y - center.y;
-      this.x = x * c - y * s2 + center.x;
-      this.y = x * s2 + y * c + center.y;
+      this.x = x * c - y * s3 + center.x;
+      this.y = x * s3 + y * c + center.y;
       return this;
     }
     random() {
@@ -1254,17 +1254,17 @@
       te[8] = a31 * b13 + a32 * b23 + a33 * b33;
       return this;
     }
-    multiplyScalar(s2) {
+    multiplyScalar(s3) {
       const te = this.elements;
-      te[0] *= s2;
-      te[3] *= s2;
-      te[6] *= s2;
-      te[1] *= s2;
-      te[4] *= s2;
-      te[7] *= s2;
-      te[2] *= s2;
-      te[5] *= s2;
-      te[8] *= s2;
+      te[0] *= s3;
+      te[3] *= s3;
+      te[6] *= s3;
+      te[1] *= s3;
+      te[4] *= s3;
+      te[7] *= s3;
+      te[2] *= s3;
+      te[5] *= s3;
+      te[8] *= s3;
       return this;
     }
     determinant() {
@@ -1320,8 +1320,8 @@
     }
     setUvTransform(tx, ty, sx, sy, rotation, cx, cy) {
       const c = Math.cos(rotation);
-      const s2 = Math.sin(rotation);
-      this.set(sx * c, sx * s2, -sx * (c * cx + s2 * cy) + cx + tx, -sy * s2, sy * c, -sy * (-s2 * cx + c * cy) + cy + ty, 0, 0, 1);
+      const s3 = Math.sin(rotation);
+      this.set(sx * c, sx * s3, -sx * (c * cx + s3 * cy) + cx + tx, -sy * s3, sy * c, -sy * (-s3 * cx + c * cy) + cy + ty, 0, 0, 1);
       return this;
     }
     scale(sx, sy) {
@@ -1336,16 +1336,16 @@
     }
     rotate(theta) {
       const c = Math.cos(theta);
-      const s2 = Math.sin(theta);
+      const s3 = Math.sin(theta);
       const te = this.elements;
       const a11 = te[0], a12 = te[3], a13 = te[6];
       const a21 = te[1], a22 = te[4], a23 = te[7];
-      te[0] = c * a11 + s2 * a21;
-      te[3] = c * a12 + s2 * a22;
-      te[6] = c * a13 + s2 * a23;
-      te[1] = -s2 * a11 + c * a21;
-      te[4] = -s2 * a12 + c * a22;
-      te[7] = -s2 * a13 + c * a23;
+      te[0] = c * a11 + s3 * a21;
+      te[3] = c * a12 + s3 * a22;
+      te[6] = c * a13 + s3 * a23;
+      te[1] = -s3 * a11 + c * a21;
+      te[4] = -s3 * a12 + c * a22;
+      te[7] = -s3 * a13 + c * a23;
       return this;
     }
     translate(tx, ty) {
@@ -1721,11 +1721,11 @@
       this.w += v.w;
       return this;
     }
-    addScalar(s2) {
-      this.x += s2;
-      this.y += s2;
-      this.z += s2;
-      this.w += s2;
+    addScalar(s3) {
+      this.x += s3;
+      this.y += s3;
+      this.z += s3;
+      this.w += s3;
       return this;
     }
     addVectors(a, b) {
@@ -1735,11 +1735,11 @@
       this.w = a.w + b.w;
       return this;
     }
-    addScaledVector(v, s2) {
-      this.x += v.x * s2;
-      this.y += v.y * s2;
-      this.z += v.z * s2;
-      this.w += v.w * s2;
+    addScaledVector(v, s3) {
+      this.x += v.x * s3;
+      this.y += v.y * s3;
+      this.z += v.z * s3;
+      this.w += v.w * s3;
       return this;
     }
     sub(v, w) {
@@ -1753,11 +1753,11 @@
       this.w -= v.w;
       return this;
     }
-    subScalar(s2) {
-      this.x -= s2;
-      this.y -= s2;
-      this.z -= s2;
-      this.w -= s2;
+    subScalar(s3) {
+      this.x -= s3;
+      this.y -= s3;
+      this.z -= s3;
+      this.w -= s3;
       return this;
     }
     subVectors(a, b) {
@@ -1795,15 +1795,15 @@
     }
     setAxisAngleFromQuaternion(q) {
       this.w = 2 * Math.acos(q.w);
-      const s2 = Math.sqrt(1 - q.w * q.w);
-      if (s2 < 1e-4) {
+      const s3 = Math.sqrt(1 - q.w * q.w);
+      if (s3 < 1e-4) {
         this.x = 1;
         this.y = 0;
         this.z = 0;
       } else {
-        this.x = q.x / s2;
-        this.y = q.y / s2;
-        this.z = q.z / s2;
+        this.x = q.x / s3;
+        this.y = q.y / s3;
+        this.z = q.z / s3;
       }
       return this;
     }
@@ -1856,12 +1856,12 @@
         this.set(x, y, z, angle);
         return this;
       }
-      let s2 = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12));
-      if (Math.abs(s2) < 1e-3)
-        s2 = 1;
-      this.x = (m32 - m23) / s2;
-      this.y = (m13 - m31) / s2;
-      this.z = (m21 - m12) / s2;
+      let s3 = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12));
+      if (Math.abs(s3) < 1e-3)
+        s3 = 1;
+      this.x = (m32 - m23) / s3;
+      this.y = (m13 - m31) / s3;
+      this.z = (m21 - m12) / s3;
       this.w = Math.acos((m11 + m22 + m33 - 1) / 2);
       return this;
     }
@@ -2101,19 +2101,19 @@
         return;
       }
       if (w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1) {
-        let s2 = 1 - t;
+        let s3 = 1 - t;
         const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1, dir = cos >= 0 ? 1 : -1, sqrSin = 1 - cos * cos;
         if (sqrSin > Number.EPSILON) {
           const sin = Math.sqrt(sqrSin), len = Math.atan2(sin, cos * dir);
-          s2 = Math.sin(s2 * len) / sin;
+          s3 = Math.sin(s3 * len) / sin;
           t = Math.sin(t * len) / sin;
         }
         const tDir = t * dir;
-        x0 = x0 * s2 + x1 * tDir;
-        y0 = y0 * s2 + y1 * tDir;
-        z0 = z0 * s2 + z1 * tDir;
-        w0 = w0 * s2 + w1 * tDir;
-        if (s2 === 1 - t) {
+        x0 = x0 * s3 + x1 * tDir;
+        y0 = y0 * s3 + y1 * tDir;
+        z0 = z0 * s3 + z1 * tDir;
+        w0 = w0 * s3 + w1 * tDir;
+        if (s3 === 1 - t) {
           const f = 1 / Math.sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
           x0 *= f;
           y0 *= f;
@@ -2199,44 +2199,44 @@
       const c2 = cos(y / 2);
       const c3 = cos(z / 2);
       const s1 = sin(x / 2);
-      const s2 = sin(y / 2);
+      const s22 = sin(y / 2);
       const s3 = sin(z / 2);
       switch (order) {
         case "XYZ":
-          this._x = s1 * c2 * c3 + c1 * s2 * s3;
-          this._y = c1 * s2 * c3 - s1 * c2 * s3;
-          this._z = c1 * c2 * s3 + s1 * s2 * c3;
-          this._w = c1 * c2 * c3 - s1 * s2 * s3;
+          this._x = s1 * c2 * c3 + c1 * s22 * s3;
+          this._y = c1 * s22 * c3 - s1 * c2 * s3;
+          this._z = c1 * c2 * s3 + s1 * s22 * c3;
+          this._w = c1 * c2 * c3 - s1 * s22 * s3;
           break;
         case "YXZ":
-          this._x = s1 * c2 * c3 + c1 * s2 * s3;
-          this._y = c1 * s2 * c3 - s1 * c2 * s3;
-          this._z = c1 * c2 * s3 - s1 * s2 * c3;
-          this._w = c1 * c2 * c3 + s1 * s2 * s3;
+          this._x = s1 * c2 * c3 + c1 * s22 * s3;
+          this._y = c1 * s22 * c3 - s1 * c2 * s3;
+          this._z = c1 * c2 * s3 - s1 * s22 * c3;
+          this._w = c1 * c2 * c3 + s1 * s22 * s3;
           break;
         case "ZXY":
-          this._x = s1 * c2 * c3 - c1 * s2 * s3;
-          this._y = c1 * s2 * c3 + s1 * c2 * s3;
-          this._z = c1 * c2 * s3 + s1 * s2 * c3;
-          this._w = c1 * c2 * c3 - s1 * s2 * s3;
+          this._x = s1 * c2 * c3 - c1 * s22 * s3;
+          this._y = c1 * s22 * c3 + s1 * c2 * s3;
+          this._z = c1 * c2 * s3 + s1 * s22 * c3;
+          this._w = c1 * c2 * c3 - s1 * s22 * s3;
           break;
         case "ZYX":
-          this._x = s1 * c2 * c3 - c1 * s2 * s3;
-          this._y = c1 * s2 * c3 + s1 * c2 * s3;
-          this._z = c1 * c2 * s3 - s1 * s2 * c3;
-          this._w = c1 * c2 * c3 + s1 * s2 * s3;
+          this._x = s1 * c2 * c3 - c1 * s22 * s3;
+          this._y = c1 * s22 * c3 + s1 * c2 * s3;
+          this._z = c1 * c2 * s3 - s1 * s22 * c3;
+          this._w = c1 * c2 * c3 + s1 * s22 * s3;
           break;
         case "YZX":
-          this._x = s1 * c2 * c3 + c1 * s2 * s3;
-          this._y = c1 * s2 * c3 + s1 * c2 * s3;
-          this._z = c1 * c2 * s3 - s1 * s2 * c3;
-          this._w = c1 * c2 * c3 - s1 * s2 * s3;
+          this._x = s1 * c2 * c3 + c1 * s22 * s3;
+          this._y = c1 * s22 * c3 + s1 * c2 * s3;
+          this._z = c1 * c2 * s3 - s1 * s22 * c3;
+          this._w = c1 * c2 * c3 - s1 * s22 * s3;
           break;
         case "XZY":
-          this._x = s1 * c2 * c3 - c1 * s2 * s3;
-          this._y = c1 * s2 * c3 - s1 * c2 * s3;
-          this._z = c1 * c2 * s3 + s1 * s2 * c3;
-          this._w = c1 * c2 * c3 + s1 * s2 * s3;
+          this._x = s1 * c2 * c3 - c1 * s22 * s3;
+          this._y = c1 * s22 * c3 - s1 * c2 * s3;
+          this._z = c1 * c2 * s3 + s1 * s22 * c3;
+          this._w = c1 * c2 * c3 + s1 * s22 * s3;
           break;
         default:
           console.warn("THREE.Quaternion: .setFromEuler() encountered an unknown order: " + order);
@@ -2246,10 +2246,10 @@
       return this;
     }
     setFromAxisAngle(axis, angle) {
-      const halfAngle = angle / 2, s2 = Math.sin(halfAngle);
-      this._x = axis.x * s2;
-      this._y = axis.y * s2;
-      this._z = axis.z * s2;
+      const halfAngle = angle / 2, s3 = Math.sin(halfAngle);
+      this._x = axis.x * s3;
+      this._y = axis.y * s3;
+      this._z = axis.z * s3;
       this._w = Math.cos(halfAngle);
       this._onChangeCallback();
       return this;
@@ -2257,29 +2257,29 @@
     setFromRotationMatrix(m) {
       const te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33;
       if (trace > 0) {
-        const s2 = 0.5 / Math.sqrt(trace + 1);
-        this._w = 0.25 / s2;
-        this._x = (m32 - m23) * s2;
-        this._y = (m13 - m31) * s2;
-        this._z = (m21 - m12) * s2;
+        const s3 = 0.5 / Math.sqrt(trace + 1);
+        this._w = 0.25 / s3;
+        this._x = (m32 - m23) * s3;
+        this._y = (m13 - m31) * s3;
+        this._z = (m21 - m12) * s3;
       } else if (m11 > m22 && m11 > m33) {
-        const s2 = 2 * Math.sqrt(1 + m11 - m22 - m33);
-        this._w = (m32 - m23) / s2;
-        this._x = 0.25 * s2;
-        this._y = (m12 + m21) / s2;
-        this._z = (m13 + m31) / s2;
+        const s3 = 2 * Math.sqrt(1 + m11 - m22 - m33);
+        this._w = (m32 - m23) / s3;
+        this._x = 0.25 * s3;
+        this._y = (m12 + m21) / s3;
+        this._z = (m13 + m31) / s3;
       } else if (m22 > m33) {
-        const s2 = 2 * Math.sqrt(1 + m22 - m11 - m33);
-        this._w = (m13 - m31) / s2;
-        this._x = (m12 + m21) / s2;
-        this._y = 0.25 * s2;
-        this._z = (m23 + m32) / s2;
+        const s3 = 2 * Math.sqrt(1 + m22 - m11 - m33);
+        this._w = (m13 - m31) / s3;
+        this._x = (m12 + m21) / s3;
+        this._y = 0.25 * s3;
+        this._z = (m23 + m32) / s3;
       } else {
-        const s2 = 2 * Math.sqrt(1 + m33 - m11 - m22);
-        this._w = (m21 - m12) / s2;
-        this._x = (m13 + m31) / s2;
-        this._y = (m23 + m32) / s2;
-        this._z = 0.25 * s2;
+        const s3 = 2 * Math.sqrt(1 + m33 - m11 - m22);
+        this._w = (m21 - m12) / s3;
+        this._x = (m13 + m31) / s3;
+        this._y = (m23 + m32) / s3;
+        this._z = 0.25 * s3;
       }
       this._onChangeCallback();
       return this;
@@ -2403,11 +2403,11 @@
       }
       const sqrSinHalfTheta = 1 - cosHalfTheta * cosHalfTheta;
       if (sqrSinHalfTheta <= Number.EPSILON) {
-        const s2 = 1 - t;
-        this._w = s2 * w + t * this._w;
-        this._x = s2 * x + t * this._x;
-        this._y = s2 * y + t * this._y;
-        this._z = s2 * z + t * this._z;
+        const s3 = 1 - t;
+        this._w = s3 * w + t * this._w;
+        this._x = s3 * x + t * this._x;
+        this._y = s3 * y + t * this._y;
+        this._z = s3 * z + t * this._z;
         this.normalize();
         this._onChangeCallback();
         return this;
@@ -2534,10 +2534,10 @@
       this.z += v.z;
       return this;
     }
-    addScalar(s2) {
-      this.x += s2;
-      this.y += s2;
-      this.z += s2;
+    addScalar(s3) {
+      this.x += s3;
+      this.y += s3;
+      this.z += s3;
       return this;
     }
     addVectors(a, b) {
@@ -2546,10 +2546,10 @@
       this.z = a.z + b.z;
       return this;
     }
-    addScaledVector(v, s2) {
-      this.x += v.x * s2;
-      this.y += v.y * s2;
-      this.z += v.z * s2;
+    addScaledVector(v, s3) {
+      this.x += v.x * s3;
+      this.y += v.y * s3;
+      this.z += v.z * s3;
       return this;
     }
     sub(v, w) {
@@ -2562,10 +2562,10 @@
       this.z -= v.z;
       return this;
     }
-    subScalar(s2) {
-      this.x -= s2;
-      this.y -= s2;
-      this.z -= s2;
+    subScalar(s3) {
+      this.x -= s3;
+      this.y -= s3;
+      this.z -= s3;
       return this;
     }
     subVectors(a, b) {
@@ -2794,8 +2794,8 @@
     manhattanDistanceTo(v) {
       return Math.abs(this.x - v.x) + Math.abs(this.y - v.y) + Math.abs(this.z - v.z);
     }
-    setFromSpherical(s2) {
-      return this.setFromSphericalCoords(s2.radius, s2.phi, s2.theta);
+    setFromSpherical(s3) {
+      return this.setFromSphericalCoords(s3.radius, s3.phi, s3.theta);
     }
     setFromSphericalCoords(radius, phi, theta) {
       const sinPhiRadius = Math.sin(phi) * radius;
@@ -3831,24 +3831,24 @@
       te[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
       return this;
     }
-    multiplyScalar(s2) {
+    multiplyScalar(s3) {
       const te = this.elements;
-      te[0] *= s2;
-      te[4] *= s2;
-      te[8] *= s2;
-      te[12] *= s2;
-      te[1] *= s2;
-      te[5] *= s2;
-      te[9] *= s2;
-      te[13] *= s2;
-      te[2] *= s2;
-      te[6] *= s2;
-      te[10] *= s2;
-      te[14] *= s2;
-      te[3] *= s2;
-      te[7] *= s2;
-      te[11] *= s2;
-      te[15] *= s2;
+      te[0] *= s3;
+      te[4] *= s3;
+      te[8] *= s3;
+      te[12] *= s3;
+      te[1] *= s3;
+      te[5] *= s3;
+      te[9] *= s3;
+      te[13] *= s3;
+      te[2] *= s3;
+      te[6] *= s3;
+      te[10] *= s3;
+      te[14] *= s3;
+      te[3] *= s3;
+      te[7] *= s3;
+      te[11] *= s3;
+      te[15] *= s3;
       return this;
     }
     determinant() {
@@ -3948,27 +3948,27 @@
       return this;
     }
     makeRotationX(theta) {
-      const c = Math.cos(theta), s2 = Math.sin(theta);
-      this.set(1, 0, 0, 0, 0, c, -s2, 0, 0, s2, c, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s3 = Math.sin(theta);
+      this.set(1, 0, 0, 0, 0, c, -s3, 0, 0, s3, c, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationY(theta) {
-      const c = Math.cos(theta), s2 = Math.sin(theta);
-      this.set(c, 0, s2, 0, 0, 1, 0, 0, -s2, 0, c, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s3 = Math.sin(theta);
+      this.set(c, 0, s3, 0, 0, 1, 0, 0, -s3, 0, c, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationZ(theta) {
-      const c = Math.cos(theta), s2 = Math.sin(theta);
-      this.set(c, -s2, 0, 0, s2, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      const c = Math.cos(theta), s3 = Math.sin(theta);
+      this.set(c, -s3, 0, 0, s3, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
       return this;
     }
     makeRotationAxis(axis, angle) {
       const c = Math.cos(angle);
-      const s2 = Math.sin(angle);
+      const s3 = Math.sin(angle);
       const t = 1 - c;
       const x = axis.x, y = axis.y, z = axis.z;
       const tx = t * x, ty = t * y;
-      this.set(tx * x + c, tx * y - s2 * z, tx * z + s2 * y, 0, tx * y + s2 * z, ty * y + c, ty * z - s2 * x, 0, tx * z - s2 * y, ty * z + s2 * x, t * z * z + c, 0, 0, 0, 0, 1);
+      this.set(tx * x + c, tx * y - s3 * z, tx * z + s3 * y, 0, tx * y + s3 * z, ty * y + c, ty * z - s3 * x, 0, tx * z - s3 * y, ty * z + s3 * x, t * z * z + c, 0, 0, 0, 0, 1);
       return this;
     }
     makeScale(x, y, z) {
@@ -5674,14 +5674,14 @@
       this.b = b;
       return this;
     }
-    setHSL(h, s2, l) {
+    setHSL(h, s3, l) {
       h = MathUtils.euclideanModulo(h, 1);
-      s2 = MathUtils.clamp(s2, 0, 1);
+      s3 = MathUtils.clamp(s3, 0, 1);
       l = MathUtils.clamp(l, 0, 1);
-      if (s2 === 0) {
+      if (s3 === 0) {
         this.r = this.g = this.b = l;
       } else {
-        const p = l <= 0.5 ? l * (1 + s2) : l + s2 - l * s2;
+        const p = l <= 0.5 ? l * (1 + s3) : l + s3 - l * s3;
         const q = 2 * l - p;
         this.r = hue2rgb(q, p, h + 1 / 3);
         this.g = hue2rgb(q, p, h);
@@ -5724,10 +5724,10 @@
           case "hsla":
             if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
               const h = parseFloat(color[1]) / 360;
-              const s2 = parseInt(color[2], 10) / 100;
+              const s3 = parseInt(color[2], 10) / 100;
               const l = parseInt(color[3], 10) / 100;
               handleAlpha(color[4]);
-              return this.setHSL(h, s2, l);
+              return this.setHSL(h, s3, l);
             }
             break;
         }
@@ -5853,10 +5853,10 @@
     getStyle() {
       return "rgb(" + (this.r * 255 | 0) + "," + (this.g * 255 | 0) + "," + (this.b * 255 | 0) + ")";
     }
-    offsetHSL(h, s2, l) {
+    offsetHSL(h, s3, l) {
       this.getHSL(_hslA);
       _hslA.h += h;
-      _hslA.s += s2;
+      _hslA.s += s3;
       _hslA.l += l;
       this.setHSL(_hslA.h, _hslA.s, _hslA.l);
       return this;
@@ -5873,10 +5873,10 @@
       this.b = color1.b + color2.b;
       return this;
     }
-    addScalar(s2) {
-      this.r += s2;
-      this.g += s2;
-      this.b += s2;
+    addScalar(s3) {
+      this.r += s3;
+      this.g += s3;
+      this.b += s3;
       return this;
     }
     sub(color) {
@@ -5891,10 +5891,10 @@
       this.b *= color.b;
       return this;
     }
-    multiplyScalar(s2) {
-      this.r *= s2;
-      this.g *= s2;
-      this.b *= s2;
+    multiplyScalar(s3) {
+      this.r *= s3;
+      this.g *= s3;
+      this.b *= s3;
       return this;
     }
     lerp(color, alpha) {
@@ -5913,9 +5913,9 @@
       this.getHSL(_hslA);
       color.getHSL(_hslB);
       const h = MathUtils.lerp(_hslA.h, _hslB.h, alpha);
-      const s2 = MathUtils.lerp(_hslA.s, _hslB.s, alpha);
+      const s3 = MathUtils.lerp(_hslA.s, _hslB.s, alpha);
       const l = MathUtils.lerp(_hslA.l, _hslB.l, alpha);
-      this.setHSL(h, s2, l);
+      this.setHSL(h, s3, l);
       return this;
     }
     equals(c) {
@@ -16882,15 +16882,15 @@
             v(position2.x, position2.y, position2.z);
           }
         }
-        for (let s2 = 1; s2 <= steps; s2++) {
+        for (let s3 = 1; s3 <= steps; s3++) {
           for (let i = 0; i < vlen; i++) {
             const vert = bevelEnabled ? scalePt2(vertices[i], verticesMovements[i], bs) : vertices[i];
             if (!extrudeByPath) {
-              v(vert.x, vert.y, depth / steps * s2);
+              v(vert.x, vert.y, depth / steps * s3);
             } else {
-              normal.copy(splineTube.normals[s2]).multiplyScalar(vert.x);
-              binormal.copy(splineTube.binormals[s2]).multiplyScalar(vert.y);
-              position2.copy(extrudePts[s2]).add(normal).add(binormal);
+              normal.copy(splineTube.normals[s3]).multiplyScalar(vert.x);
+              binormal.copy(splineTube.binormals[s3]).multiplyScalar(vert.y);
+              position2.copy(extrudePts[s3]).add(normal).add(binormal);
               v(position2.x, position2.y, position2.z);
             }
           }
@@ -16964,9 +16964,9 @@
             let k = i - 1;
             if (k < 0)
               k = contour2.length - 1;
-            for (let s2 = 0, sl = steps + bevelSegments * 2; s2 < sl; s2++) {
-              const slen1 = vlen * s2;
-              const slen2 = vlen * (s2 + 1);
+            for (let s3 = 0, sl = steps + bevelSegments * 2; s3 < sl; s3++) {
+              const slen1 = vlen * s3;
+              const slen2 = vlen * (s3 + 1);
               const a = layeroffset + j + slen1, b = layeroffset + k + slen1, c = layeroffset + k + slen2, d = layeroffset + j + slen2;
               f4(a, b, c, d);
             }
@@ -20513,15 +20513,15 @@
       }
       return this;
     }
-    addScaledSH(sh, s2) {
+    addScaledSH(sh, s3) {
       for (let i = 0; i < 9; i++) {
-        this.coefficients[i].addScaledVector(sh.coefficients[i], s2);
+        this.coefficients[i].addScaledVector(sh.coefficients[i], s3);
       }
       return this;
     }
-    scale(s2) {
+    scale(s3) {
       for (let i = 0; i < 9; i++) {
-        this.coefficients[i].multiplyScalar(s2);
+        this.coefficients[i].multiplyScalar(s3);
       }
       return this;
     }
@@ -20600,14 +20600,14 @@
       if (typeof TextDecoder !== "undefined") {
         return new TextDecoder().decode(array);
       }
-      let s2 = "";
+      let s3 = "";
       for (let i = 0, il = array.length; i < il; i++) {
-        s2 += String.fromCharCode(array[i]);
+        s3 += String.fromCharCode(array[i]);
       }
       try {
-        return decodeURIComponent(escape(s2));
+        return decodeURIComponent(escape(s3));
       } catch (e) {
-        return s2;
+        return s3;
       }
     },
     extractUrlBase: function(url) {
@@ -21390,10 +21390,10 @@
       Quaternion.slerpFlat(buffer, dstOffset, buffer, dstOffset, buffer, workOffset, t);
     }
     _lerp(buffer, dstOffset, srcOffset, t, stride) {
-      const s2 = 1 - t;
+      const s3 = 1 - t;
       for (let i = 0; i !== stride; ++i) {
         const j = dstOffset + i;
-        buffer[j] = buffer[j] * s2 + buffer[srcOffset + i] * t;
+        buffer[j] = buffer[j] * s3 + buffer[srcOffset + i] * t;
       }
     }
     _lerpAdditive(buffer, dstOffset, srcOffset, t, stride) {
@@ -24120,8 +24120,8 @@
       [-1, 0, 0]
     ].map((el) => new Plane(new Vector3(...el), 10.4));
   }
-  function hsl(h, s2, l, clip) {
-    let color = new Color(`hsl(${h || 0}, ${s2 || 50}%, ${l || 50}%)`);
+  function hsl(h, s3, l, clip) {
+    let color = new Color(`hsl(${h || 0}, ${s3 || 50}%, ${l || 50}%)`);
     return new MeshLambertMaterial({
       color,
       clippingPlanes: clip ? planes : [],
@@ -24484,8 +24484,8 @@
       for (let z = -1; z <= 1; z++) {
         let cell = getCell([x + p[0], p[1], z + p[2]]);
         if (cell && signs[cell[0]]) {
-          let s2 = signs[cell[0]];
-          showBalloon(s2.size, s2.text, () => window.open(s2.link));
+          let s3 = signs[cell[0]];
+          showBalloon(s3.size, s3.text, () => window.open(s3.link));
           break;
         }
       }
@@ -24503,6 +24503,54 @@
 
   // src/world/ground/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
+
+  // src/world/ground/SpecialLocations.ts
+  var SpecialLocations = {
+    "[0,0]": `
+          - - X X X X X - -
+          - X X X X X X X -
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X c X X X X
+          - X X X X X X X -
+          - - X X X X X - -  
+        `,
+    "[0,1]": `
+          - - X X X X X - -
+          - X X X X X X X -
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X s X X X X
+          - X X X X X X X -
+          - - X X X X X - -  
+        `,
+    "[0,-1]": `
+          - - X X X X X - -
+          - X X X X X X X -
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X X X X X X
+          X X X X g X X X X
+          - X X X X X X X -
+          - - X X X X X - -  
+        `
+  };
+  Object.keys(SpecialLocations).forEach((k) => {
+    const data = split(SpecialLocations[k]);
+    SpecialLocations[k] = (x, y) => {
+      try {
+        return data[x + 4][y + 4];
+      } catch (e) {
+      }
+    };
+  });
+
+  // src/world/ground/Map.ts
   var MAP_SEED_KEY = "hare-seed";
   var MAP_KEY = "hare-map-";
   var seed = getSeed();
@@ -24516,13 +24564,13 @@
     return MAP_KEY + JSON.stringify(mapCursor2);
   }
   function getMapData(mapCursor2, force = false) {
-    const entryLocation = mapCursor2[0] === 0 && mapCursor2[1] === 0;
     const mapKey = getMapKey(mapCursor2);
     const savedData = localStorage.getItem(mapKey);
     if (savedData)
       return JSON.parse(savedData);
     if (!force)
       return null;
+    const location = SpecialLocations[JSON.stringify(mapCursor2)];
     let data = [];
     let mapSize = 19;
     for (let y = -10; y <= 10; y++) {
@@ -24530,30 +24578,25 @@
       for (let x = -10; x <= 10; x++) {
         let cx = y + mapCursor2[0] * mapSize;
         let cy = x + mapCursor2[1] * mapSize;
-        row.push(singleCell(cx, cy, x, y, entryLocation));
+        row.push(singleCell(cx, cy, x, y, location));
       }
       data.push(row);
     }
     saveMapData(data);
     return data;
   }
-  function singleCell(cx, cy, x, y, entryLocation) {
+  function singleCell(cx, cy, x, y, specialLocation) {
     let onEdge = Math.abs(x) === 10 || Math.abs(y) === 10;
     let cellHeight = noise("G", cx / 25, cy / 25);
     let nearWater = cellHeight < 0.2;
     let cellType = "W";
-    const isEntry = entryLocation && x * x + y * y < 25;
-    if (isEntry || cellHeight > 0) {
+    const specialLocationCell = specialLocation && specialLocation(x, y);
+    const specialLocationGround = specialLocationCell && specialLocationCell !== "-";
+    if (specialLocationGround) {
+      cellType = specialLocationCell === "X" ? "G" : specialLocationCell;
+    } else if (cellHeight > 0) {
       cellType = "G";
-      if (isEntry && x === -2 && y === -2)
-        cellType = "s";
-      else if (isEntry && x === 2 && y === -2)
-        cellType = "c";
-      else if (isEntry && x === -2 && y === 2)
-        cellType = "g";
-      else if (isEntry)
-        cellType = "G";
-      else if (!onEdge && noise("C", cx, cy) > 0.9)
+      if (!onEdge && noise("C", cx, cy) > 0.9)
         cellType = "C";
       else if (!onEdge && noise("S", cx, cy) > 0.9)
         cellType = "S";
@@ -24565,7 +24608,7 @@
         cellType = noise("t", cx, cy) > 0 ? "T" : "t";
     }
     let heightValue = Math.abs(cellHeight * 10) | 0;
-    if (isEntry)
+    if (specialLocationGround)
       heightValue = Math.max(0, cellHeight * 10) | 0;
     return `${cellType}${heightValue}`;
   }
@@ -24591,28 +24634,45 @@
   ctx.translate(100, 100);
   ctx.rotate(Math.PI / 4);
   document.body.append(minimap);
+  var s = 2;
+  var empty = [...Array(21)].map(() => [...Array(21)]);
   function renderMiniMap(mapCursor2) {
     ctx.clearRect(-1e5, -1e5, 2e5, 2e5);
-    const s2 = 2.2;
-    for (let y = -1; y <= 1; y++) {
-      for (let x = -1; x <= 1; x++) {
+    for (let y = -3; y <= 3; y++) {
+      for (let x = -3; x <= 3; x++) {
         let cur = [x + mapCursor2[0], y + mapCursor2[1]];
         let mapData = getMapData(cur);
-        if (!mapData)
-          continue;
-        mapData.forEach((row, Y) => {
-          return row.forEach((cell, X) => {
-            ctx.fillStyle = cell[0] === "W" ? "blue" : "green";
-            let x1 = (X - 10) * s2 + 21 * y * s2;
-            let y1 = (Y - 10) * s2 + 21 * x * s2;
-            ctx.fillRect(x1, y1, s2 + 1, s2 + 1);
-          });
-        });
+        if (mapData) {
+          fillCells(mapData, x, y, getCellColor);
+        } else {
+          fillCells(empty, x, y, randomGray);
+        }
       }
       ctx.strokeStyle = "red";
       ctx.lineWidth = 2;
-      ctx.strokeRect(-10 * s2, -10 * s2, 21 * s2, 21 * s2);
+      ctx.strokeRect(-10 * s, -10 * s, 21 * s, 21 * s);
     }
+  }
+  function fillCells(mapData, x, y, colorFn) {
+    mapData.forEach((row, Y) => {
+      return row.forEach((cell, X) => {
+        ctx.fillStyle = colorFn(cell);
+        let x1 = (X - 10) * s + 21 * y * s;
+        let y1 = (Y - 10) * s + 21 * x * s;
+        ctx.fillRect(x1, y1, s + 1, s + 1);
+      });
+    });
+  }
+  function randomGray() {
+    const rnd = 50 + Math.random() * 150;
+    return `rgb(${rnd}, ${rnd}, ${rnd})`;
+  }
+  function getCellColor(cell) {
+    if (cell[0] === "W")
+      return "blue";
+    if (signs[cell[0]])
+      return "gold";
+    return "green";
   }
 
   // src/world/ground/Ground.ts
@@ -24742,7 +24802,7 @@
   document.body.style.margin = "0";
   document.body.style.overflow = "hidden";
   document.body.style.userSelect = "none";
-  var s = 11;
+  var s2 = 11;
   var camera = new OrthographicCamera(1, 1, 1, 1, 0.1, 100);
   camera.position.set(15, 16, 15);
   camera.lookAt(0, 1, 0);
@@ -24763,10 +24823,10 @@
     light.castShadow = true;
     light.shadow.mapSize.width = 4096;
     light.shadow.mapSize.height = 4096;
-    light.shadow.camera.left = -s;
-    light.shadow.camera.right = s;
-    light.shadow.camera.top = s;
-    light.shadow.camera.bottom = -s;
+    light.shadow.camera.left = -s2;
+    light.shadow.camera.right = s2;
+    light.shadow.camera.top = s2;
+    light.shadow.camera.bottom = -s2;
     light.shadow.bias = -16e-6;
     return lightsGroup;
   }
@@ -24780,10 +24840,10 @@
   }
   function onWindowResize() {
     let a = aspect2();
-    camera.left = -s * (a > 1 ? a : 1);
-    camera.right = s * (a > 1 ? a : 1);
-    camera.top = s / (a < 1 ? a : 1);
-    camera.bottom = -s / (a < 1 ? a : 1);
+    camera.left = -s2 * (a > 1 ? a : 1);
+    camera.right = s2 * (a > 1 ? a : 1);
+    camera.top = s2 / (a < 1 ? a : 1);
+    camera.bottom = -s2 / (a < 1 ? a : 1);
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
     checkHareIsNearSign(getTargetLocation());
