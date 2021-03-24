@@ -6,17 +6,21 @@ import {Sector} from "../data/Sector";
 
 export class Ground extends Object3D {
 
+    private possibleToMoveCells: CellBase[] = [];
+
     constructor(sector:Sector) {
         super();
         sector.forEachCell((cell: Cell) => {
-            const cellGroup = new CellBase(cell.type);
+            const cellBase = new CellBase(cell.type);
             const h = Math.max(0, cell.height);
-            cellGroup.position.set(cell.x, h, cell.y);
-            cell.object && cellGroup.add(new CellObject(cell.object));
-            this.add(cellGroup);
+            cellBase.position.set(cell.x, h, cell.y);
+            cell.object && cellBase.add(new CellObject(cell.object));
+            this.add(cellBase);
         })
     }
 
 
-
+    getPossibleToMoveCells() : CellBase[]{
+        return this.children;
+    }
 }
