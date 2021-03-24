@@ -115,11 +115,11 @@ export function isWater(cell) {
     return cell[0] === 'W'
 }
 
-export function clearCell(x,y) {
+export function changeCell(x, y, targetCellType:string) {
     let cell = currentMap[y+10][x+10];
     let obj = cell[1].obj;
-    obj.parent.remove(obj);
-    cell[0] = 'G' + cell[0][1];
+    targetCellType === 'G' && obj.parent.remove(obj);
+    cell[0] = targetCellType + cell[0][1];
 }
 
 export function tryChangeMap(pos){

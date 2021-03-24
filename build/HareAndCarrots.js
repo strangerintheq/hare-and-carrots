@@ -24297,6 +24297,7 @@
   var wetTimestamp = 0;
   var hareInWater = false;
   var hareIsBrown = 0;
+  var eatenCarrots = 0;
   var targetLocation = [...currentLocation];
   function getTargetLocation() {
     return targetLocation;
@@ -24335,17 +24336,30 @@
     C: "\u{1F955}",
     K: "\u{1F511}"
   };
-  function doAction() {
+  function doAction(action) {
     let p = targetLocation;
     hideBalloon();
-    clearCell(p[0], p[2]);
+    changeCell(p[0], p[2], "G");
+    if (action === "C")
+      eatenCarrots++;
+    if (eatenCarrots === 1) {
+      eatenCarrots = 0;
+      console.log("targetRotation", targetRotation);
+      let a = Math.atan(targetRotation);
+      let dx = Math.round(Math.sin(a));
+      let dy = Math.round(Math.cos(a));
+      console.log(dx, dy);
+      changeCell(p[0] - dy, p[2] - dx, "S");
+      let stone = object(getGround()).pos(p[0] - dy, p[1] - 0.5, p[2] - dx);
+      cubeMesh(stone, brown2).scale(0.3 + Math.random() * 0.2, 0.2, 0.2 + Math.random() * 0.2);
+    }
     saveMapData();
   }
   function checkActiveAction(code) {
     const action = actions[code];
     if (!action)
       return;
-    showBalloon([20, 20], action, () => doAction());
+    showBalloon([20, 20], action, () => doAction(code));
   }
   function jump(p) {
     let dx = Math.sign(hare.obj.position.x - p.x);
@@ -24390,7 +24404,7 @@
         addGroundSteps(currentLocation, targetRotation, brown2, false);
       }
       if (cell[0] === "S") {
-        clearCell(targetLocation[0], targetLocation[2]);
+        changeCell(targetLocation[0], targetLocation[2], "G");
         hareIsBrown = 5;
         startPooSplashAnimation(targetLocation);
         saveMapData();
@@ -24650,8 +24664,6 @@
       cellType = "G";
       if (!onEdge && noise("C", cx, cy) > 0.9)
         cellType = "C";
-      else if (!onEdge && noise("S", cx, cy) > 0.9)
-        cellType = "S";
       else if (!onEdge && noise("K", cx / 5, cy / 5) > 0.95)
         cellType = "K";
       else if (noise("B", cx / 9, cy / 9) > 0.8)
@@ -24811,11 +24823,11 @@
   function isWater(cell) {
     return cell[0] === "W";
   }
-  function clearCell(x, y) {
+  function changeCell(x, y, targetCellType) {
     let cell = currentMap[y + 10][x + 10];
     let obj = cell[1].obj;
-    obj.parent.remove(obj);
-    cell[0] = "G" + cell[0][1];
+    targetCellType === "G" && obj.parent.remove(obj);
+    cell[0] = targetCellType + cell[0][1];
   }
   function tryChangeMap(pos) {
     if (Math.abs(pos[0]) === 10 || Math.abs(pos[2]) === 10) {

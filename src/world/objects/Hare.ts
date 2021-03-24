@@ -1,6 +1,6 @@
 import { cubeMesh, object, scene} from "../../core/Framework";
 import {blue1, blueClipped1, blueClipped2, brown1, brown2, red, white} from "../../core/Materials";
-import {cellElevation, clearCell, getCell, isWater, saveMapData, tryChangeMap} from "../ground/Ground";
+import {cellElevation, changeCell, getCell, getGround, isWater, saveMapData, tryChangeMap} from "../ground/Ground";
 import {checkHareIsNearSign} from "./Signs";
 import {jumpSound} from "../../core/Audio";
 import {hideBalloon, showBalloon} from "../../core/Balloon";
@@ -18,6 +18,7 @@ let targetRotation = 0;
 let wetTimestamp = 0;
 let hareInWater = false;
 let hareIsBrown = 0;
+let eatenCarrots = 0;
 
 let targetLocation = [...currentLocation];
 export function getTargetLocation(){
@@ -78,18 +79,34 @@ const actions = {
     K: '🔑',
 }
 
-function doAction() {
+function doAction(action) {
     let p = targetLocation;
     hideBalloon();
-    clearCell(p[0], p[2]);
-    saveMapData()
+    changeCell(p[0], p[2], 'G');
+
+    if (action === 'C')
+        eatenCarrots ++
+
+    if (eatenCarrots === 1) {
+        eatenCarrots = 0;
+        console.log('targetRotation', targetRotation)
+        let a = Math.atan(targetRotation)
+        let dx = Math.round(Math.sin(a))
+        let dy = Math.round(Math.cos(a))
+        console.log(dx, dy)
+        changeCell(p[0]-dy, p[2]-dx, 'S');
+        let stone = object(getGround()).pos(p[0]-dy, p[1]-0.5, p[2]-dx);
+        cubeMesh(stone, brown2).scale(0.3+Math.random()*0.2, 0.2, 0.2+Math.random()*0.2)
+
+    }
+    saveMapData();
 }
 
 function checkActiveAction(code) {
     const action = actions[code];
     if (!action)
         return
-    showBalloon([20, 20], action, () => doAction())
+    showBalloon([20, 20], action, () => doAction(code))
 }
 
 function jump(p) {
@@ -147,7 +164,7 @@ export function tryJump(p){
         }
 
         if (cell[0] === 'S') {
-            clearCell(targetLocation[0], targetLocation[2]);
+            changeCell(targetLocation[0], targetLocation[2], 'G');
             hareIsBrown = 5;
             startPooSplashAnimation(targetLocation)
             saveMapData()
