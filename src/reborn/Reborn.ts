@@ -11,4 +11,10 @@ map.initSector(sector);
 
 const game = new Game();
 game.setMapSector(sector);
-game.render();
+
+addEventListener('resize', () => game.resize())
+
+requestAnimationFrame(function update(){
+    game.render();
+    requestAnimationFrame(update)
+})

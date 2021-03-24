@@ -35,4 +35,6 @@ export class Hare extends Object3D {
             .sc(0.3, 0.1, 0.1)
             .pos(0, -0.1, 0.45);
     }
+
+
 }

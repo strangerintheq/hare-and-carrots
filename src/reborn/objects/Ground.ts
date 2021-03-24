@@ -5,11 +5,11 @@ import {CellObject} from "./CellObject";
 import {Sector} from "../data/Sector";
 
 export class Ground extends Object3D {
-
-    private possibleToMoveCells: CellBase[] = [];
+    private sector: Sector;
 
     constructor(sector:Sector) {
         super();
+        this.sector = sector;
         sector.forEachCell((cell: Cell) => {
             const cellBase = new CellBase(cell.type);
             const h = Math.max(0, cell.height);
@@ -22,5 +22,9 @@ export class Ground extends Object3D {
 
     getPossibleToMoveCells() : CellBase[]{
         return this.children;
+    }
+
+    getCell(x: number, y: number):Cell {
+        return this.sector.cells[y+this.sector.halfSize][x+this.sector.halfSize];
     }
 }

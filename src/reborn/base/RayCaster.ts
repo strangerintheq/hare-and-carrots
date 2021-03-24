@@ -1,5 +1,5 @@
 import {Camera, Object3D, Raycaster, Vector2} from "three";
-import {CellBase} from "./render/CellBase";
+import {CellBase} from "../objects/CellBase";
 
 
 export class RayCaster extends Raycaster {
@@ -17,7 +17,7 @@ export class RayCaster extends Raycaster {
             this.mouse.y = - ( e.clientY / innerHeight ) * 2 + 1;
             this.setFromCamera(this.mouse, camera );
             let intersects = this.intersectObjects(this.possibleToMoveCells, true);
-            intersects[0] && cb(intersects[0])
+            intersects[0] && cb(intersects[0].object)
         };
 
         addEventListener('click', handle);
