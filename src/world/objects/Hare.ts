@@ -1,27 +1,30 @@
-import {addAnimation,  cubeMesh, object, scene} from "../../core/Framework";
-import {blueClipped1, blueClipped2, red, white} from "../../core/Materials";
+import { cubeMesh, object, scene} from "../../core/Framework";
+import {blue1, blueClipped1, blueClipped2, brown1, brown2, red, white} from "../../core/Materials";
 import {cellElevation, clearCell, getCell, isWater, saveMapData, tryChangeMap} from "../ground/Ground";
 import {checkHareIsNearSign} from "./Signs";
 import {jumpSound} from "../../core/Audio";
 import {hideBalloon, showBalloon} from "../../core/Balloon";
-import {startSplashAnimation} from "../animations/WaterSplash";
-import {startGroundStepsAnimation} from "../animations/GroundSteps";
+import {startWaterSplashAnimation} from "../animations/WaterSplash";
+import {addGroundSteps} from "../animations/GroundSteps";
+import {startPooSplashAnimation} from "../animations/PooSplash";
 
 const LOCATION_KEY = 'hare-location';
 
 let currentLocation = restoreLocation();
-let targetLocation = [...currentLocation];
-// console.log(currentLocation)
+
 let moveStartTime = 0;
 let currentRotation = 0;
 let targetRotation = 0;
+let wetTimestamp = 0;
+let hareInWater = false;
+let hareIsBrown = 0;
 
+let targetLocation = [...currentLocation];
 export function getTargetLocation(){
     return targetLocation
 }
 
 let hare;
-
 export function getHare(){
     return hare
 }
@@ -73,7 +76,6 @@ function checkForActiveAction(p) {
 const actions = {
     C: '🥕',
     K: '🔑',
-    S: '💩'
 }
 
 function doAction() {
@@ -111,16 +113,47 @@ export function tryJump(p){
     jump(p);
     jumpSound()
 
-    setTimeout(() => {
-        startSplashAnimation(targetLocation, targetRotation);
+    let cell = getCell(targetLocation);
+
+
+    let nextCellIsWater = isWater(cell);
+    if (hareInWater && !nextCellIsWater) {
+        wetTimestamp = Date.now();
+    }
+
+    hareInWater = nextCellIsWater;
+
+    nextCellIsWater && setTimeout(() => {
+        const material = +cell[1]>6?blueClipped2:blueClipped1
+        startWaterSplashAnimation(targetLocation, targetRotation, material);
     }, 50)
 
     setTimeout(() => {
+
         tryChangeMap(currentLocation);
         checkHareIsNearSign(currentLocation);
         checkForActiveAction(currentLocation);
-        startGroundStepsAnimation(currentLocation, targetRotation)
         saveLocation();
+
+        if (nextCellIsWater)
+            return
+
+        if (Date.now() - wetTimestamp < 3000)
+            addGroundSteps(currentLocation, targetRotation, blue1, true)
+
+        if (hareIsBrown) {
+            hareIsBrown = Math.max(0, hareIsBrown - 1);
+            addGroundSteps(currentLocation, targetRotation, brown2, false)
+        }
+
+        if (cell[0] === 'S') {
+            clearCell(targetLocation[0], targetLocation[2]);
+            hareIsBrown = 5;
+            startPooSplashAnimation(targetLocation)
+            saveMapData()
+        }
+
+
     }, 200);
 }
 

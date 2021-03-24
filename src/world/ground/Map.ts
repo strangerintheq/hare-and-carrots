@@ -63,8 +63,6 @@ function singleCell(cx, cy, x, y, specialLocation) {
 
         if (!onEdge && noise('C', cx, cy) > 0.9)
             cellType = 'C'
-        else if (!onEdge && noise('S', cx, cy) > 0.9)
-            cellType = 'S'
         else if (!onEdge && noise('K', cx/5, cy/5) > 0.95)
             cellType = 'K'
         else if (noise('B', cx / 9, cy / 9) > 0.8)

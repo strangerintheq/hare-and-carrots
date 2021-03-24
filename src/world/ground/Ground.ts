@@ -47,7 +47,7 @@ export function getGround(){
     return ground;
 }
 
-export function getCell(pos) {
+export function getCell(pos:Array<number>) {
     try {
         return currentMap[pos[2] + 10][pos[0] + 10][0];
     } catch (e) {
