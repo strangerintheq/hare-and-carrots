@@ -39,7 +39,7 @@ export const scene = new THREE.Scene();
 scene.add(lights());
 
 function lights(color?): THREE.Object3D {
-    let lightsGroup = new THREE.Object3D('lights');
+    let lightsGroup = new THREE.Object3D();
     lightsGroup.add(new THREE.AmbientLight(color, 0.2));
 
     let light = new THREE.DirectionalLight(color, 0.2);
@@ -78,9 +78,8 @@ function onWindowResize() {
 
     camera.left = -s*(a>1?a:1);
     camera.right = s*(a>1?a:1);
-    camera.top = s/(a<1?a:1)
-    camera.bottom = -s/(a<1?a:1)
-
+    camera.top = s/(a<1?a:1);
+    camera.bottom = -s/(a<1?a:1);
 
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);

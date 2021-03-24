@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/HareAndCarrots.ts --bundle --outdir=build --define:process.env.NODE_ENV=\\\"development\\\""
+    "build": "esbuild src/HareAndCarrots.ts --bundle --outdir=build ",
+    "reborn": "esbuild src/reborn/Reborn.ts --bundle --outdir=build "
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "esbuild": "^0.9.6"
   },
   "devDependencies": {
+    "@types/three": "^0.126.1",
     "simplex-noise": "^2.4.0",
     "three": "^0.126.1"
   }
