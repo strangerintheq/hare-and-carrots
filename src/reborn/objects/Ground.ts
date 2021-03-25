@@ -5,7 +5,8 @@ import {CellObject} from "./CellObject";
 import {Sector} from "../data/Sector";
 
 export class Ground extends Object3D {
-    private sector: Sector;
+
+    sector: Sector;
 
     constructor(sector:Sector) {
         super();

@@ -39,8 +39,11 @@ export class Map {
     }
 
     private initCell(sector: Sector, cell: Cell) {
-      //  let onEdge = sector.isOnEdge(cell);
-        cell.height = this.noisedValue('terrain', cell.x/15, cell.y/15);
+        cell.height = this.noisedValue(
+            'terrain',
+            cell.x/15+sector.x,
+            cell.y/15+sector.y
+        );
         cell.type = this.getCellTypeByHeight(cell.height);
     }
 
