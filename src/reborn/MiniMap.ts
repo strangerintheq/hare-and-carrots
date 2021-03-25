@@ -3,7 +3,7 @@ import {Map} from "./Map";
 import {Cell} from "./data/Cell";
 import {CellType} from "./data/CellType";
 
-let s = 2;
+let s = 3;
 
 export class MiniMap {
 
@@ -27,21 +27,21 @@ export class MiniMap {
             for (let x = -3; x <= 3; x++) {
                 let sector = new Sector(x + mapCursor.x, y + mapCursor.y, 21);
                 map.initSector(sector);
-                this.fillCells(sector)
-                this.drawSectorIndex(sector)
+                this.fillCells(sector,x,y)
+               // this.drawSectorIndex(sector)
             }
             this.ctx.strokeStyle = 'red'
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(-10 * s, -10 * s, 21 * s, 21 * s)
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(-10 * s, -10 * s, 21 * s, 21* s)
         }
     }
 
-    fillCells(sector: Sector) {
+    fillCells(sector: Sector,x,y) {
         sector.forEachCell((cell: Cell) => {
             this.ctx.fillStyle = this.getCellColor(cell);
-            const x = cell.x + sector.size * sector.x;
-            const y = cell.y + sector.size * sector.y;
-            this.ctx.fillRect(x * s, y * s, s, s);
+            const x1 = cell.x + (sector.size-2) * x;
+            const y1 = cell.y + (sector.size-2) * y;
+            this.ctx.fillRect(x1 * s, y1 * s, s, s);
         })
 
     }
@@ -63,8 +63,10 @@ export class MiniMap {
     }
 
     private getCellColor(cell: Cell) {
-        if (cell.type === CellType.WATER || cell.type === CellType.OCEAN)
+        if (cell.type === CellType.WATER)
             return 'blue'
+        if (cell.type === CellType.OCEAN)
+            return 'darkblue'
         return 'green';
     }
 }

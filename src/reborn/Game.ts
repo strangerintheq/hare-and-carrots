@@ -35,6 +35,7 @@ export class Game {
         this.ground = new Ground(sector);
         this.scene.add(this.ground);
         this.rayCaster.update(this.ground.getPossibleToMoveCells());
+        this.hare.mirrorPosition(sector.halfSize);
     }
 
     render() {
@@ -79,5 +80,9 @@ export class Game {
     resize() {
         this.renderer.setSize(innerWidth, innerHeight);
         this.camera.onResize();
+    }
+
+    placeHare() {
+
     }
 }

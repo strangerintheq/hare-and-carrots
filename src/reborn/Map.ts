@@ -41,8 +41,8 @@ export class Map {
     private initCell(sector: Sector, cell: Cell) {
         cell.height = this.noisedValue(
             'terrain',
-            cell.x/15+sector.x,
-            cell.y/15+sector.y
+            cell.x/(sector.size-2)+sector.x,
+            cell.y/(sector.size-2)+sector.y
         );
         cell.type = this.getCellTypeByHeight(cell.height);
     }

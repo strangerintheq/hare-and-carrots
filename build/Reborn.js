@@ -623,7 +623,7 @@
       sector.forEachCell((cell) => this.initCell(sector, cell));
     }
     initCell(sector, cell) {
-      cell.height = this.noisedValue("terrain", cell.x / 15 + sector.x, cell.y / 15 + sector.y);
+      cell.height = this.noisedValue("terrain", cell.x / (sector.size - 2) + sector.x, cell.y / (sector.size - 2) + sector.y);
       cell.type = this.getCellTypeByHeight(cell.height);
     }
     getCellTypeByHeight(height) {
@@ -24382,6 +24382,13 @@
       new Cube(this, white).sc(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
       new Cube(this, red).sc(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
     }
+    mirrorPosition(sectorHalfSize) {
+      let s0 = sectorHalfSize - 1;
+      if (Math.abs(this.position.x) === sectorHalfSize)
+        this.position.x = -Math.sign(this.position.x) * s0;
+      if (Math.abs(this.position.z) === sectorHalfSize)
+        this.position.z = -Math.sign(this.position.z) * s0;
+    }
   };
 
   // src/reborn/base/RayCaster.ts
@@ -24465,6 +24472,7 @@
       this.ground = new Ground(sector);
       this.scene.add(this.ground);
       this.rayCaster.update(this.ground.getPossibleToMoveCells());
+      this.hare.mirrorPosition(sector.halfSize);
     }
     render() {
       this.animations = this.animations.filter((a) => a.playAnimation());
@@ -24499,10 +24507,12 @@
       this.renderer.setSize(innerWidth, innerHeight);
       this.camera.onResize();
     }
+    placeHare() {
+    }
   };
 
   // src/reborn/MiniMap.ts
-  var s = 2;
+  var s = 3;
   var MiniMap = class {
     constructor() {
       this.empty = new Sector(0, 0, 21);
@@ -24520,20 +24530,19 @@
         for (let x = -3; x <= 3; x++) {
           let sector = new Sector(x + mapCursor2.x, y + mapCursor2.y, 21);
           map2.initSector(sector);
-          this.fillCells(sector);
-          this.drawSectorIndex(sector);
+          this.fillCells(sector, x, y);
         }
         this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 1;
         this.ctx.strokeRect(-10 * s, -10 * s, 21 * s, 21 * s);
       }
     }
-    fillCells(sector) {
+    fillCells(sector, x, y) {
       sector.forEachCell((cell) => {
         this.ctx.fillStyle = this.getCellColor(cell);
-        const x = cell.x + sector.size * sector.x;
-        const y = cell.y + sector.size * sector.y;
-        this.ctx.fillRect(x * s, y * s, s, s);
+        const x1 = cell.x + (sector.size - 2) * x;
+        const y1 = cell.y + (sector.size - 2) * y;
+        this.ctx.fillRect(x1 * s, y1 * s, s, s);
       });
     }
     randomGray() {
@@ -24547,8 +24556,10 @@
       this.ctx.fillText(sector.x + " " + sector.y, sector.size * sector.x * s, sector.size * sector.y * s);
     }
     getCellColor(cell) {
-      if (cell.type === CellType.WATER || cell.type === CellType.OCEAN)
+      if (cell.type === CellType.WATER)
         return "blue";
+      if (cell.type === CellType.OCEAN)
+        return "darkblue";
       return "green";
     }
   };
