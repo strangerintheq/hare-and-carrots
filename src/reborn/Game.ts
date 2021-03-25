@@ -72,7 +72,8 @@ export class Game {
         const cellAnimation = cell.getAnimation();
         if (!cellAnimation)
             return
-        cellAnimation.position.set(cell.x, 1, cell.y);
+        cellAnimation.position.set(cell.x, 0, cell.y);
+        cellAnimation.rotation.set(0, this.hare.rotation.y, 0)
         this.animations.push(cellAnimation);
         this.ground.add(cellAnimation);
     }

@@ -1,7 +1,7 @@
 import {CellType} from "./CellType";
 import {CellObjectType} from "./CellObjectType";
 import {Anim} from "../animations/Anim";
-import {blue1, blue2} from "../../core/Materials";
+import {blue1, blue2, blueClipped1, blueClipped2} from "../../core/Materials";
 import {WaterSplashAnimation} from "../animations/WaterSplashAnimation";
 
 export class Cell {
@@ -19,9 +19,9 @@ export class Cell {
 
     getAnimation() : Anim | undefined {
         if (this.type === CellType.WATER)
-            return new WaterSplashAnimation(blue1)
+            return new WaterSplashAnimation(blueClipped1)
         if (this.type === CellType.OCEAN)
-            return new WaterSplashAnimation(blue2)
+            return new WaterSplashAnimation(blueClipped2)
 
         return undefined
     }
