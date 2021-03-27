@@ -20,7 +20,6 @@ export class Ground extends Object3D {
         })
     }
 
-
     getPossibleToMoveCells() : CellBase[]{
         return this.children;
     }

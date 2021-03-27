@@ -2,6 +2,7 @@ import SimplexNoise from 'simplex-noise'
 import {Sector} from "./data/Sector";
 import {Cell} from "./data/Cell";
 import {CellType} from "./data/CellType";
+import {CellObjectType} from "./data/CellObjectType";
 
 const MAP_SEED_KEY = 'hare-seed';
 
@@ -45,6 +46,7 @@ export class Map {
             cell.y/(sector.size-2)+sector.y
         );
         cell.type = this.getCellTypeByHeight(cell.height);
+        cell.object = this.getCellObject(cell, sector);
     }
 
     private getCellTypeByHeight(height: number): CellType {
@@ -53,5 +55,18 @@ export class Map {
         if (height < 0)
             return CellType.WATER
         return CellType.GRASS
+    }
+
+    private getCellObject(cell: Cell, sector: Sector) : CellObjectType{
+        if (cell.type === CellType.GRASS) {
+            let x = cell.x + sector.x*(sector.size-2);
+            let y = cell.y + sector.y*(sector.size-2);
+            let all = Object.keys(CellObjectType);
+            for (let i=1; i<all.length; i++)
+                if (this.noisedValue(CellObjectType[i], x/5, y/5) > 0.8)
+                    return i
+        }
+
+        return CellObjectType.NONE;
     }
 }

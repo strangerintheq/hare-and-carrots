@@ -1,4 +1,5 @@
 export enum CellObjectType {
+    NONE,
     TREE1,
     TREE2,
     BUSH1,

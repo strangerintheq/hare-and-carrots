@@ -595,6 +595,24 @@
     CellType2["MOUNTAIN"] = "MOUNTAIN";
   })(CellType || (CellType = {}));
 
+  // src/reborn/data/CellObjectType.ts
+  var CellObjectType;
+  (function(CellObjectType2) {
+    CellObjectType2[CellObjectType2["NONE"] = 0] = "NONE";
+    CellObjectType2[CellObjectType2["TREE1"] = 1] = "TREE1";
+    CellObjectType2[CellObjectType2["TREE2"] = 2] = "TREE2";
+    CellObjectType2[CellObjectType2["BUSH1"] = 3] = "BUSH1";
+    CellObjectType2[CellObjectType2["BUSH2"] = 4] = "BUSH2";
+    CellObjectType2[CellObjectType2["STONE1"] = 5] = "STONE1";
+    CellObjectType2[CellObjectType2["STONE2"] = 6] = "STONE2";
+    CellObjectType2[CellObjectType2["SIGN_1"] = 7] = "SIGN_1";
+    CellObjectType2[CellObjectType2["SIGN_2"] = 8] = "SIGN_2";
+    CellObjectType2[CellObjectType2["SIGN_3"] = 9] = "SIGN_3";
+    CellObjectType2[CellObjectType2["CARROT"] = 10] = "CARROT";
+    CellObjectType2[CellObjectType2["COIN"] = 11] = "COIN";
+    CellObjectType2[CellObjectType2["POO"] = 12] = "POO";
+  })(CellObjectType || (CellObjectType = {}));
+
   // src/reborn/Map.ts
   var MAP_SEED_KEY = "hare-seed";
   var Map2 = class {
@@ -625,6 +643,7 @@
     initCell(sector, cell) {
       cell.height = this.noisedValue("terrain", cell.x / (sector.size - 2) + sector.x, cell.y / (sector.size - 2) + sector.y);
       cell.type = this.getCellTypeByHeight(cell.height);
+      cell.object = this.getCellObject(cell, sector);
     }
     getCellTypeByHeight(height) {
       if (height < -0.5)
@@ -632,6 +651,17 @@
       if (height < 0)
         return CellType.WATER;
       return CellType.GRASS;
+    }
+    getCellObject(cell, sector) {
+      if (cell.type === CellType.GRASS) {
+        let x = cell.x + sector.x * (sector.size - 2);
+        let y = cell.y + sector.y * (sector.size - 2);
+        let all = Object.keys(CellObjectType);
+        for (let i = 1; i < all.length; i++)
+          if (this.noisedValue(CellObjectType[i], x / 5, y / 5) > 0.8)
+            return i;
+      }
+      return CellObjectType.NONE;
     }
   };
 
@@ -24325,10 +24355,64 @@
     }
   };
 
+  // src/reborn/objects/Carrot.ts
+  var Carrot = class extends Object3D {
+    constructor() {
+      super();
+      this.position.y = 0.5;
+      new Cube(this, orange).sc(0.3, 0.2, 0.3);
+      new Cube(this, green2).sc(0.1, 1, 0.1);
+    }
+  };
+
+  // src/reborn/objects/Bush1.ts
+  var Bush1 = class extends Object3D {
+    constructor() {
+      super();
+      this.position.y = 1;
+      new Cube(this, green3);
+    }
+  };
+
+  // src/reborn/objects/Tree2.ts
+  var Tree2 = class extends Object3D {
+    constructor() {
+      super();
+      this.position.y = 1;
+      new Cube(this, brown1).sc(0.3, 2, 0.3);
+      new Cube(this, brown1).sc(2, 0.3, 0.3).pos(0.65, 1.5, 0).rot(0, 0, 0.7);
+      new Cube(this, brown1).sc(2, 0.3, 0.3).pos(-0.65, 1.5, 0).rot(0, 0, -0.7);
+      new Cube(this, green3).sc(1.5, 0.7, 1).pos(1.5, 2, 0);
+      new Cube(this, green3).sc(1, 0.7, 0.8).pos(1.7, 2.5, 0);
+      new Cube(this, green3).sc(1, 1, 1).pos(-1, 2, 0);
+    }
+  };
+
+  // src/reborn/objects/Tree1.ts
+  var Tree1 = class extends Object3D {
+    constructor() {
+      super();
+      this.position.y = 1;
+      new Cube(this, brown1).sc(0.3, 2, 0.3);
+      new Cube(this, green).sc(1.5, 2, 1.5).pos(0, 2, 0);
+      new Cube(this, green2).sc(1, 2.5, 1).pos(0, 2, 0);
+      new Cube(this, green2).sc(2, 1.5, 1).pos(0, 2, 0);
+      new Cube(this, green2).sc(1, 1.5, 2).pos(0, 2, 0);
+    }
+  };
+
   // src/reborn/objects/CellObject.ts
   var CellObject = class extends Object3D {
     constructor(cell) {
       super();
+      if (cell === CellObjectType.CARROT)
+        this.add(new Carrot());
+      if (cell === CellObjectType.BUSH1)
+        this.add(new Bush1());
+      if (cell === CellObjectType.TREE1)
+        this.add(new Tree1());
+      if (cell === CellObjectType.TREE2)
+        this.add(new Tree2());
     }
   };
 

@@ -36,7 +36,6 @@ export class Hare extends Object3D {
             .pos(0, -0.1, 0.45);
     }
 
-
     mirrorPosition(sectorHalfSize:number) {
         let s0 = sectorHalfSize - 1;
         if (Math.abs(this.position.x) === sectorHalfSize)
