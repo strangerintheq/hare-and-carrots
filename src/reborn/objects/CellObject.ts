@@ -4,8 +4,9 @@ import {Carrot} from "./Carrot";
 import {Bush1} from "./Bush1";
 import {Tree2} from "./Tree2";
 import {Tree1} from "./Tree1";
+import {Obj} from "../renderer/Obj";
 
-export class CellObject extends Object3D{
+export class CellObject extends Obj{
 
     constructor(cell: CellObjectType) {
         super();

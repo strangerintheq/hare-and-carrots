@@ -1,22 +1,21 @@
 import {Anim} from "./Anim";
-import {Hare} from "../objects/Hare";
+import {HareController} from "../game/Hare";
 import {Vector3} from "three";
 import {Cell} from "../data/Cell";
 
 export class JumpHareAnimation extends Anim {
 
-    private readonly hare: Hare;
+    private readonly hare: HareController;
 
     private readonly sourceRotation: number;
     private readonly targetRotation: number;
     private readonly sourcePosition: Vector3 = new Vector3();
     private readonly targetPosition: Vector3 = new Vector3();
-    private readonly animationendCallback: Function;
 
-    constructor(hare: Hare, cell: Cell, targetRotation: number, animationendCallback) {
+
+    constructor(hare: HareController, cell: Cell, targetRotation: number) {
         super(150)
         this.hare = hare;
-        this.animationendCallback = animationendCallback;
         this.sourcePosition.copy(hare.position);
         this.targetPosition.set(cell.x, cell.height+1, cell.y);
         this.sourceRotation = hare.rotation.y;
@@ -37,7 +36,6 @@ export class JumpHareAnimation extends Anim {
         } else {
             this.hare.position.copy(this.targetPosition)
             this.hare.rotation.set(0, this.targetRotation, 0);
-            setTimeout(() => this.animationendCallback())
         }
     }
 }

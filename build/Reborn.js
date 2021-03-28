@@ -582,7 +582,7 @@
     })();
   });
 
-  // src/reborn/Map.ts
+  // src/reborn/game/Map.ts
   var import_simplex_noise = __toModule(require_simplex_noise());
 
   // src/reborn/data/CellType.ts
@@ -613,7 +613,7 @@
     CellObjectType2[CellObjectType2["POO"] = 12] = "POO";
   })(CellObjectType || (CellObjectType = {}));
 
-  // src/reborn/Map.ts
+  // src/reborn/game/Map.ts
   var MAP_SEED_KEY = "hare-seed";
   var Map2 = class {
     constructor() {
@@ -626,7 +626,7 @@
       return this.noises[key].noise2D(x, y);
     }
     getSeed() {
-      let seed = localStorage.getItem(MAP_SEED_KEY);
+      let seed;
       if (!seed)
         seed = Math.random().toString(36).substring(2);
       localStorage.setItem(MAP_SEED_KEY, seed);
@@ -641,7 +641,13 @@
       sector.forEachCell((cell) => this.initCell(sector, cell));
     }
     initCell(sector, cell) {
-      cell.height = this.noisedValue("terrain", cell.x / (sector.size - 2) + sector.x, cell.y / (sector.size - 2) + sector.y);
+      let x = cell.x + sector.x * (sector.size - 2);
+      let y = cell.y + sector.y * (sector.size - 2);
+      cell.height = this.noisedValue("terrain1", x / 40, y / 40) * 0.8;
+      cell.height += this.noisedValue("terrain2", x / 10, y / 10) * 0.2;
+      cell.height = Math.floor(cell.height * 10) / 10;
+      if (cell.height < 0)
+        cell.height -= 0.15;
       cell.type = this.getCellTypeByHeight(cell.height);
       cell.object = this.getCellObject(cell, sector);
     }
@@ -658,7 +664,7 @@
         let y = cell.y + sector.y * (sector.size - 2);
         let all = Object.keys(CellObjectType);
         for (let i = 1; i < all.length; i++)
-          if (this.noisedValue(CellObjectType[i], x / 5, y / 5) > 0.8)
+          if (this.noisedValue(CellObjectType[i], x, y) > 0.9)
             return i;
       }
       return CellObjectType.NONE;
@@ -24180,7 +24186,7 @@
     }
   }
 
-  // src/core/Materials.ts
+  // src/old/core/Materials.ts
   var planes = clippingPlanes();
   var green = hsl(90, 50, 70);
   var green2 = hsl(90, 50, 60);
@@ -24224,14 +24230,8 @@
     }
   };
 
-  // src/reborn/objects/Cube.ts
-  var cube = new BoxGeometry();
-  var Cube = class extends Object3D {
-    constructor(parent, material) {
-      super();
-      parent.add(this);
-      this.add(new Mesh(cube, material));
-    }
+  // src/reborn/renderer/Obj.ts
+  var Obj = class extends Object3D {
     sc(x, y, z) {
       this.scale.set(x, y, z);
       return this;
@@ -24243,6 +24243,19 @@
     rot(x, y, z) {
       this.rotation.set(x, y, z);
       return this;
+    }
+  };
+
+  // src/reborn/objects/Cube.ts
+  var cube = new BoxGeometry();
+  var Cube = class extends Obj {
+    constructor(parent, material) {
+      super();
+      parent.add(this);
+      let mesh = new Mesh(cube, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      this.add(mesh);
     }
   };
 
@@ -24299,7 +24312,7 @@
     }
   };
 
-  // src/reborn/base/Renderer.ts
+  // src/reborn/renderer/Renderer.ts
   var Renderer = class extends WebGLRenderer {
     constructor() {
       super({
@@ -24315,19 +24328,22 @@
     }
   };
 
-  // src/reborn/base/Lights.ts
+  // src/reborn/renderer/Lights.ts
   var Lights = class extends Object3D {
     constructor() {
       super();
-      let s2 = 11;
-      let color = "white";
+      const color = "white";
       this.add(new AmbientLight(color, 0.2));
-      let light = new DirectionalLight(color, 0.2);
-      light.position.set(-5, -15, -20);
-      this.add(light);
-      light = new DirectionalLight(color, 0.8);
-      light.position.set(5, 15, 20);
-      this.add(light);
+      const light1 = new DirectionalLight(color, 0.2);
+      light1.position.set(-5, -15, -20);
+      this.add(light1);
+      const light2 = new DirectionalLight(color, 0.8);
+      light2.position.set(5, 15, 20);
+      this.add(light2);
+      this.shadow(light2);
+    }
+    shadow(light) {
+      const s2 = 11;
       light.castShadow = true;
       light.shadow.mapSize.width = 4096;
       light.shadow.mapSize.height = 4096;
@@ -24340,7 +24356,7 @@
   };
 
   // src/reborn/objects/CellBase.ts
-  var CellBase = class extends Object3D {
+  var CellBase = class extends Obj {
     constructor(cell) {
       super();
       if (cell === CellType.OCEAN) {
@@ -24356,29 +24372,28 @@
   };
 
   // src/reborn/objects/Carrot.ts
-  var Carrot = class extends Object3D {
+  var Carrot = class extends Obj {
     constructor() {
       super();
-      this.position.y = 0.5;
+      this.pos(0, 0.5, 0);
       new Cube(this, orange).sc(0.3, 0.2, 0.3);
       new Cube(this, green2).sc(0.1, 1, 0.1);
     }
   };
 
   // src/reborn/objects/Bush1.ts
-  var Bush1 = class extends Object3D {
+  var Bush1 = class extends Obj {
     constructor() {
       super();
-      this.position.y = 1;
-      new Cube(this, green3);
+      new Cube(this, green3).pos(0, 1, 0);
     }
   };
 
   // src/reborn/objects/Tree2.ts
-  var Tree2 = class extends Object3D {
+  var Tree2 = class extends Obj {
     constructor() {
       super();
-      this.position.y = 1;
+      this.pos(0, 1, 0);
       new Cube(this, brown1).sc(0.3, 2, 0.3);
       new Cube(this, brown1).sc(2, 0.3, 0.3).pos(0.65, 1.5, 0).rot(0, 0, 0.7);
       new Cube(this, brown1).sc(2, 0.3, 0.3).pos(-0.65, 1.5, 0).rot(0, 0, -0.7);
@@ -24389,7 +24404,7 @@
   };
 
   // src/reborn/objects/Tree1.ts
-  var Tree1 = class extends Object3D {
+  var Tree1 = class extends Obj {
     constructor() {
       super();
       this.position.y = 1;
@@ -24402,7 +24417,7 @@
   };
 
   // src/reborn/objects/CellObject.ts
-  var CellObject = class extends Object3D {
+  var CellObject = class extends Obj {
     constructor(cell) {
       super();
       if (cell === CellObjectType.CARROT)
@@ -24416,13 +24431,15 @@
     }
   };
 
-  // src/reborn/objects/Ground.ts
+  // src/reborn/game/Ground.ts
   var Ground = class extends Object3D {
     constructor(sector) {
       super();
+      this.possibleToMoveCells = [];
       this.sector = sector;
       sector.forEachCell((cell) => {
         const cellBase = new CellBase(cell.type);
+        cellBase.traverse((o) => o["isMesh"] && this.possibleToMoveCells.push(o));
         const h = Math.max(0, cell.height);
         cellBase.position.set(cell.x, h, cell.y);
         cell.object && cellBase.add(new CellObject(cell.object));
@@ -24430,14 +24447,14 @@
       });
     }
     getPossibleToMoveCells() {
-      return this.children;
+      return this.possibleToMoveCells;
     }
     getCell(x, y) {
       return this.sector.cells[y + this.sector.halfSize][x + this.sector.halfSize];
     }
   };
 
-  // src/reborn/base/Camera.ts
+  // src/reborn/renderer/Camera.ts
   var Camera2 = class extends OrthographicCamera {
     constructor() {
       super(1, 1, 1, 1, 0.1, 100);
@@ -24456,7 +24473,7 @@
   };
 
   // src/reborn/objects/Hare.ts
-  var Hare = class extends Object3D {
+  var Hare = class extends Obj {
     constructor() {
       super();
       new Cube(this, white).sc(0.8, 0.8, 0.8);
@@ -24465,6 +24482,15 @@
       new Cube(this, white).sc(0.2, 0.6, 0.05).pos(-0.15, 0.6, -0.3);
       new Cube(this, white).sc(0.1, 0.1, 0.1).pos(0, -0.2, -0.45);
       new Cube(this, red).sc(0.3, 0.1, 0.1).pos(0, -0.1, 0.45);
+    }
+  };
+
+  // src/reborn/game/HareController.ts
+  var HareController = class extends Obj {
+    constructor() {
+      super();
+      this.pos(0, 1, 0);
+      this.add(new Hare());
     }
     mirrorPosition(sectorHalfSize) {
       let s0 = sectorHalfSize - 1;
@@ -24475,7 +24501,7 @@
     }
   };
 
-  // src/reborn/base/RayCaster.ts
+  // src/reborn/renderer/RayCaster.ts
   var RayCaster = class extends Raycaster {
     constructor(cb, camera) {
       super();
@@ -24500,12 +24526,11 @@
 
   // src/reborn/animations/JumpHareAnimation.ts
   var JumpHareAnimation = class extends Anim {
-    constructor(hare, cell, targetRotation, animationendCallback) {
+    constructor(hare, cell, targetRotation) {
       super(150);
       this.sourcePosition = new Vector3();
       this.targetPosition = new Vector3();
       this.hare = hare;
-      this.animationendCallback = animationendCallback;
       this.sourcePosition.copy(hare.position);
       this.targetPosition.set(cell.x, cell.height + 1, cell.y);
       this.sourceRotation = hare.rotation.y;
@@ -24525,7 +24550,6 @@
       } else {
         this.hare.position.copy(this.targetPosition);
         this.hare.rotation.set(0, this.targetRotation, 0);
-        setTimeout(() => this.animationendCallback());
       }
     }
   };
@@ -24538,7 +24562,7 @@
     return a + (b - a) * t;
   }
 
-  // src/reborn/Game.ts
+  // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
       this.renderer = new Renderer();
@@ -24546,7 +24570,7 @@
       this.scene = new Scene();
       this.animations = [];
       this.scene.add(new Lights());
-      this.hare = new Hare();
+      this.hare = new HareController();
       this.scene.add(this.hare);
       this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
       this.resize();
@@ -24571,12 +24595,15 @@
       const z = p0.z - dz;
       const nextCell = this.ground.getCell(x, z);
       const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
-      this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation, () => this.activateCell(nextCell)));
+      this.activateCell(nextCell);
+      this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
     }
     activateCell(cell) {
       this.playCellAnimation(cell);
       if (this.ground.sector.isOnEdge(cell)) {
-        dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
+        setTimeout(() => {
+          dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
+        }, 350);
       }
     }
     playCellAnimation(cell) {
@@ -24596,7 +24623,7 @@
     }
   };
 
-  // src/reborn/MiniMap.ts
+  // src/reborn/game/MiniMap.ts
   var s = 3;
   var MiniMap = class {
     constructor() {

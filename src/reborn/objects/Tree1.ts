@@ -1,10 +1,11 @@
 import {Object3D} from "three";
 
-import {brown1, green, green2} from "../../core/Materials";
+import {brown1, green, green2} from "../../old/core/Materials";
 import {Cube} from "./Cube";
+import {Obj} from "../renderer/Obj";
 
 
-export class Tree1 extends Object3D {
+export class Tree1 extends Obj {
     constructor() {
         super();
         this.position.y = 1;

@@ -1,9 +1,10 @@
 import {Object3D} from "three";
 import {CellType} from "../data/CellType";
-import {blue1, blue2, green} from "../../core/Materials";
+import {blue1, blue2, green} from "../../old/core/Materials";
 import {Cube} from "./Cube";
+import {Obj} from "../renderer/Obj";
 
-export class CellBase extends Object3D {
+export class CellBase extends Obj {
 
     constructor(cell: CellType) {
         super();

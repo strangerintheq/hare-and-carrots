@@ -1,27 +1,18 @@
-import {BoxGeometry, Material, Mesh, Object3D} from "three";
+import {BoxGeometry, Material, Mesh} from "three";
+import {Obj} from "../renderer/Obj";
 
 const cube = new BoxGeometry();
 
-export class Cube extends Object3D {
+export class Cube extends Obj {
 
-    constructor(parent: Object3D, material: Material) {
+    constructor(parent: Obj, material: Material) {
         super();
         parent.add(this);
-        this.add(new Mesh(cube, material))
+        let mesh = new Mesh(cube, material);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        this.add(mesh)
     }
 
-    sc(x: number, y: number, z: number) : Cube {
-        this.scale.set(x,y,z)
-        return this
-    }
 
-    pos(x: number, y: number, z: number) : Cube{
-        this.position.set(x,y,z)
-        return this
-    }
-
-    rot(x: number, y: number, z: number) : Cube{
-        this.rotation.set(x,y,z)
-        return this
-    }
 }

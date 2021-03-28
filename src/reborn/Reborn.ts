@@ -1,8 +1,8 @@
-import {Map} from "./Map";
+import {Map} from "./game/Map";
 import {Sector} from "./data/Sector";
-import {Game} from "./Game";
+import {Game} from "./game/Game";
 import {Cell} from "./data/Cell";
-import {MiniMap} from "./MiniMap";
+import {MiniMap} from "./game/MiniMap";
 
 const sectorSize = 21;
 const mapCursor = {x:0, y:0};
@@ -10,6 +10,7 @@ const mapCursor = {x:0, y:0};
 const miniMap = new MiniMap()
 const game = new Game();
 const map = new Map();
+
 init();
 
 function init() {
@@ -31,5 +32,5 @@ addEventListener('resize', () => game.resize())
 
 requestAnimationFrame(function update(){
     game.render();
-    requestAnimationFrame(update)
+    requestAnimationFrame(update);
 })

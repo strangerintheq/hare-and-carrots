@@ -6,7 +6,6 @@ export class Renderer extends WebGLRenderer {
         super({
             antialias: true
         })
-
         this.shadowMap.enabled = true;
         this.setClearColor(new Color("hsl(34, 50%, 70%)"));
         this.localClippingEnabled = true;

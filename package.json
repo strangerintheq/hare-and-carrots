@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/HareAndCarrots.ts --bundle --outdir=build ",
+    "build": "esbuild src/old/HareAndCarrots.ts --bundle --outdir=build ",
     "reborn": "esbuild src/reborn/Reborn.ts --bundle --outdir=build "
   },
   "author": "",

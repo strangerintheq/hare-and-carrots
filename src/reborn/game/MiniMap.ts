@@ -1,7 +1,7 @@
-import {Sector} from "./data/Sector";
+import {Sector} from "../data/Sector";
 import {Map} from "./Map";
-import {Cell} from "./data/Cell";
-import {CellType} from "./data/CellType";
+import {Cell} from "../data/Cell";
+import {CellType} from "../data/CellType";
 
 let s = 3;
 

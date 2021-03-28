@@ -1,7 +1,7 @@
 import {CellType} from "./CellType";
 import {CellObjectType} from "./CellObjectType";
 import {Anim} from "../animations/Anim";
-import {blue1, blue2, blueClipped1, blueClipped2} from "../../core/Materials";
+import { blueClipped1, blueClipped2} from "../../old/core/Materials";
 import {WaterSplashAnimation} from "../animations/WaterSplashAnimation";
 
 export class Cell {

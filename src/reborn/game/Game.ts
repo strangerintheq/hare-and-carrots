@@ -1,16 +1,14 @@
 import {Object3D, Scene} from "three";
-import {Sector} from "./data/Sector";
-import {Renderer} from "./base/Renderer";
-import {Lights} from "./base/Lights";
-import {Ground} from "./objects/Ground";
-import {Camera} from "./base/Camera";
-import {Hare} from "./objects/Hare";
-import {RayCaster} from "./base/RayCaster";
-import {JumpHareAnimation} from "./animations/JumpHareAnimation";
-import {Anim} from "./animations/Anim";
-import {Cell} from "./data/Cell";
-import {mirrorHarePosition} from "../world/objects/Hare";
-import {reCreateGround} from "../world/ground/Ground";
+import {Sector} from "../data/Sector";
+import {Renderer} from "../renderer/Renderer";
+import {Lights} from "../renderer/Lights";
+import {Ground} from "./Ground";
+import {Camera} from "../renderer/Camera";
+import {HareController} from "./HareController";
+import {RayCaster} from "../renderer/RayCaster";
+import {JumpHareAnimation} from "../animations/JumpHareAnimation";
+import {Anim} from "../animations/Anim";
+import {Cell} from "../data/Cell";
 
 export class Game {
 
@@ -19,12 +17,12 @@ export class Game {
     scene = new Scene();
     rayCaster: RayCaster;
     ground: Ground;
-    hare: Hare;
+    hare: HareController;
     animations: Anim[] = [];
 
     constructor() {
         this.scene.add(new Lights());
-        this.hare = new Hare();
+        this.hare = new HareController();
         this.scene.add(this.hare);
         this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
         this.resize();
@@ -52,19 +50,17 @@ export class Game {
         const z = p0.z - dz;
 
         const nextCell = this.ground.getCell(x, z);
-        const rotation = dx * dx + dz * dz !== 0 ?
-            Math.atan2(-dx, -dz) : this.hare.rotation.y;
-        this.animations.push(new JumpHareAnimation(
-            this.hare, nextCell, rotation,
-            () => this.activateCell(nextCell)
-        ));
+        const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
+        this.activateCell(nextCell);
+        this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
     }
 
     private activateCell(cell: Cell) {
         this.playCellAnimation(cell);
         if (this.ground.sector.isOnEdge(cell)) {
-
-            dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
+            setTimeout(() =>{
+                dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
+            }, 350)
         }
     }
 

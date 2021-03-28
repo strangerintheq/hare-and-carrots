@@ -1,8 +1,8 @@
 import SimplexNoise from 'simplex-noise'
-import {Sector} from "./data/Sector";
-import {Cell} from "./data/Cell";
-import {CellType} from "./data/CellType";
-import {CellObjectType} from "./data/CellObjectType";
+import {Sector} from "../data/Sector";
+import {Cell} from "../data/Cell";
+import {CellType} from "../data/CellType";
+import {CellObjectType} from "../data/CellObjectType";
 
 const MAP_SEED_KEY = 'hare-seed';
 
@@ -22,7 +22,7 @@ export class Map {
     }
 
     getSeed() {
-        let seed = localStorage.getItem(MAP_SEED_KEY);
+        let seed;// = localStorage.getItem(MAP_SEED_KEY);
         if (!seed)
             seed = Math.random().toString(36).substring(2);
         localStorage.setItem(MAP_SEED_KEY, seed);
@@ -40,11 +40,13 @@ export class Map {
     }
 
     private initCell(sector: Sector, cell: Cell) {
-        cell.height = this.noisedValue(
-            'terrain',
-            cell.x/(sector.size-2)+sector.x,
-            cell.y/(sector.size-2)+sector.y
-        );
+        let x = cell.x+sector.x*(sector.size-2);
+        let y = cell.y+sector.y*(sector.size-2);
+        cell.height = this.noisedValue('terrain1', x/40, y/40)*0.8;
+        cell.height += this.noisedValue('terrain2', x/10, y/10)*0.2;
+        cell.height = Math.floor(cell.height*10)/10
+        if (cell.height <0)
+            cell.height -= 0.15
         cell.type = this.getCellTypeByHeight(cell.height);
         cell.object = this.getCellObject(cell, sector);
     }
@@ -63,7 +65,7 @@ export class Map {
             let y = cell.y + sector.y*(sector.size-2);
             let all = Object.keys(CellObjectType);
             for (let i=1; i<all.length; i++)
-                if (this.noisedValue(CellObjectType[i], x/5, y/5) > 0.8)
+                if (this.noisedValue(CellObjectType[i], x, y) > 0.9)
                     return i
         }
 

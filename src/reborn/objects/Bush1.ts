@@ -1,14 +1,12 @@
-import {Object3D} from "three";
-
-import {green2, green3, orange} from "../../core/Materials";
+import {green3} from "../../old/core/Materials";
 import {Cube} from "./Cube";
-import {cubeMesh, object} from "../../core/Framework";
-import {getGround} from "../../world/ground/Ground";
+import {Obj} from "../renderer/Obj";
 
-export class Bush1 extends Object3D {
+export class Bush1 extends Obj {
     constructor() {
         super();
-        this.position.y = 1;
+
         new Cube(this, green3)
+            .pos(0,1,0)
     }
 }
