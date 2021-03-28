@@ -2,7 +2,7 @@ import {Object3D, Scene} from "three";
 import {Sector} from "../data/Sector";
 import {Renderer} from "../renderer/Renderer";
 import {Lights} from "../renderer/Lights";
-import {Ground} from "./Ground";
+import {Ground} from "../renderer/Ground";
 import {Camera} from "../renderer/Camera";
 import {HareController} from "./HareController";
 import {RayCaster} from "../renderer/RayCaster";
@@ -47,26 +47,24 @@ export class Game {
     }
 
     private click(obj: Object3D) {
-
-        if (obj.parent.parent.parent === this.dialogCloud){
-            this.dialogCloud.hide();
-            const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
-            cell.object = CellObjectType.NONE;
-            cell.updateCell();
-            return
+        if (obj.parent.parent.parent === this.dialogCloud) {
+            return this.doAction()
         }
+        let cell = this.handleJump(obj);
+        this.activateCell(cell);
+    }
 
+    private handleJump(obj: Object3D): Cell{
         const p0 = this.hare.position;
         const p1 = obj.parent.parent.position;
         const dx = Math.sign(p0.x - p1.x);
         const dz = Math.sign(p0.z - p1.z);
         const x = p0.x - dx;
         const z = p0.z - dz;
-
         const nextCell = this.ground.getCell(x, z);
         const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
-        this.activateCell(nextCell);
         this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
+        return nextCell;
     }
 
     private activateCell(cell: Cell) {
@@ -104,5 +102,12 @@ export class Game {
 
     placeHare() {
 
+    }
+
+    private doAction() {
+        this.dialogCloud.hide();
+        const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
+        cell.object = CellObjectType.NONE;
+        cell.updateCell();
     }
 }

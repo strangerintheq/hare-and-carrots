@@ -613,31 +613,29 @@
     CellObjectType2[CellObjectType2["POO"] = 12] = "POO";
   })(CellObjectType || (CellObjectType = {}));
 
-  // src/reborn/game/Map.ts
+  // src/reborn/storage/SeedStorage.ts
   var MAP_SEED_KEY = "hare-seed";
+  function getSeed() {
+    let seed = localStorage.getItem(MAP_SEED_KEY);
+    if (!seed)
+      seed = Math.random().toString(36).substring(2);
+    localStorage.setItem(MAP_SEED_KEY, seed);
+    return seed;
+  }
+  function clearSeed() {
+    localStorage.removeItem(MAP_SEED_KEY);
+  }
+
+  // src/reborn/game/Map.ts
   var Map2 = class {
-    constructor() {
-      this.noises = {};
-      this.seed = this.getSeed();
-    }
     noisedValue(key, x, y) {
       if (!this.noises[key])
         this.noises[key] = new import_simplex_noise.default(this.seed + key);
       return this.noises[key].noise2D(x, y);
     }
-    getSeed() {
-      let seed = localStorage.getItem(MAP_SEED_KEY);
-      if (!seed)
-        seed = Math.random().toString(36).substring(2);
-      localStorage.setItem(MAP_SEED_KEY, seed);
-      return seed;
-    }
-    clearSeed() {
-      localStorage.removeItem(MAP_SEED_KEY);
-      this.seed = this.getSeed();
-      this.noises = {};
-    }
     initSector(sector) {
+      this.seed = getSeed();
+      this.noises = {};
       sector.forEachCell((cell) => this.initCell(sector, cell));
     }
     initCell(sector, cell) {
@@ -24439,27 +24437,28 @@
     }
   };
 
-  // src/reborn/game/Ground.ts
+  // src/reborn/renderer/Ground.ts
   var Ground = class extends Object3D {
     constructor(sector) {
       super();
       this.possibleToMoveCells = [];
       this.sector = sector;
-      sector.forEachCell((cell) => {
-        const cellBase = new CellBase(cell.type);
-        cellBase.traverse((o) => o["isMesh"] && this.possibleToMoveCells.push(o));
-        const h = Math.max(0, cell.height);
-        cellBase.position.set(cell.x, h, cell.y);
-        let cellObject;
-        cell.updateFn = () => {
-          if (cellObject)
-            cellBase.remove(cellObject);
-          cellObject = new CellObject(cell.object);
-          cell.object && cellBase.add(cellObject);
-        };
-        cell.updateFn();
-        this.add(cellBase);
-      });
+      sector.forEachCell((cell) => this.initCell(cell));
+    }
+    initCell(cell) {
+      const cellBase = new CellBase(cell.type);
+      cellBase.traverse((o) => o["isMesh"] && this.possibleToMoveCells.push(o));
+      const h = Math.max(0, cell.height);
+      cellBase.position.set(cell.x, h, cell.y);
+      let cellObject;
+      cell.updateFn = () => {
+        if (cellObject)
+          cellBase.remove(cellObject);
+        cellObject = new CellObject(cell.object);
+        cell.object && cellBase.add(cellObject);
+      };
+      cell.updateFn();
+      this.add(cellBase);
     }
     getPossibleToMoveCells() {
       return this.possibleToMoveCells;
@@ -24604,7 +24603,7 @@
   var EmojiMaterial = class extends CanvasMaterial {
     constructor(emoji) {
       super(100, 70, (ctx) => {
-        ctx.fillText("\u{1F955}", 50, 37);
+        ctx.fillText(emoji, 50, 37);
       });
     }
   };
@@ -24691,12 +24690,12 @@
     }
     click(obj) {
       if (obj.parent.parent.parent === this.dialogCloud) {
-        this.dialogCloud.hide();
-        const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
-        cell.object = CellObjectType.NONE;
-        cell.updateCell();
-        return;
+        return this.doAction();
       }
+      let cell = this.handleJump(obj);
+      this.activateCell(cell);
+    }
+    handleJump(obj) {
       const p0 = this.hare.position;
       const p1 = obj.parent.parent.position;
       const dx = Math.sign(p0.x - p1.x);
@@ -24705,8 +24704,8 @@
       const z = p0.z - dz;
       const nextCell = this.ground.getCell(x, z);
       const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
-      this.activateCell(nextCell);
       this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
+      return nextCell;
     }
     activateCell(cell) {
       this.dialogCloud.hide();
@@ -24738,6 +24737,12 @@
       this.camera.onResize();
     }
     placeHare() {
+    }
+    doAction() {
+      this.dialogCloud.hide();
+      const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
+      cell.object = CellObjectType.NONE;
+      cell.updateCell();
     }
   };
 
@@ -24842,7 +24847,7 @@
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
   <path d="M16.3 5h.7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h5l-2.82 -2.82m0 5.64l2.82 -2.82" transform="rotate(-45 12 12)" />
 `, () => {
-    map.clearSeed();
+    clearSeed();
     init();
   });
 })();

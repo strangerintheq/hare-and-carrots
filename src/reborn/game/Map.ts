@@ -3,17 +3,12 @@ import {Sector} from "../data/Sector";
 import {Cell} from "../data/Cell";
 import {CellType} from "../data/CellType";
 import {CellObjectType} from "../data/CellObjectType";
-
-const MAP_SEED_KEY = 'hare-seed';
+import {getSeed} from "../storage/SeedStorage";
 
 export class Map {
 
     seed: string;
-    noises: any = {};
-
-    constructor() {
-        this.seed = this.getSeed();
-    }
+    noises: any;
 
     noisedValue(key:string, x, y) {
         if (!this.noises[key])
@@ -21,21 +16,9 @@ export class Map {
         return this.noises[key].noise2D(x, y)
     }
 
-    getSeed() {
-        let seed = localStorage.getItem(MAP_SEED_KEY);
-        if (!seed)
-            seed = Math.random().toString(36).substring(2);
-        localStorage.setItem(MAP_SEED_KEY, seed);
-        return seed;
-    }
-
-    clearSeed() {
-        localStorage.removeItem(MAP_SEED_KEY)
-        this.seed = this.getSeed();
-        this.noises = {}
-    }
-
     initSector(sector: Sector) {
+        this.seed = getSeed();
+        this.noises = {};
         sector.forEachCell(cell => this.initCell(sector, cell))
     }
 
