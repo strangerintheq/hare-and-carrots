@@ -11,7 +11,7 @@ import {Anim} from "../renderer/Anim";
 import {Cell} from "../data/Cell";
 import {CellObjectType} from "../data/CellObjectType";
 import {DialogCloud} from "../animations/DialogCloud";
-import {info} from "../Info";
+import {info} from "../gui/Info";
 
 export class Game {
 
@@ -20,14 +20,12 @@ export class Game {
     scene = new Scene();
     rayCaster: RayCaster;
     ground: Ground;
-    hare: HareController;
+    hare = new HareController();
     animations: Anim[] = [];
     dialogCloud = new DialogCloud();
 
     constructor() {
         this.scene.add(new Lights());
-
-        this.hare = new HareController();
         this.scene.add(this.hare);
         this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
         this.resize();
@@ -37,7 +35,7 @@ export class Game {
         this.ground && this.ground.parent.remove(this.ground)
         this.ground = new Ground(sector);
         this.scene.add(this.ground);
-        this.rayCaster.update(this.ground.getPossibleToMoveCells());
+        this.rayCaster.update([...this.ground.getPossibleToMoveCells(), this.dialogCloud]);
         this.hare.mirrorPosition(sector.halfSize);
     }
 
@@ -49,6 +47,15 @@ export class Game {
     }
 
     private click(obj: Object3D) {
+
+        if (obj.parent.parent.parent === this.dialogCloud){
+            this.dialogCloud.hide();
+            const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
+            cell.object = CellObjectType.NONE;
+            cell.updateCell();
+            return
+        }
+
         const p0 = this.hare.position;
         const p1 = obj.parent.parent.position;
         const dx = Math.sign(p0.x - p1.x);
@@ -76,9 +83,9 @@ export class Game {
     private showDialogCloud(cell: Cell) {
         this.scene.add(this.dialogCloud);
         this.animations.push(this.dialogCloud);
+        this.dialogCloud.setImage(cell.object)
         this.dialogCloud.showAt(cell);
     }
-
 
     private playCellAnimation(cell: Cell) {
         const cellAnimation = cell.getAnimation();

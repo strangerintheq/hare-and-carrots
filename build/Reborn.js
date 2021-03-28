@@ -24251,10 +24251,13 @@
     constructor(parent, material) {
       super();
       parent.add(this);
-      let mesh = new Mesh(cube, material);
+      let mesh = this.mesh = new Mesh(cube, material);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       this.add(mesh);
+    }
+    mat(material) {
+      this.mesh.material = material;
     }
   };
 
@@ -24289,6 +24292,9 @@
       if (this.type === CellType.OCEAN)
         return new WaterSplashAnimation(blueClipped2);
       return void 0;
+    }
+    updateCell() {
+      this.updateFn();
     }
   };
 
@@ -24344,7 +24350,7 @@
       this.shadow(light2);
     }
     shadow(light) {
-      const s2 = 11;
+      const s2 = 13;
       light.castShadow = true;
       light.shadow.mapSize.width = 4096;
       light.shadow.mapSize.height = 4096;
@@ -24361,13 +24367,14 @@
     constructor(cell) {
       super();
       if (cell === CellType.OCEAN) {
-        new Cube(this, blue2);
+        new Cube(this, blue2).sc(1, 0.8, 1).pos(0, -0.1, 0);
       }
       if (cell === CellType.WATER) {
-        new Cube(this, blue1);
+        new Cube(this, blue1).sc(1, 0.8, 1).pos(0, -0.1, 0);
       }
       if (cell === CellType.GRASS) {
-        new Cube(this, green);
+        new Cube(this, green).sc(1, 0.1, 1).pos(0, 0.4, 0);
+        new Cube(this, brown1).sc(1, 0.9, 1).pos(0, -0.1, 0);
       }
     }
   };
@@ -24443,7 +24450,14 @@
         cellBase.traverse((o) => o["isMesh"] && this.possibleToMoveCells.push(o));
         const h = Math.max(0, cell.height);
         cellBase.position.set(cell.x, h, cell.y);
-        cell.object && cellBase.add(new CellObject(cell.object));
+        let cellObject;
+        cell.updateFn = () => {
+          if (cellObject)
+            cellBase.remove(cellObject);
+          cellObject = new CellObject(cell.object);
+          cell.object && cellBase.add(cellObject);
+        };
+        cell.updateFn();
         this.add(cellBase);
       });
     }
@@ -24564,6 +24578,37 @@
     return a + (b - a) * t;
   }
 
+  // src/reborn/renderer/CanvasMaterial.ts
+  var CanvasMaterial = class extends MeshLambertMaterial {
+    constructor(width, height, func) {
+      super();
+      const cnv = document.createElement("canvas");
+      cnv.width = width;
+      cnv.height = height;
+      const ctx = cnv.getContext("2d");
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "50px Arial";
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, width, height);
+      func(ctx);
+      const texture = new Texture(cnv);
+      texture.anisotropy = 8;
+      texture.needsUpdate = true;
+      this.needsUpdate = true;
+      this.map = texture;
+    }
+  };
+
+  // src/reborn/renderer/EmojiMaterial.ts
+  var EmojiMaterial = class extends CanvasMaterial {
+    constructor(emoji) {
+      super(100, 70, (ctx) => {
+        ctx.fillText("\u{1F955}", 50, 37);
+      });
+    }
+  };
+
   // src/reborn/animations/DialogCloud.ts
   var DialogCloud = class extends Anim {
     constructor() {
@@ -24573,7 +24618,7 @@
       this.add(g);
       this.c1 = new Cube(g, white).sc(0.1, 0.1, 0.05);
       this.c2 = new Cube(g, white).sc(0.3, 0.3, 0.05);
-      this.c3 = new Cube(g, white).sc(1.2, 1, 0.05);
+      this.c3 = new Cube(g, white);
     }
     play(dt) {
       dt /= 1e3;
@@ -24584,7 +24629,7 @@
       this.c2.pos(0, y2 * t1, 0);
       let y3 = Math.sin(dt * 1.1) * 0.1 + 1.2;
       let x3 = Math.sin(dt * 0.8) * 0.05 + 0.3;
-      this.c3.pos(x3, y3 * t1, 0).rot(0, Math.sin(dt * 0.8) * 0.1, 0).sc(Math.min(dt * 10, 1.2), t1, 0.05);
+      this.c3.pos(x3, y3 * t1, 0).rot(0, Math.sin(dt * 0.8) * 0.1, 0).sc(1.5 * t1, 1.3 * t1, 0.05);
       return this.isPlaying;
     }
     hide() {
@@ -24598,9 +24643,12 @@
       this.isPlaying = true;
       return this;
     }
+    setImage(object) {
+      this.c3.mat(new EmojiMaterial("\u{1F955}"));
+    }
   };
 
-  // src/reborn/Info.ts
+  // src/reborn/gui/Info.ts
   var el = document.createElement("div");
   el.style.position = "fixed";
   el.style.top = "5px";
@@ -24620,10 +24668,10 @@
       this.renderer = new Renderer();
       this.camera = new Camera2();
       this.scene = new Scene();
+      this.hare = new HareController();
       this.animations = [];
       this.dialogCloud = new DialogCloud();
       this.scene.add(new Lights());
-      this.hare = new HareController();
       this.scene.add(this.hare);
       this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
       this.resize();
@@ -24632,7 +24680,7 @@
       this.ground && this.ground.parent.remove(this.ground);
       this.ground = new Ground(sector);
       this.scene.add(this.ground);
-      this.rayCaster.update(this.ground.getPossibleToMoveCells());
+      this.rayCaster.update([...this.ground.getPossibleToMoveCells(), this.dialogCloud]);
       this.hare.mirrorPosition(sector.halfSize);
     }
     render() {
@@ -24642,6 +24690,13 @@
       info("animations: " + this.animations.length);
     }
     click(obj) {
+      if (obj.parent.parent.parent === this.dialogCloud) {
+        this.dialogCloud.hide();
+        const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
+        cell.object = CellObjectType.NONE;
+        cell.updateCell();
+        return;
+      }
       const p0 = this.hare.position;
       const p1 = obj.parent.parent.position;
       const dx = Math.sign(p0.x - p1.x);
@@ -24666,6 +24721,7 @@
     showDialogCloud(cell) {
       this.scene.add(this.dialogCloud);
       this.animations.push(this.dialogCloud);
+      this.dialogCloud.setImage(cell.object);
       this.dialogCloud.showAt(cell);
     }
     playCellAnimation(cell) {
@@ -24738,6 +24794,26 @@
     }
   };
 
+  // src/reborn/gui/SvgButton.ts
+  var buttons = document.createElement("div");
+  buttons.style.position = "fixed";
+  buttons.style.top = "5px";
+  buttons.style.right = "5px";
+  document.body.append(buttons);
+  var SvgButton = class {
+    constructor(svg, onclick) {
+      let div = document.createElement("div");
+      div.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" 
+            width="88" height="88" viewBox="0 0 24 24" 
+            stroke-width="1.5" stroke="#2c3e50" fill="none" 
+            stroke-linecap="round" stroke-linejoin="round">
+            ${svg}
+        </svg>`;
+      div.onclick = onclick;
+      buttons.append(div);
+    }
+  };
+
   // src/reborn/Reborn.ts
   var sectorSize = 21;
   var mapCursor = {x: 0, y: 0};
@@ -24761,5 +24837,12 @@
   requestAnimationFrame(function update(t) {
     game.render();
     requestAnimationFrame(update);
+  });
+  new SvgButton(`
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M16.3 5h.7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h5l-2.82 -2.82m0 5.64l2.82 -2.82" transform="rotate(-45 12 12)" />
+`, () => {
+    map.clearSeed();
+    init();
   });
 })();

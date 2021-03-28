@@ -3,12 +3,14 @@ import {Cube} from "../objects/Cube";
 import {white} from "../../old/core/Materials";
 import {Anim} from "../renderer/Anim";
 import {Cell} from "../data/Cell";
+import {CellObjectType} from "../data/CellObjectType";
+import {EmojiMaterial} from "../renderer/EmojiMaterial";
 
 export class DialogCloud extends Anim {
 
     private c1: Obj;
     private c2: Obj;
-    private c3: Obj;
+    private c3: Cube;
 
     private isPlaying : boolean = true;
 
@@ -28,7 +30,7 @@ export class DialogCloud extends Anim {
 
         this.c3.pos(x3,y3*t1,0)
             .rot(0,Math.sin(dt*0.8)*0.1,0)
-            .sc(Math.min(dt*10,1.2), t1,0.05);
+            .sc(1.5*t1, 1.3*t1,0.05);
 
         return this.isPlaying
     }
@@ -48,8 +50,8 @@ export class DialogCloud extends Anim {
         this.c2 = new Cube(g, white)
             .sc(0.3,0.3,0.05)
 
-        this.c3 = new Cube(g, white)
-            .sc(1.2,1,0.05)
+        this.c3 = new Cube(g, white);
+
     }
 
     hide() : DialogCloud{
@@ -63,5 +65,9 @@ export class DialogCloud extends Anim {
         this.pos(cell.x,cell.height, cell.y);
         this.isPlaying = true;
         return this
+    }
+
+    setImage(object: CellObjectType) {
+        this.c3.mat(new EmojiMaterial('🥕'))
     }
 }

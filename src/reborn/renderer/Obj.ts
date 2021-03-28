@@ -16,4 +16,6 @@ export class Obj extends Object3D {
         this.rotation.set(x,y,z)
         return this
     }
+
+
 }

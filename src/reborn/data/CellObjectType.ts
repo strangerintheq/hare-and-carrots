@@ -1,3 +1,4 @@
+
 export enum CellObjectType {
     NONE,
     TREE1,
@@ -13,3 +14,5 @@ export enum CellObjectType {
     COIN,
     POO
 }
+
+

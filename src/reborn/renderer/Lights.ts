@@ -21,7 +21,7 @@ export class Lights extends Object3D {
     }
 
     private shadow(light: DirectionalLight) {
-        const s = 11;
+        const s = 13;
         light.castShadow = true;
         light.shadow.mapSize.width = 4096;
         light.shadow.mapSize.height = 4096;

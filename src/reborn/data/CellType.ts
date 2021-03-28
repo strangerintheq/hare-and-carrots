@@ -5,3 +5,4 @@ export enum CellType {
     GRASS = "GRASS",
     MOUNTAIN = "MOUNTAIN"
 }
+

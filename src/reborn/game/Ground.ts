@@ -17,7 +17,14 @@ export class Ground extends Object3D {
             cellBase.traverse((o) => o['isMesh'] && this.possibleToMoveCells.push(o));
             const h = Math.max(0, cell.height);
             cellBase.position.set(cell.x, h, cell.y);
-            cell.object && cellBase.add(new CellObject(cell.object));
+            let cellObject;
+            cell.updateFn = () => {
+                if (cellObject)
+                    cellBase.remove(cellObject);
+                cellObject = new CellObject(cell.object);
+                cell.object && cellBase.add(cellObject);
+            };
+            cell.updateFn();
             this.add(cellBase);
         })
     }

@@ -11,6 +11,7 @@ export class Cell {
     x: number;
     y: number;
     object?: CellObjectType;
+    updateFn:Function;
 
     constructor(x: number, y: number) {
         this.x = x;
@@ -24,5 +25,9 @@ export class Cell {
             return new WaterSplashAnimation(blueClipped2)
 
         return undefined
+    }
+
+    updateCell() {
+        this.updateFn()
     }
 }

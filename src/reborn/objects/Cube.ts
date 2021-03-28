@@ -5,14 +5,18 @@ const cube = new BoxGeometry();
 
 export class Cube extends Obj {
 
-    constructor(parent: Obj, material: Material) {
+    readonly mesh: Mesh;
+
+    constructor(parent: Obj, material: Material|Material[]) {
         super();
         parent.add(this);
-        let mesh = new Mesh(cube, material);
+        let mesh = this.mesh = new Mesh(cube, material);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         this.add(mesh)
     }
 
-
+    mat(material: Material) {
+        this.mesh.material = material
+    }
 }
