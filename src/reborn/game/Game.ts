@@ -114,9 +114,13 @@ export class Game {
         if (cell.object === CellObjectType.CARROT) {
             cell.object = CellObjectType.NONE;
             cell.updateCell();
-            const cellBehind = this.ground.getCell(this.hare.position.x-1, this.hare.position.z)
+            const dy = Math.round(Math.cos(this.hare.rotation.y));
+            const dx = Math.round(Math.sin(this.hare.rotation.y));
+            const x = this.hare.position.x - dx;
+            const y = this.hare.position.z - dy;
+            const cellBehind = this.ground.getCell(x, y)
             cellBehind.object = CellObjectType.POO;
-            cell.updateCell();
+            cellBehind.updateCell();
         }
 
 

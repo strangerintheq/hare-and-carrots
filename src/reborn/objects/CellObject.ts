@@ -6,6 +6,7 @@ import {Tree2} from "./Tree2";
 import {Tree1} from "./Tree1";
 import {Obj} from "../renderer/Obj";
 import {Poo} from "./Poo";
+import {Bush2} from "./Bush2";
 
 export class CellObject extends Obj{
 
@@ -15,6 +16,8 @@ export class CellObject extends Obj{
             this.add(new Carrot());
         if (cell === CellObjectType.BUSH1)
             this.add(new Bush1());
+        if (cell === CellObjectType.BUSH2)
+            this.add(new Bush2());
         if (cell === CellObjectType.TREE1)
             this.add(new Tree1());
         if (cell === CellObjectType.TREE2)

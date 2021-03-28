@@ -599,18 +599,18 @@
   var CellObjectType;
   (function(CellObjectType2) {
     CellObjectType2[CellObjectType2["NONE"] = 0] = "NONE";
-    CellObjectType2[CellObjectType2["TREE1"] = 1] = "TREE1";
-    CellObjectType2[CellObjectType2["TREE2"] = 2] = "TREE2";
-    CellObjectType2[CellObjectType2["BUSH1"] = 3] = "BUSH1";
-    CellObjectType2[CellObjectType2["BUSH2"] = 4] = "BUSH2";
-    CellObjectType2[CellObjectType2["STONE1"] = 5] = "STONE1";
-    CellObjectType2[CellObjectType2["STONE2"] = 6] = "STONE2";
-    CellObjectType2[CellObjectType2["SIGN_1"] = 7] = "SIGN_1";
-    CellObjectType2[CellObjectType2["SIGN_2"] = 8] = "SIGN_2";
-    CellObjectType2[CellObjectType2["SIGN_3"] = 9] = "SIGN_3";
-    CellObjectType2[CellObjectType2["CARROT"] = 10] = "CARROT";
-    CellObjectType2[CellObjectType2["COIN"] = 11] = "COIN";
-    CellObjectType2[CellObjectType2["POO"] = 12] = "POO";
+    CellObjectType2[CellObjectType2["SIGN_1"] = 1] = "SIGN_1";
+    CellObjectType2[CellObjectType2["SIGN_2"] = 2] = "SIGN_2";
+    CellObjectType2[CellObjectType2["SIGN_3"] = 3] = "SIGN_3";
+    CellObjectType2[CellObjectType2["POO"] = 4] = "POO";
+    CellObjectType2[CellObjectType2["CARROT"] = 5] = "CARROT";
+    CellObjectType2[CellObjectType2["COIN"] = 6] = "COIN";
+    CellObjectType2[CellObjectType2["TREE1"] = 7] = "TREE1";
+    CellObjectType2[CellObjectType2["TREE2"] = 8] = "TREE2";
+    CellObjectType2[CellObjectType2["BUSH1"] = 9] = "BUSH1";
+    CellObjectType2[CellObjectType2["BUSH2"] = 10] = "BUSH2";
+    CellObjectType2[CellObjectType2["STONE1"] = 11] = "STONE1";
+    CellObjectType2[CellObjectType2["STONE2"] = 12] = "STONE2";
   })(CellObjectType || (CellObjectType = {}));
 
   // src/reborn/storage/SeedStorage.ts
@@ -661,7 +661,7 @@
         let x = cell.x + sector.x * (sector.size - 2);
         let y = cell.y + sector.y * (sector.size - 2);
         let all = Object.keys(CellObjectType);
-        for (let i = 1; i < all.length; i++)
+        for (let i = 5; i < all.length; i++)
           if (this.noisedValue(CellObjectType[i], x, y) > 0.9)
             return i;
       }
@@ -24432,6 +24432,14 @@
     }
   };
 
+  // src/reborn/objects/Bush2.ts
+  var Bush2 = class extends Obj {
+    constructor() {
+      super();
+      new Cube(this, green2).sc(0.9, 1.2, 0.9).pos(0, 1, 0);
+    }
+  };
+
   // src/reborn/objects/CellObject.ts
   var CellObject = class extends Obj {
     constructor(cell) {
@@ -24440,6 +24448,8 @@
         this.add(new Carrot());
       if (cell === CellObjectType.BUSH1)
         this.add(new Bush1());
+      if (cell === CellObjectType.BUSH2)
+        this.add(new Bush2());
       if (cell === CellObjectType.TREE1)
         this.add(new Tree1());
       if (cell === CellObjectType.TREE2)
@@ -24787,9 +24797,14 @@
       if (cell.object === CellObjectType.CARROT) {
         cell.object = CellObjectType.NONE;
         cell.updateCell();
-        const cellBehind = this.ground.getCell(this.hare.position.x - 1, this.hare.position.z);
+        const dy = Math.round(Math.cos(this.hare.rotation.y));
+        const dx = Math.round(Math.sin(this.hare.rotation.y));
+        let x = this.hare.position.x - dx;
+        let y = this.hare.position.z - dy;
+        console.log(x, y);
+        const cellBehind = this.ground.getCell(x, y);
         cellBehind.object = CellObjectType.POO;
-        cell.updateCell();
+        cellBehind.updateCell();
       }
     }
   };
