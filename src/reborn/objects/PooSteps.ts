@@ -2,7 +2,7 @@ import {Obj} from "../renderer/Obj";
 import {Cube} from "./Cube";
 import {brown2} from "../../old/core/Materials";
 
-export class GroundSteps extends Obj {
+export class PooSteps extends Obj {
 
     constructor() {
         super();

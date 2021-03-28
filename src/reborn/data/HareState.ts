@@ -5,5 +5,5 @@ export class HareState {
     x = 0;
     y = 0;
     rotation = 0;
-    inWater = false;
+    inWater  = false;
 }

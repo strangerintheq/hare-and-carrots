@@ -24471,8 +24471,8 @@
     }
   };
 
-  // src/reborn/objects/GroundSteps.ts
-  var GroundSteps = class extends Obj {
+  // src/reborn/objects/PooSteps.ts
+  var PooSteps = class extends Obj {
     constructor() {
       super();
       new Cube(this, brown2).sc(0.25, 0.1, 0.6).pos(-0.2, 0.5, 0);
@@ -24500,7 +24500,7 @@
       if (o === CellObjectType.POO1)
         this.add(new Poo1());
       if (o === CellObjectType.POO_STEPS)
-        this.add(new GroundSteps());
+        this.add(new PooSteps());
       this.rotation.set(0, cell.cellObjectRotation, 0);
     }
   };
@@ -24772,6 +24772,22 @@
     }
   };
 
+  // src/reborn/animations/WaterStepsAnimation.ts
+  var WaterStepsAnimation = class extends Anim {
+    constructor() {
+      super();
+      new Cube(this, blue1).sc(0.25, 0.1, 0.6).pos(-0.2, 0.5, 0);
+      new Cube(this, blue1).sc(0.25, 0.1, 0.6).pos(0.2, 0.5, 0);
+    }
+    play(dt) {
+      if (dt > 2e3) {
+        this.parent.remove(this);
+        return false;
+      } else
+        return true;
+    }
+  };
+
   // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
@@ -24815,14 +24831,39 @@
       const z = p0.z - dz;
       const nextCell = this.ground.getCell(x, z);
       playCellAudio(nextCell);
-      const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
-      this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
+      this.hareState.rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
+      this.animations.push(new JumpHareAnimation(this.hare, nextCell, this.hareState.rotation));
       return nextCell;
     }
     activateCell(cell) {
       this.dialogCloud.hide();
       this.playCellAnimation(cell);
-      this.handlePoo(cell);
+      if (cell.object === CellObjectType.POO) {
+        cell.object = CellObjectType.POO1;
+        setTimeout(cell.updateCell, 100);
+        this.hareState.pooStepsCount = 5;
+      }
+      if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
+        cell.object = CellObjectType.POO_STEPS;
+        cell.cellObjectRotation = this.hareState.rotation;
+        cell.updateCell();
+        this.hareState.pooStepsCount--;
+      }
+      if (cell.type === CellType.WATER || cell.type === CellType.OCEAN) {
+        this.hareState.inWater = true;
+      }
+      if (cell.type === CellType.GRASS) {
+        if (this.hareState.inWater)
+          this.hareState.wetTimestamp = Date.now();
+        this.hareState.inWater = false;
+        if (Date.now() - this.hareState.wetTimestamp < 2e3) {
+          let waterSteps = new WaterStepsAnimation();
+          waterSteps.rot(0, this.hareState.rotation, 0);
+          waterSteps.pos(cell.x, cell.height, cell.y);
+          this.ground.add(waterSteps);
+          this.animations.push(waterSteps);
+        }
+      }
       setTimeout(() => {
         if (this.ground.sector.isOnEdge(cell))
           dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
@@ -24867,19 +24908,6 @@
           cellBehind.object = CellObjectType.POO;
           cellBehind.updateCell();
         }
-      }
-    }
-    handlePoo(cell) {
-      if (cell.object === CellObjectType.POO) {
-        cell.object = CellObjectType.POO1;
-        setTimeout(cell.updateCell, 100);
-        this.hareState.pooStepsCount = 5;
-      }
-      if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
-        cell.object = CellObjectType.POO_STEPS;
-        cell.cellObjectRotation = this.hare.rotation.y;
-        cell.updateCell();
-        this.hareState.pooStepsCount--;
       }
     }
   };

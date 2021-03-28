@@ -14,6 +14,9 @@ import {DialogCloud} from "../animations/DialogCloud";
 import {info} from "../gui/Info";
 import {playCellAudio} from "./Audio";
 import {HareState} from "../data/HareState";
+import {CellType} from "../data/CellType";
+import {PooSteps} from "../objects/PooSteps";
+import {WaterStepsAnimation} from "../animations/WaterStepsAnimation";
 
 export class Game {
 
@@ -64,9 +67,9 @@ export class Game {
         const x = p0.x - dx;
         const z = p0.z - dz;
         const nextCell = this.ground.getCell(x, z);
-        playCellAudio(nextCell)
-        const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
-        this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
+        playCellAudio(nextCell);
+        this.hareState.rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
+        this.animations.push(new JumpHareAnimation(this.hare, nextCell, this.hareState.rotation));
         return nextCell;
     }
 
@@ -80,10 +83,26 @@ export class Game {
         }
         if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
             cell.object = CellObjectType.POO_STEPS
-            cell.cellObjectRotation = this.hare.rotation.y;
+            cell.cellObjectRotation = this.hareState.rotation;
             cell.updateCell();
             this.hareState.pooStepsCount--;
         }
+        if (cell.type === CellType.WATER || cell.type === CellType.OCEAN){
+            this.hareState.inWater = true;
+        }
+        if (cell.type === CellType.GRASS){
+            if (this.hareState.inWater)
+                this.hareState.wetTimestamp = Date.now();
+            this.hareState.inWater = false;
+            if (Date.now() - this.hareState.wetTimestamp < 2000) {
+                let waterSteps = new WaterStepsAnimation();
+                waterSteps.rot(0, this.hareState.rotation, 0)
+                waterSteps.pos(cell.x, cell.height, cell.y)
+                this.ground.add(waterSteps);
+                this.animations.push(waterSteps)
+            }
+        }
+
         setTimeout(() => {
             if (this.ground.sector.isOnEdge(cell))
                 dispatchEvent(new CustomEvent('change-sector', {detail: cell}))

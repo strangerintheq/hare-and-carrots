@@ -8,7 +8,7 @@ import {Obj} from "../renderer/Obj";
 import {Poo} from "./Poo";
 import {Bush2} from "./Bush2";
 import {Poo1} from "./Poo1";
-import {GroundSteps} from "./GroundSteps";
+import {PooSteps} from "./PooSteps";
 import {Cell} from "../data/Cell";
 
 export class CellObject extends Obj{
@@ -31,7 +31,7 @@ export class CellObject extends Obj{
         if (o === CellObjectType.POO1)
             this.add(new Poo1());
         if (o === CellObjectType.POO_STEPS)
-            this.add(new GroundSteps());
+            this.add(new PooSteps());
         this.rotation.set(0,cell.cellObjectRotation, 0);
     }
 
