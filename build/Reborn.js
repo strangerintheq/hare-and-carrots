@@ -24287,7 +24287,7 @@
       this.cube = new Cube(this, brown2);
     }
     play(dt) {
-      dt /= 200;
+      dt = Math.max(0, (dt - 150) / 200);
       if (dt < 1) {
         let c = 0.5 + dt;
         this.cube.sc(c, 0.1, c);
@@ -24822,6 +24822,12 @@
       this.renderer.render(this.scene, this.camera);
       info("animations: " + this.animations.length);
     }
+    resize() {
+      this.renderer.setSize(innerWidth, innerHeight);
+      this.camera.onResize();
+    }
+    placeHare() {
+    }
     click(obj) {
       if (obj.parent.parent.parent === this.dialogCloud)
         return this.doCloudDialogAction();
@@ -24863,12 +24869,6 @@
       this.animations.push(cellAnimation);
       this.ground.add(cellAnimation);
     }
-    resize() {
-      this.renderer.setSize(innerWidth, innerHeight);
-      this.camera.onResize();
-    }
-    placeHare() {
-    }
     doCloudDialogAction() {
       this.dialogCloud.hide();
       this.rayCaster.removeObject(this.dialogCloud);
@@ -24877,7 +24877,7 @@
         cell.object = CellObjectType.NONE;
         cell.updateCell();
         this.hareState.carrotsEaten++;
-        if (this.hareState.carrotsEaten % 3 === 0) {
+        if (this.hareState.carrotsEaten % 1 === 0) {
           const dy = Math.round(Math.cos(this.hare.rotation.y));
           const dx = Math.round(Math.sin(this.hare.rotation.y));
           const x = this.hare.position.x - dx;

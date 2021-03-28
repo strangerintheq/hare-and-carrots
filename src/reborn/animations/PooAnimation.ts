@@ -7,7 +7,8 @@ export class PooAnimation extends Anim {
     private cube = new Cube(this, brown2);
 
     protected play(dt: number): boolean {
-        dt /= 200;
+
+        dt = Math.max(0, (dt-150)/200)
         if (dt < 1) {
             let c = 0.5 + dt;
             this.cube.sc(c, 0.1, c);
