@@ -24604,6 +24604,12 @@
     update(possibleToMoveCells) {
       this.possibleToMoveCells = possibleToMoveCells;
     }
+    addObject(dialogCloud) {
+      this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells];
+    }
+    removeObject(dialogCloud) {
+      this.possibleToMoveCells.splice(this.possibleToMoveCells.indexOf(dialogCloud), 1);
+    }
   };
 
   // src/reborn/animations/JumpHareAnimation.ts
@@ -24836,46 +24842,17 @@
       return nextCell;
     }
     activateCell(cell) {
+      this.rayCaster.removeObject(this.dialogCloud);
       this.dialogCloud.hide();
       this.playCellAnimation(cell);
-      setTimeout(() => {
-        if (this.ground.sector.isOnEdge(cell))
-          dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
-        if (cell.object === CellObjectType.CARROT)
-          this.showDialogCloud(cell);
-        if (cell.object === CellObjectType.POO) {
-          cell.object = CellObjectType.POO1;
-          setTimeout(cell.updateCell, 100);
-          this.hareState.pooStepsCount = 5;
-        }
-        if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
-          cell.object = CellObjectType.POO_STEPS;
-          cell.cellObjectRotation = this.hareState.rotation;
-          cell.updateCell();
-          this.hareState.pooStepsCount--;
-        }
-        if (cell.type === CellType.WATER || cell.type === CellType.OCEAN) {
-          this.hareState.inWater = true;
-        }
-        if (cell.type === CellType.GRASS) {
-          if (this.hareState.inWater)
-            this.hareState.wetTimestamp = Date.now();
-          this.hareState.inWater = false;
-          if (Date.now() - this.hareState.wetTimestamp < 2e3) {
-            let waterSteps = new WaterStepsAnimation();
-            waterSteps.rot(0, this.hareState.rotation, 0);
-            waterSteps.pos(cell.x, cell.height, cell.y);
-            this.ground.add(waterSteps);
-            this.animations.push(waterSteps);
-          }
-        }
-      }, 350);
+      setTimeout(() => this.endJump(cell), 150);
     }
     showDialogCloud(cell) {
       this.scene.add(this.dialogCloud);
       this.animations.push(this.dialogCloud);
       this.dialogCloud.setImage(cell.object);
       this.dialogCloud.showAt(cell);
+      this.rayCaster.addObject(this.dialogCloud);
     }
     playCellAnimation(cell) {
       const cellAnimation = cell.getAnimation();
@@ -24894,6 +24871,7 @@
     }
     doCloudDialogAction() {
       this.dialogCloud.hide();
+      this.rayCaster.removeObject(this.dialogCloud);
       const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
       if (cell.object === CellObjectType.CARROT) {
         cell.object = CellObjectType.NONE;
@@ -24907,6 +24885,38 @@
           const cellBehind = this.ground.getCell(x, y);
           cellBehind.object = CellObjectType.POO;
           cellBehind.updateCell();
+        }
+      }
+    }
+    endJump(cell) {
+      if (this.ground.sector.isOnEdge(cell))
+        dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
+      if (cell.object === CellObjectType.CARROT)
+        this.showDialogCloud(cell);
+      if (cell.object === CellObjectType.POO) {
+        cell.object = CellObjectType.POO1;
+        setTimeout(cell.updateCell, 100);
+        this.hareState.pooStepsCount = 5;
+      }
+      if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
+        cell.object = CellObjectType.POO_STEPS;
+        cell.cellObjectRotation = this.hareState.rotation;
+        cell.updateCell();
+        this.hareState.pooStepsCount--;
+      }
+      if (cell.type === CellType.WATER || cell.type === CellType.OCEAN) {
+        this.hareState.inWater = true;
+      }
+      if (cell.type === CellType.GRASS) {
+        if (this.hareState.inWater)
+          this.hareState.wetTimestamp = Date.now();
+        this.hareState.inWater = false;
+        if (Date.now() - this.hareState.wetTimestamp < 2e3) {
+          let waterSteps = new WaterStepsAnimation();
+          waterSteps.rot(0, this.hareState.rotation, 0);
+          waterSteps.pos(cell.x, cell.height, cell.y);
+          this.ground.add(waterSteps);
+          this.animations.push(waterSteps);
         }
       }
     }

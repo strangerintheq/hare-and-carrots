@@ -5,7 +5,7 @@ import {CellBase} from "../objects/CellBase";
 export class RayCaster extends Raycaster {
 
     mouse = new Vector2();
-    private possibleToMoveCells: Object3D[] = [];
+    possibleToMoveCells: Object3D[] = [];
 
     constructor(cb, camera: Camera) {
         super();
@@ -26,5 +26,13 @@ export class RayCaster extends Raycaster {
 
     update(possibleToMoveCells: CellBase[]) {
         this.possibleToMoveCells = possibleToMoveCells
+    }
+
+    addObject(dialogCloud: Object3D) {
+        this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells]
+    }
+
+    removeObject(dialogCloud: Object3D) {
+        this.possibleToMoveCells.splice(this.possibleToMoveCells.indexOf(dialogCloud),1)
     }
 }
