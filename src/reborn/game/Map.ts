@@ -22,7 +22,7 @@ export class Map {
     }
 
     getSeed() {
-        let seed;// = localStorage.getItem(MAP_SEED_KEY);
+        let seed = localStorage.getItem(MAP_SEED_KEY);
         if (!seed)
             seed = Math.random().toString(36).substring(2);
         localStorage.setItem(MAP_SEED_KEY, seed);

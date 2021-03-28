@@ -1,6 +1,6 @@
 import {CellType} from "./CellType";
 import {CellObjectType} from "./CellObjectType";
-import {Anim} from "../animations/Anim";
+import {Anim} from "../renderer/Anim";
 import { blueClipped1, blueClipped2} from "../../old/core/Materials";
 import {WaterSplashAnimation} from "../animations/WaterSplashAnimation";
 

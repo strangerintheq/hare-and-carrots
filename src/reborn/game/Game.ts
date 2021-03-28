@@ -7,8 +7,11 @@ import {Camera} from "../renderer/Camera";
 import {HareController} from "./HareController";
 import {RayCaster} from "../renderer/RayCaster";
 import {JumpHareAnimation} from "../animations/JumpHareAnimation";
-import {Anim} from "../animations/Anim";
+import {Anim} from "../renderer/Anim";
 import {Cell} from "../data/Cell";
+import {CellObjectType} from "../data/CellObjectType";
+import {DialogCloud} from "../animations/DialogCloud";
+import {info} from "../Info";
 
 export class Game {
 
@@ -19,9 +22,11 @@ export class Game {
     ground: Ground;
     hare: HareController;
     animations: Anim[] = [];
+    dialogCloud = new DialogCloud();
 
     constructor() {
         this.scene.add(new Lights());
+
         this.hare = new HareController();
         this.scene.add(this.hare);
         this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
@@ -37,8 +42,10 @@ export class Game {
     }
 
     render() {
-        this.animations = this.animations.filter(a => a.playAnimation())
+        const now = Date.now();
+        this.animations = this.animations.filter(a => a.playAnimation(now))
         this.renderer.render(this.scene, this.camera);
+        info('animations: ' + this.animations.length)
     }
 
     private click(obj: Object3D) {
@@ -56,20 +63,29 @@ export class Game {
     }
 
     private activateCell(cell: Cell) {
+        this.dialogCloud.hide();
         this.playCellAnimation(cell);
-        if (this.ground.sector.isOnEdge(cell)) {
-            setTimeout(() =>{
+        setTimeout(() => {
+            if (cell.object === CellObjectType.CARROT)
+                this.showDialogCloud(cell);
+            if (this.ground.sector.isOnEdge(cell))
                 dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
-            }, 350)
-        }
+        }, 350);
     }
+
+    private showDialogCloud(cell: Cell) {
+        this.scene.add(this.dialogCloud);
+        this.animations.push(this.dialogCloud);
+        this.dialogCloud.showAt(cell);
+    }
+
 
     private playCellAnimation(cell: Cell) {
         const cellAnimation = cell.getAnimation();
         if (!cellAnimation)
             return
-        cellAnimation.position.set(cell.x, 0, cell.y);
-        cellAnimation.rotation.set(0, this.hare.rotation.y, 0)
+        cellAnimation.pos(cell.x, 0, cell.y);
+        cellAnimation.rot(0, this.hare.rotation.y, 0)
         this.animations.push(cellAnimation);
         this.ground.add(cellAnimation);
     }

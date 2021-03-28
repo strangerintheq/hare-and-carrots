@@ -30,7 +30,7 @@ addEventListener('change-sector', e => {
 
 addEventListener('resize', () => game.resize())
 
-requestAnimationFrame(function update(){
+requestAnimationFrame(function update(t: number) {
     game.render();
     requestAnimationFrame(update);
 })

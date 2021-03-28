@@ -1,5 +1,5 @@
-import {Anim} from "./Anim";
-import {HareController} from "../game/Hare";
+import {Anim} from "../renderer/Anim";
+import {HareController} from "../game/HareController";
 import {Vector3} from "three";
 import {Cell} from "../data/Cell";
 
@@ -12,9 +12,8 @@ export class JumpHareAnimation extends Anim {
     private readonly sourcePosition: Vector3 = new Vector3();
     private readonly targetPosition: Vector3 = new Vector3();
 
-
     constructor(hare: HareController, cell: Cell, targetRotation: number) {
-        super(150)
+        super()
         this.hare = hare;
         this.sourcePosition.copy(hare.position);
         this.targetPosition.set(cell.x, cell.height+1, cell.y);
@@ -23,19 +22,20 @@ export class JumpHareAnimation extends Anim {
     }
 
     play(dt): boolean {
+        dt /= 150;
         if (dt < 1) {
             let p0 = this.sourcePosition;
             let p1 = this.targetPosition;
             let x = lerp(p0.x, p1.x, dt);
             let y = lerp(p0.y, p1.y, dt) + 1.0 - Math.abs(dt - 0.5)*2;
             let z = lerp(p0.z, p1.z, dt);
-            this.hare.position.set(x, y, z);
+            this.hare.pos(x, y, z);
             let y1 = angleLerp(this.sourceRotation, this.targetRotation, dt);
-            this.hare.rotation.set(0, y1, 0);
+            this.hare.rot(0, y1, 0);
             return true // continue play
         } else {
             this.hare.position.copy(this.targetPosition)
-            this.hare.rotation.set(0, this.targetRotation, 0);
+            this.hare.rot(0, this.targetRotation, 0);
         }
     }
 }

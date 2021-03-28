@@ -626,7 +626,7 @@
       return this.noises[key].noise2D(x, y);
     }
     getSeed() {
-      let seed;
+      let seed = localStorage.getItem(MAP_SEED_KEY);
       if (!seed)
         seed = Math.random().toString(36).substring(2);
       localStorage.setItem(MAP_SEED_KEY, seed);
@@ -9108,7 +9108,7 @@
       disableUnusedAttributes
     };
   }
-  function WebGLBufferRenderer(gl, extensions, info, capabilities) {
+  function WebGLBufferRenderer(gl, extensions, info2, capabilities) {
     const isWebGL2 = capabilities.isWebGL2;
     let mode;
     function setMode(value) {
@@ -9116,7 +9116,7 @@
     }
     function render(start, count) {
       gl.drawArrays(mode, start, count);
-      info.update(count, mode, 1);
+      info2.update(count, mode, 1);
     }
     function renderInstances(start, count, primcount) {
       if (primcount === 0)
@@ -9134,7 +9134,7 @@
         }
       }
       extension[methodName](mode, start, count, primcount);
-      info.update(count, mode, primcount);
+      info2.update(count, mode, primcount);
     }
     this.setMode = setMode;
     this.render = render;
@@ -9391,7 +9391,7 @@
       }
     };
   }
-  function WebGLGeometries(gl, attributes, info, bindingStates) {
+  function WebGLGeometries(gl, attributes, info2, bindingStates) {
     const geometries = {};
     const wireframeAttributes = new WeakMap();
     function onGeometryDispose(event) {
@@ -9413,14 +9413,14 @@
       if (geometry.isInstancedBufferGeometry === true) {
         delete geometry._maxInstanceCount;
       }
-      info.memory.geometries--;
+      info2.memory.geometries--;
     }
     function get(object, geometry) {
       if (geometries[geometry.id] === true)
         return geometry;
       geometry.addEventListener("dispose", onGeometryDispose);
       geometries[geometry.id] = true;
-      info.memory.geometries++;
+      info2.memory.geometries++;
       return geometry;
     }
     function update2(geometry) {
@@ -9487,7 +9487,7 @@
       getWireframeAttribute
     };
   }
-  function WebGLIndexedBufferRenderer(gl, extensions, info, capabilities) {
+  function WebGLIndexedBufferRenderer(gl, extensions, info2, capabilities) {
     const isWebGL2 = capabilities.isWebGL2;
     let mode;
     function setMode(value) {
@@ -9500,7 +9500,7 @@
     }
     function render(start, count) {
       gl.drawElements(mode, count, type, start * bytesPerElement);
-      info.update(count, mode, 1);
+      info2.update(count, mode, 1);
     }
     function renderInstances(start, count, primcount) {
       if (primcount === 0)
@@ -9518,7 +9518,7 @@
         }
       }
       extension[methodName](mode, count, type, start * bytesPerElement, primcount);
-      info.update(count, mode, primcount);
+      info2.update(count, mode, primcount);
     }
     this.setMode = setMode;
     this.setIndex = setIndex;
@@ -9650,10 +9650,10 @@
       update: update2
     };
   }
-  function WebGLObjects(gl, geometries, attributes, info) {
+  function WebGLObjects(gl, geometries, attributes, info2) {
     let updateMap = new WeakMap();
     function update2(object) {
-      const frame = info.render.frame;
+      const frame = info2.render.frame;
       const geometry = object.geometry;
       const buffergeometry = geometries.get(object, geometry);
       if (updateMap.get(buffergeometry) !== frame) {
@@ -10159,8 +10159,8 @@
     this.map = {};
     const n = gl.getProgramParameter(program, 35718);
     for (let i = 0; i < n; ++i) {
-      const info = gl.getActiveUniform(program, i), addr = gl.getUniformLocation(program, info.name);
-      parseUniform(info, addr, this);
+      const info2 = gl.getActiveUniform(program, i), addr = gl.getUniformLocation(program, info2.name);
+      parseUniform(info2, addr, this);
     }
   }
   WebGLUniforms.prototype.setValue = function(gl, name, value, textures) {
@@ -10290,8 +10290,8 @@
     const attributes = {};
     const n = gl.getProgramParameter(program, 35721);
     for (let i = 0; i < n; i++) {
-      const info = gl.getActiveAttrib(program, i);
-      const name = info.name;
+      const info2 = gl.getActiveAttrib(program, i);
+      const name = info2.name;
       attributes[name] = gl.getAttribLocation(program, name);
     }
     return attributes;
@@ -12427,7 +12427,7 @@
       reset
     };
   }
-  function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info) {
+  function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info2) {
     const isWebGL2 = capabilities.isWebGL2;
     const maxTextures = capabilities.maxTextures;
     const maxCubemapSize = capabilities.maxCubemapSize;
@@ -12538,13 +12538,13 @@
       if (texture.isVideoTexture) {
         _videoTextures.delete(texture);
       }
-      info.memory.textures--;
+      info2.memory.textures--;
     }
     function onRenderTargetDispose(event) {
       const renderTarget = event.target;
       renderTarget.removeEventListener("dispose", onRenderTargetDispose);
       deallocateRenderTarget(renderTarget);
-      info.memory.textures--;
+      info2.memory.textures--;
     }
     function deallocateTexture(texture) {
       const textureProperties = properties.get(texture);
@@ -12696,7 +12696,7 @@
         textureProperties.__webglInit = true;
         texture.addEventListener("dispose", onTextureDispose);
         textureProperties.__webglTexture = _gl.createTexture();
-        info.memory.textures++;
+        info2.memory.textures++;
       }
     }
     function uploadTexture(textureProperties, texture, slot) {
@@ -12978,7 +12978,7 @@
       const textureProperties = properties.get(texture);
       renderTarget.addEventListener("dispose", onRenderTargetDispose);
       textureProperties.__webglTexture = _gl.createTexture();
-      info.memory.textures++;
+      info2.memory.textures++;
       const isCube = renderTarget.isWebGLCubeRenderTarget === true;
       const isMultisample = renderTarget.isWebGLMultisampleRenderTarget === true;
       const isRenderTarget3D = texture.isDataTexture3D || texture.isDataTexture2DArray;
@@ -13084,7 +13084,7 @@
       return isWebGL2 && renderTarget.isWebGLMultisampleRenderTarget ? Math.min(maxSamples, renderTarget.samples) : 0;
     }
     function updateVideoTexture(texture) {
-      const frame = info.render.frame;
+      const frame = info2.render.frame;
       if (_videoTextures.get(texture) !== frame) {
         _videoTextures.set(texture, frame);
         texture.update();
@@ -14141,7 +14141,7 @@
       console.error("THREE.WebGLRenderer: " + error.message);
       throw error;
     }
-    let extensions, capabilities, state, info;
+    let extensions, capabilities, state, info2;
     let properties, textures, cubemaps, attributes, geometries, objects;
     let programCache, materials, renderLists, renderStates, clipping;
     let background, morphtargets, bufferRenderer, indexedBufferRenderer;
@@ -14154,14 +14154,14 @@
       state = new WebGLState(_gl, extensions, capabilities);
       state.scissor(_currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor());
       state.viewport(_currentViewport.copy(_viewport).multiplyScalar(_pixelRatio).floor());
-      info = new WebGLInfo(_gl);
+      info2 = new WebGLInfo(_gl);
       properties = new WebGLProperties();
-      textures = new WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info);
+      textures = new WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info2);
       cubemaps = new WebGLCubeMaps(_this);
       attributes = new WebGLAttributes(_gl, capabilities);
       bindingStates = new WebGLBindingStates(_gl, extensions, attributes, capabilities);
-      geometries = new WebGLGeometries(_gl, attributes, info, bindingStates);
-      objects = new WebGLObjects(_gl, geometries, attributes, info);
+      geometries = new WebGLGeometries(_gl, attributes, info2, bindingStates);
+      objects = new WebGLObjects(_gl, geometries, attributes, info2);
       morphtargets = new WebGLMorphtargets(_gl);
       clipping = new WebGLClipping(properties);
       programCache = new WebGLPrograms(_this, cubemaps, extensions, capabilities, bindingStates, clipping);
@@ -14169,15 +14169,15 @@
       renderLists = new WebGLRenderLists(properties);
       renderStates = new WebGLRenderStates(extensions, capabilities);
       background = new WebGLBackground(_this, cubemaps, state, objects, _premultipliedAlpha);
-      bufferRenderer = new WebGLBufferRenderer(_gl, extensions, info, capabilities);
-      indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions, info, capabilities);
-      info.programs = programCache.programs;
+      bufferRenderer = new WebGLBufferRenderer(_gl, extensions, info2, capabilities);
+      indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions, info2, capabilities);
+      info2.programs = programCache.programs;
       _this.capabilities = capabilities;
       _this.extensions = extensions;
       _this.properties = properties;
       _this.renderLists = renderLists;
       _this.state = state;
-      _this.info = info;
+      _this.info = info2;
     }
     initGLContext();
     const xr = new WebXRManager(_this, _gl);
@@ -14643,9 +14643,9 @@
           currentRenderList.push(object, null, object.material, groupOrder, _vector3.z, null);
         } else if (object.isMesh || object.isLine || object.isPoints) {
           if (object.isSkinnedMesh) {
-            if (object.skeleton.frame !== info.render.frame) {
+            if (object.skeleton.frame !== info2.render.frame) {
               object.skeleton.update();
-              object.skeleton.frame = info.render.frame;
+              object.skeleton.frame = info2.render.frame;
             }
           }
           if (!object.frustumCulled || _frustum.intersectsObject(object)) {
@@ -16389,12 +16389,12 @@
       return;
     if (!pass && invSize)
       indexCurve(ear, minX, minY, invSize);
-    let stop = ear, prev, next;
+    let stop = ear, prev2, next;
     while (ear.prev !== ear.next) {
-      prev = ear.prev;
+      prev2 = ear.prev;
       next = ear.next;
       if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
-        triangles.push(prev.i / dim);
+        triangles.push(prev2.i / dim);
         triangles.push(ear.i / dim);
         triangles.push(next.i / dim);
         removeNode(ear);
@@ -24207,7 +24207,7 @@
       [0, 0, -1],
       [1, 0, 0],
       [-1, 0, 0]
-    ].map((el) => new Plane(new Vector3(...el), 10.4));
+    ].map((el2) => new Plane(new Vector3(...el2), 10.4));
   }
   function hsl(h, s2, l, clip) {
     let color = new Color(`hsl(${h || 0}, ${s2 || 50}%, ${l || 50}%)`);
@@ -24217,18 +24217,6 @@
       clipShadows: true
     });
   }
-
-  // src/reborn/animations/Anim.ts
-  var Anim = class extends Object3D {
-    constructor(duration) {
-      super();
-      this.startedAt = Date.now();
-      this.duration = duration;
-    }
-    playAnimation() {
-      return this.play((Date.now() - this.startedAt) / this.duration);
-    }
-  };
 
   // src/reborn/renderer/Obj.ts
   var Obj = class extends Object3D {
@@ -24243,6 +24231,17 @@
     rot(x, y, z) {
       this.rotation.set(x, y, z);
       return this;
+    }
+  };
+
+  // src/reborn/renderer/Anim.ts
+  var Anim = class extends Obj {
+    constructor() {
+      super(...arguments);
+      this.startedAt = Date.now();
+    }
+    playAnimation(now) {
+      return this.play(now - this.startedAt);
     }
   };
 
@@ -24262,13 +24261,15 @@
   // src/reborn/animations/WaterSplashAnimation.ts
   var WaterSplashAnimation = class extends Anim {
     constructor(material) {
-      super(500);
+      super();
       this.cube = new Cube(this, material).sc(1.1, 0.1, 1.1).pos(0, 0.2, 0);
     }
     play(dt) {
+      dt /= 500;
       if (dt < 1) {
-        this.cube.scale.set(0.8 + dt * 2, 0.1, 0.8 + dt * 2);
-        this.cube.position.set(0, 0.6 - Math.abs(dt - 0.5), 0);
+        let c = 0.8 + dt * 2;
+        this.cube.sc(c, 0.1, c);
+        this.cube.pos(0, 0.6 - Math.abs(dt - 0.5), 0);
         return true;
       } else {
         this.parent.remove(this);
@@ -24527,7 +24528,7 @@
   // src/reborn/animations/JumpHareAnimation.ts
   var JumpHareAnimation = class extends Anim {
     constructor(hare, cell, targetRotation) {
-      super(150);
+      super();
       this.sourcePosition = new Vector3();
       this.targetPosition = new Vector3();
       this.hare = hare;
@@ -24537,19 +24538,20 @@
       this.targetRotation = targetRotation;
     }
     play(dt) {
+      dt /= 150;
       if (dt < 1) {
         let p0 = this.sourcePosition;
         let p1 = this.targetPosition;
         let x = lerp(p0.x, p1.x, dt);
         let y = lerp(p0.y, p1.y, dt) + 1 - Math.abs(dt - 0.5) * 2;
         let z = lerp(p0.z, p1.z, dt);
-        this.hare.position.set(x, y, z);
+        this.hare.pos(x, y, z);
         let y1 = angleLerp(this.sourceRotation, this.targetRotation, dt);
-        this.hare.rotation.set(0, y1, 0);
+        this.hare.rot(0, y1, 0);
         return true;
       } else {
         this.hare.position.copy(this.targetPosition);
-        this.hare.rotation.set(0, this.targetRotation, 0);
+        this.hare.rot(0, this.targetRotation, 0);
       }
     }
   };
@@ -24562,6 +24564,56 @@
     return a + (b - a) * t;
   }
 
+  // src/reborn/animations/DialogCloud.ts
+  var DialogCloud = class extends Anim {
+    constructor() {
+      super();
+      this.isPlaying = true;
+      let g = new Obj().pos(0, 2.5, 0).rot(0, 0.5, 0);
+      this.add(g);
+      this.c1 = new Cube(g, white).sc(0.1, 0.1, 0.05);
+      this.c2 = new Cube(g, white).sc(0.3, 0.3, 0.05);
+      this.c3 = new Cube(g, white).sc(1.2, 1, 0.05);
+    }
+    play(dt) {
+      dt /= 1e3;
+      let t1 = Math.min(dt * 10, 1);
+      let y1 = Math.sin(dt * 1.3) * 0.1;
+      this.c1.pos(0, y1 * t1, 0);
+      let y2 = Math.sin(dt * 1.2) * 0.1 + 0.3;
+      this.c2.pos(0, y2 * t1, 0);
+      let y3 = Math.sin(dt * 1.1) * 0.1 + 1.2;
+      let x3 = Math.sin(dt * 0.8) * 0.05 + 0.3;
+      this.c3.pos(x3, y3 * t1, 0).rot(0, Math.sin(dt * 0.8) * 0.1, 0).sc(Math.min(dt * 10, 1.2), t1, 0.05);
+      return this.isPlaying;
+    }
+    hide() {
+      this.parent && this.parent.remove(this);
+      this.isPlaying = false;
+      return this;
+    }
+    showAt(cell) {
+      this.startedAt = Date.now();
+      this.pos(cell.x, cell.height, cell.y);
+      this.isPlaying = true;
+      return this;
+    }
+  };
+
+  // src/reborn/Info.ts
+  var el = document.createElement("div");
+  el.style.position = "fixed";
+  el.style.top = "5px";
+  el.style.left = "5px";
+  document.body.append(el);
+  var prev = "";
+  function info(str) {
+    if (str === prev)
+      return;
+    prev = str;
+    el.innerHTML = str;
+  }
+
   // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
@@ -24569,6 +24621,7 @@
       this.camera = new Camera2();
       this.scene = new Scene();
       this.animations = [];
+      this.dialogCloud = new DialogCloud();
       this.scene.add(new Lights());
       this.hare = new HareController();
       this.scene.add(this.hare);
@@ -24583,8 +24636,10 @@
       this.hare.mirrorPosition(sector.halfSize);
     }
     render() {
-      this.animations = this.animations.filter((a) => a.playAnimation());
+      const now = Date.now();
+      this.animations = this.animations.filter((a) => a.playAnimation(now));
       this.renderer.render(this.scene, this.camera);
+      info("animations: " + this.animations.length);
     }
     click(obj) {
       const p0 = this.hare.position;
@@ -24599,19 +24654,26 @@
       this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
     }
     activateCell(cell) {
+      this.dialogCloud.hide();
       this.playCellAnimation(cell);
-      if (this.ground.sector.isOnEdge(cell)) {
-        setTimeout(() => {
+      setTimeout(() => {
+        if (cell.object === CellObjectType.CARROT)
+          this.showDialogCloud(cell);
+        if (this.ground.sector.isOnEdge(cell))
           dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
-        }, 350);
-      }
+      }, 350);
+    }
+    showDialogCloud(cell) {
+      this.scene.add(this.dialogCloud);
+      this.animations.push(this.dialogCloud);
+      this.dialogCloud.showAt(cell);
     }
     playCellAnimation(cell) {
       const cellAnimation = cell.getAnimation();
       if (!cellAnimation)
         return;
-      cellAnimation.position.set(cell.x, 0, cell.y);
-      cellAnimation.rotation.set(0, this.hare.rotation.y, 0);
+      cellAnimation.pos(cell.x, 0, cell.y);
+      cellAnimation.rot(0, this.hare.rotation.y, 0);
       this.animations.push(cellAnimation);
       this.ground.add(cellAnimation);
     }
@@ -24629,12 +24691,12 @@
     constructor() {
       this.empty = new Sector(0, 0, 21);
       this.empty = new Sector(0, 0, 21);
-      const el = document.createElement("div");
-      el.innerHTML = `<canvas style="position: fixed; right: 5px;bottom: 5px;" width="200" height="200"></canvas>`;
-      this.ctx = el.querySelector("canvas").getContext("2d");
+      const el2 = document.createElement("div");
+      el2.innerHTML = `<canvas style="position: fixed; right: 5px;bottom: 5px;" width="200" height="200"></canvas>`;
+      this.ctx = el2.querySelector("canvas").getContext("2d");
       this.ctx.translate(100, 100);
       this.ctx.rotate(Math.PI / 4);
-      document.body.append(el);
+      document.body.append(el2);
     }
     renderMiniMap(mapCursor2, map2) {
       this.ctx.clearRect(-1e5, -1e5, 2e5, 2e5);
@@ -24696,7 +24758,7 @@
     init();
   });
   addEventListener("resize", () => game.resize());
-  requestAnimationFrame(function update() {
+  requestAnimationFrame(function update(t) {
     game.render();
     requestAnimationFrame(update);
   });
