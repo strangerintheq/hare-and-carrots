@@ -24,7 +24,7 @@ export class Ground extends Object3D {
         cell.updateFn = () => {
             if (cellObject)
                 cellBase.remove(cellObject);
-            cellObject = new CellObject(cell.object);
+            cellObject = new CellObject(cell);
             cell.object && cellBase.add(cellObject);
         };
         cell.updateFn();

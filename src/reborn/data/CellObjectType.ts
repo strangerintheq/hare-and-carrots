@@ -7,6 +7,8 @@ export enum CellObjectType {
     SIGN_3,
 
     POO,
+    POO1,
+    POO_STEPS,
 
     CARROT,
     COIN,
@@ -17,7 +19,6 @@ export enum CellObjectType {
     BUSH2,
     STONE1,
     STONE2,
-
 }
 
 

@@ -7,23 +7,32 @@ import {Tree1} from "./Tree1";
 import {Obj} from "../renderer/Obj";
 import {Poo} from "./Poo";
 import {Bush2} from "./Bush2";
+import {Poo1} from "./Poo1";
+import {GroundSteps} from "./GroundSteps";
+import {Cell} from "../data/Cell";
 
 export class CellObject extends Obj{
 
-    constructor(cell: CellObjectType) {
+    constructor(cell: Cell) {
         super();
-        if (cell === CellObjectType.CARROT)
+        let o = cell.object;
+        if (o === CellObjectType.CARROT)
             this.add(new Carrot());
-        if (cell === CellObjectType.BUSH1)
+        if (o === CellObjectType.BUSH1)
             this.add(new Bush1());
-        if (cell === CellObjectType.BUSH2)
+        if (o === CellObjectType.BUSH2)
             this.add(new Bush2());
-        if (cell === CellObjectType.TREE1)
+        if (o === CellObjectType.TREE1)
             this.add(new Tree1());
-        if (cell === CellObjectType.TREE2)
+        if (o === CellObjectType.TREE2)
             this.add(new Tree2());
-        if (cell === CellObjectType.POO)
+        if (o === CellObjectType.POO)
             this.add(new Poo());
+        if (o === CellObjectType.POO1)
+            this.add(new Poo1());
+        if (o === CellObjectType.POO_STEPS)
+            this.add(new GroundSteps());
+        this.rotation.set(0,cell.cellObjectRotation, 0);
     }
 
 }

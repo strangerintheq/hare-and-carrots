@@ -47,7 +47,8 @@ export class Map {
             let x = cell.x + sector.x*(sector.size-2);
             let y = cell.y + sector.y*(sector.size-2);
             let all = Object.keys(CellObjectType);
-            for (let i=5; i<all.length; i++)
+
+            for (let i=7; i<all.length; i++)
                 if (this.noisedValue(CellObjectType[i], x, y) > 0.9)
                     return i
         }

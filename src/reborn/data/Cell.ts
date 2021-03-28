@@ -1,8 +1,9 @@
 import {CellType} from "./CellType";
 import {CellObjectType} from "./CellObjectType";
 import {Anim} from "../renderer/Anim";
-import { blueClipped1, blueClipped2} from "../../old/core/Materials";
+import {blueClipped1, blueClipped2} from "../../old/core/Materials";
 import {WaterSplashAnimation} from "../animations/WaterSplashAnimation";
+import {PooAnimation} from "../animations/PooAnimation";
 
 export class Cell {
 
@@ -11,6 +12,7 @@ export class Cell {
     x: number;
     y: number;
     object?: CellObjectType;
+    cellObjectRotation = 0;
     updateFn:Function;
 
     constructor(x: number, y: number) {
@@ -23,7 +25,8 @@ export class Cell {
             return new WaterSplashAnimation(blueClipped1)
         if (this.type === CellType.OCEAN)
             return new WaterSplashAnimation(blueClipped2)
-
+        if (this.object === CellObjectType.POO)
+            return new PooAnimation()
         return undefined
     }
 

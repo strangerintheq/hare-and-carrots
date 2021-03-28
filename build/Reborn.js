@@ -603,14 +603,16 @@
     CellObjectType2[CellObjectType2["SIGN_2"] = 2] = "SIGN_2";
     CellObjectType2[CellObjectType2["SIGN_3"] = 3] = "SIGN_3";
     CellObjectType2[CellObjectType2["POO"] = 4] = "POO";
-    CellObjectType2[CellObjectType2["CARROT"] = 5] = "CARROT";
-    CellObjectType2[CellObjectType2["COIN"] = 6] = "COIN";
-    CellObjectType2[CellObjectType2["TREE1"] = 7] = "TREE1";
-    CellObjectType2[CellObjectType2["TREE2"] = 8] = "TREE2";
-    CellObjectType2[CellObjectType2["BUSH1"] = 9] = "BUSH1";
-    CellObjectType2[CellObjectType2["BUSH2"] = 10] = "BUSH2";
-    CellObjectType2[CellObjectType2["STONE1"] = 11] = "STONE1";
-    CellObjectType2[CellObjectType2["STONE2"] = 12] = "STONE2";
+    CellObjectType2[CellObjectType2["POO1"] = 5] = "POO1";
+    CellObjectType2[CellObjectType2["POO_STEPS"] = 6] = "POO_STEPS";
+    CellObjectType2[CellObjectType2["CARROT"] = 7] = "CARROT";
+    CellObjectType2[CellObjectType2["COIN"] = 8] = "COIN";
+    CellObjectType2[CellObjectType2["TREE1"] = 9] = "TREE1";
+    CellObjectType2[CellObjectType2["TREE2"] = 10] = "TREE2";
+    CellObjectType2[CellObjectType2["BUSH1"] = 11] = "BUSH1";
+    CellObjectType2[CellObjectType2["BUSH2"] = 12] = "BUSH2";
+    CellObjectType2[CellObjectType2["STONE1"] = 13] = "STONE1";
+    CellObjectType2[CellObjectType2["STONE2"] = 14] = "STONE2";
   })(CellObjectType || (CellObjectType = {}));
 
   // src/reborn/storage/SeedStorage.ts
@@ -661,7 +663,7 @@
         let x = cell.x + sector.x * (sector.size - 2);
         let y = cell.y + sector.y * (sector.size - 2);
         let all = Object.keys(CellObjectType);
-        for (let i = 5; i < all.length; i++)
+        for (let i = 7; i < all.length; i++)
           if (this.noisedValue(CellObjectType[i], x, y) > 0.9)
             return i;
       }
@@ -24278,9 +24280,27 @@
     }
   };
 
+  // src/reborn/animations/PooAnimation.ts
+  var PooAnimation = class extends Anim {
+    constructor() {
+      super(...arguments);
+      this.cube = new Cube(this, brown2);
+    }
+    play(dt) {
+      dt /= 200;
+      if (dt < 1) {
+        let c = 0.5 + dt;
+        this.cube.sc(c, 0.1, c);
+        this.cube.pos(0, 0.5 - Math.abs(dt - 0.5) * 0.2, 0);
+        return true;
+      }
+    }
+  };
+
   // src/reborn/data/Cell.ts
   var Cell = class {
     constructor(x, y) {
+      this.cellObjectRotation = 0;
       this.x = x;
       this.y = y;
     }
@@ -24289,6 +24309,8 @@
         return new WaterSplashAnimation(blueClipped1);
       if (this.type === CellType.OCEAN)
         return new WaterSplashAnimation(blueClipped2);
+      if (this.object === CellObjectType.POO)
+        return new PooAnimation();
       return void 0;
     }
     updateCell() {
@@ -24440,22 +24462,46 @@
     }
   };
 
+  // src/reborn/objects/Poo1.ts
+  var Poo1 = class extends Obj {
+    constructor() {
+      super();
+      this.pos(0, 0.6, 0);
+      new Cube(this, brown2).sc(0.2, 0.3, 0.3);
+    }
+  };
+
+  // src/reborn/objects/GroundSteps.ts
+  var GroundSteps = class extends Obj {
+    constructor() {
+      super();
+      new Cube(this, brown2).sc(0.25, 0.1, 0.6).pos(-0.2, 0.5, 0);
+      new Cube(this, brown2).sc(0.25, 0.1, 0.6).pos(0.2, 0.5, 0);
+    }
+  };
+
   // src/reborn/objects/CellObject.ts
   var CellObject = class extends Obj {
     constructor(cell) {
       super();
-      if (cell === CellObjectType.CARROT)
+      let o = cell.object;
+      if (o === CellObjectType.CARROT)
         this.add(new Carrot());
-      if (cell === CellObjectType.BUSH1)
+      if (o === CellObjectType.BUSH1)
         this.add(new Bush1());
-      if (cell === CellObjectType.BUSH2)
+      if (o === CellObjectType.BUSH2)
         this.add(new Bush2());
-      if (cell === CellObjectType.TREE1)
+      if (o === CellObjectType.TREE1)
         this.add(new Tree1());
-      if (cell === CellObjectType.TREE2)
+      if (o === CellObjectType.TREE2)
         this.add(new Tree2());
-      if (cell === CellObjectType.POO)
+      if (o === CellObjectType.POO)
         this.add(new Poo());
+      if (o === CellObjectType.POO1)
+        this.add(new Poo1());
+      if (o === CellObjectType.POO_STEPS)
+        this.add(new GroundSteps());
+      this.rotation.set(0, cell.cellObjectRotation, 0);
     }
   };
 
@@ -24476,7 +24522,7 @@
       cell.updateFn = () => {
         if (cellObject)
           cellBase.remove(cellObject);
-        cellObject = new CellObject(cell.object);
+        cellObject = new CellObject(cell);
         cell.object && cellBase.add(cellObject);
       };
       cell.updateFn();
@@ -24713,15 +24759,29 @@
       jumpWaterSound();
   }
 
+  // src/reborn/data/HareState.ts
+  var HareState = class {
+    constructor() {
+      this.carrotsEaten = 0;
+      this.pooStepsCount = 0;
+      this.wetTimestamp = 0;
+      this.x = 0;
+      this.y = 0;
+      this.rotation = 0;
+      this.inWater = false;
+    }
+  };
+
   // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
+      this.animations = [];
       this.renderer = new Renderer();
       this.camera = new Camera2();
       this.scene = new Scene();
       this.hare = new HareController();
-      this.animations = [];
       this.dialogCloud = new DialogCloud();
+      this.hareState = new HareState();
       this.scene.add(new Lights());
       this.scene.add(this.hare);
       this.rayCaster = new RayCaster((o) => this.click(o), this.camera);
@@ -24741,9 +24801,8 @@
       info("animations: " + this.animations.length);
     }
     click(obj) {
-      if (obj.parent.parent.parent === this.dialogCloud) {
-        return this.doAction();
-      }
+      if (obj.parent.parent.parent === this.dialogCloud)
+        return this.doCloudDialogAction();
       let cell = this.handleJump(obj);
       this.activateCell(cell);
     }
@@ -24763,11 +24822,12 @@
     activateCell(cell) {
       this.dialogCloud.hide();
       this.playCellAnimation(cell);
+      this.handlePoo(cell);
       setTimeout(() => {
-        if (cell.object === CellObjectType.CARROT)
-          this.showDialogCloud(cell);
         if (this.ground.sector.isOnEdge(cell))
           dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
+        if (cell.object === CellObjectType.CARROT)
+          this.showDialogCloud(cell);
       }, 350);
     }
     showDialogCloud(cell) {
@@ -24780,7 +24840,7 @@
       const cellAnimation = cell.getAnimation();
       if (!cellAnimation)
         return;
-      cellAnimation.pos(cell.x, 0, cell.y);
+      cellAnimation.pos(cell.x, cell.height, cell.y);
       cellAnimation.rot(0, this.hare.rotation.y, 0);
       this.animations.push(cellAnimation);
       this.ground.add(cellAnimation);
@@ -24791,20 +24851,35 @@
     }
     placeHare() {
     }
-    doAction() {
+    doCloudDialogAction() {
       this.dialogCloud.hide();
       const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
       if (cell.object === CellObjectType.CARROT) {
         cell.object = CellObjectType.NONE;
         cell.updateCell();
-        const dy = Math.round(Math.cos(this.hare.rotation.y));
-        const dx = Math.round(Math.sin(this.hare.rotation.y));
-        let x = this.hare.position.x - dx;
-        let y = this.hare.position.z - dy;
-        console.log(x, y);
-        const cellBehind = this.ground.getCell(x, y);
-        cellBehind.object = CellObjectType.POO;
-        cellBehind.updateCell();
+        this.hareState.carrotsEaten++;
+        if (this.hareState.carrotsEaten % 3 === 0) {
+          const dy = Math.round(Math.cos(this.hare.rotation.y));
+          const dx = Math.round(Math.sin(this.hare.rotation.y));
+          const x = this.hare.position.x - dx;
+          const y = this.hare.position.z - dy;
+          const cellBehind = this.ground.getCell(x, y);
+          cellBehind.object = CellObjectType.POO;
+          cellBehind.updateCell();
+        }
+      }
+    }
+    handlePoo(cell) {
+      if (cell.object === CellObjectType.POO) {
+        cell.object = CellObjectType.POO1;
+        setTimeout(cell.updateCell, 100);
+        this.hareState.pooStepsCount = 5;
+      }
+      if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
+        cell.object = CellObjectType.POO_STEPS;
+        cell.cellObjectRotation = this.hare.rotation.y;
+        cell.updateCell();
+        this.hareState.pooStepsCount--;
       }
     }
   };

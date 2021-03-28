@@ -12,18 +12,20 @@ import {Cell} from "../data/Cell";
 import {CellObjectType} from "../data/CellObjectType";
 import {DialogCloud} from "../animations/DialogCloud";
 import {info} from "../gui/Info";
-import {jumpSound, playCellAudio} from "./Audio";
+import {playCellAudio} from "./Audio";
+import {HareState} from "../data/HareState";
 
 export class Game {
 
+    rayCaster: RayCaster;
+    ground: Ground;
+    animations: Anim[] = [];
     renderer = new Renderer();
     camera = new Camera();
     scene = new Scene();
-    rayCaster: RayCaster;
-    ground: Ground;
     hare = new HareController();
-    animations: Anim[] = [];
     dialogCloud = new DialogCloud();
+    hareState = new HareState();
 
     constructor() {
         this.scene.add(new Lights());
@@ -48,15 +50,13 @@ export class Game {
     }
 
     private click(obj: Object3D) {
-        if (obj.parent.parent.parent === this.dialogCloud) {
-            return this.doAction()
-        }
+        if (obj.parent.parent.parent === this.dialogCloud)
+            return this.doCloudDialogAction()
         let cell = this.handleJump(obj);
         this.activateCell(cell);
     }
 
     private handleJump(obj: Object3D): Cell{
-
         const p0 = this.hare.position;
         const p1 = obj.parent.parent.position;
         const dx = Math.sign(p0.x - p1.x);
@@ -73,11 +73,22 @@ export class Game {
     private activateCell(cell: Cell) {
         this.dialogCloud.hide();
         this.playCellAnimation(cell);
+        if (cell.object === CellObjectType.POO) {
+            cell.object = CellObjectType.POO1;
+            setTimeout(cell.updateCell, 100)
+            this.hareState.pooStepsCount = 5;
+        }
+        if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
+            cell.object = CellObjectType.POO_STEPS
+            cell.cellObjectRotation = this.hare.rotation.y;
+            cell.updateCell();
+            this.hareState.pooStepsCount--;
+        }
         setTimeout(() => {
-            if (cell.object === CellObjectType.CARROT)
-                this.showDialogCloud(cell);
             if (this.ground.sector.isOnEdge(cell))
                 dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
+            if (cell.object === CellObjectType.CARROT)
+                this.showDialogCloud(cell);
         }, 350);
     }
 
@@ -92,7 +103,7 @@ export class Game {
         const cellAnimation = cell.getAnimation();
         if (!cellAnimation)
             return
-        cellAnimation.pos(cell.x, 0, cell.y);
+        cellAnimation.pos(cell.x, cell.height, cell.y);
         cellAnimation.rot(0, this.hare.rotation.y, 0)
         this.animations.push(cellAnimation);
         this.ground.add(cellAnimation);
@@ -107,24 +118,27 @@ export class Game {
 
     }
 
-    private doAction() {
+    private doCloudDialogAction() {
         this.dialogCloud.hide();
         const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
-
         if (cell.object === CellObjectType.CARROT) {
             cell.object = CellObjectType.NONE;
             cell.updateCell();
-            const dy = Math.round(Math.cos(this.hare.rotation.y));
-            const dx = Math.round(Math.sin(this.hare.rotation.y));
-            const x = this.hare.position.x - dx;
-            const y = this.hare.position.z - dy;
-            const cellBehind = this.ground.getCell(x, y)
-            cellBehind.object = CellObjectType.POO;
-            cellBehind.updateCell();
+            this.hareState.carrotsEaten ++;
+
+            if (this.hareState.carrotsEaten % 3 === 0) {
+                const dy = Math.round(Math.cos(this.hare.rotation.y));
+                const dx = Math.round(Math.sin(this.hare.rotation.y));
+                const x = this.hare.position.x - dx;
+                const y = this.hare.position.z - dy;
+                const cellBehind = this.ground.getCell(x, y)
+                cellBehind.object = CellObjectType.POO;
+                cellBehind.updateCell();
+            }
+
         }
 
 
-
-
     }
+
 }
