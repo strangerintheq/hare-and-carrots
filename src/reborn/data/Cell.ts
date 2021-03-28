@@ -33,4 +33,8 @@ export class Cell {
     updateCell() {
         this.updateFn()
     }
+
+    isWater() {
+        return this.type === CellType.OCEAN || this.type === CellType.WATER
+    }
 }

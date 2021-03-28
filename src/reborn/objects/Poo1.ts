@@ -7,8 +7,8 @@ export class Poo1 extends Obj {
 
     constructor() {
         super();
-        this.pos(0,0.6,0)
+        this.pos(0,0.5,0)
         new Cube(this, brown2)
-            .sc(0.2, 0.3, 0.3)
+            .sc(1, 0.1, 1)
     }
 }

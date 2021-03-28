@@ -9,11 +9,11 @@ export class WaterStepsAnimation extends Anim {
         super();
 
         new Cube(this, blue1)
-            .sc(0.25, 0.1, 0.6)
+            .sc(0.25, 0.05, 0.6)
             .pos(-0.2,0.5,0)
 
         new Cube(this, blue1)
-            .sc(0.25, 0.1, 0.6)
+            .sc(0.25, 0.05, 0.6)
             .pos(0.2,0.5,0.0)
     }
 

@@ -63,6 +63,9 @@ export class Game {
     private click(obj: Object3D) {
         if (obj.parent.parent.parent === this.dialogCloud)
             return this.doCloudDialogAction()
+        if (this.hareState.isJumping)
+            return
+        this.hareState.isJumping = true
         let cell = this.handleJump(obj);
         this.activateCell(cell);
     }
@@ -85,7 +88,7 @@ export class Game {
         this.rayCaster.removeObject(this.dialogCloud);
         this.dialogCloud.hide();
         this.playCellAnimation(cell);
-        setTimeout(() => this.endJump(cell), 150);
+        setTimeout(() => this.endJump(cell), 175);
     }
 
     private showDialogCloud(cell: Cell) {
@@ -100,7 +103,8 @@ export class Game {
         const cellAnimation = cell.getAnimation();
         if (!cellAnimation)
             return
-        cellAnimation.pos(cell.x, cell.height, cell.y);
+        let h = cell.isWater() ? 0 : cell.height
+        cellAnimation.pos(cell.x, h, cell.y);
         cellAnimation.rot(0, this.hare.rotation.y, 0)
         this.animations.push(cellAnimation);
         this.ground.add(cellAnimation);
@@ -131,14 +135,17 @@ export class Game {
     }
 
     private endJump(cell:Cell) {
-        if (this.ground.sector.isOnEdge(cell))
-            dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
+
         if (cell.object === CellObjectType.CARROT)
             this.showDialogCloud(cell);
         if (cell.object === CellObjectType.POO) {
             cell.object = CellObjectType.POO1;
-            setTimeout(cell.updateCell, 100)
+            setTimeout(() => cell.updateCell(), 200)
             this.hareState.pooStepsCount = 5;
+        }
+        if (cell.isWater()){
+            this.hareState.inWater = true;
+            this.hareState.pooStepsCount = 0;
         }
         if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
             cell.object = CellObjectType.POO_STEPS
@@ -146,9 +153,7 @@ export class Game {
             cell.updateCell();
             this.hareState.pooStepsCount--;
         }
-        if (cell.type === CellType.WATER || cell.type === CellType.OCEAN){
-            this.hareState.inWater = true;
-        }
+
         if (cell.type === CellType.GRASS){
             if (this.hareState.inWater)
                 this.hareState.wetTimestamp = Date.now();
@@ -161,5 +166,8 @@ export class Game {
                 this.animations.push(waterSteps)
             }
         }
+        if (this.ground.sector.isOnEdge(cell))
+            dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
+        this.hareState.isJumping = false
     }
 }

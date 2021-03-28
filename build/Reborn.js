@@ -24265,14 +24265,14 @@
   var WaterSplashAnimation = class extends Anim {
     constructor(material) {
       super();
-      this.cube = new Cube(this, material).sc(1.1, 0.1, 1.1).pos(0, 0.2, 0);
+      this.cube = new Cube(this, material).sc(0, 0, 0);
     }
     play(dt) {
-      dt /= 500;
+      dt = Math.max(0, (dt - 100) / 500);
       if (dt < 1) {
-        let c = 0.8 + dt * 2;
+        let c = 0 + dt * 3;
         this.cube.sc(c, 0.1, c);
-        this.cube.pos(0, 0.6 - Math.abs(dt - 0.5), 0);
+        this.cube.pos(0, 0.45 - Math.abs(dt - 0.3) * 0.5, 0);
         return true;
       } else {
         this.parent.remove(this);
@@ -24289,11 +24289,12 @@
     play(dt) {
       dt = Math.max(0, (dt - 150) / 200);
       if (dt < 1) {
-        let c = 0.5 + dt;
+        let c = dt;
         this.cube.sc(c, 0.1, c);
         this.cube.pos(0, 0.5 - Math.abs(dt - 0.5) * 0.2, 0);
         return true;
-      }
+      } else
+        this.parent.remove(this);
     }
   };
 
@@ -24315,6 +24316,9 @@
     }
     updateCell() {
       this.updateFn();
+    }
+    isWater() {
+      return this.type === CellType.OCEAN || this.type === CellType.WATER;
     }
   };
 
@@ -24466,8 +24470,8 @@
   var Poo1 = class extends Obj {
     constructor() {
       super();
-      this.pos(0, 0.6, 0);
-      new Cube(this, brown2).sc(0.2, 0.3, 0.3);
+      this.pos(0, 0.5, 0);
+      new Cube(this, brown2).sc(1, 0.1, 1);
     }
   };
 
@@ -24475,8 +24479,8 @@
   var PooSteps = class extends Obj {
     constructor() {
       super();
-      new Cube(this, brown2).sc(0.25, 0.1, 0.6).pos(-0.2, 0.5, 0);
-      new Cube(this, brown2).sc(0.25, 0.1, 0.6).pos(0.2, 0.5, 0);
+      new Cube(this, brown2).sc(0.25, 0.05, 0.6).pos(-0.2, 0.5, 0);
+      new Cube(this, brown2).sc(0.25, 0.05, 0.6).pos(0.2, 0.5, 0);
     }
   };
 
@@ -24782,8 +24786,8 @@
   var WaterStepsAnimation = class extends Anim {
     constructor() {
       super();
-      new Cube(this, blue1).sc(0.25, 0.1, 0.6).pos(-0.2, 0.5, 0);
-      new Cube(this, blue1).sc(0.25, 0.1, 0.6).pos(0.2, 0.5, 0);
+      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(-0.2, 0.5, 0);
+      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(0.2, 0.5, 0);
     }
     play(dt) {
       if (dt > 2e3) {
@@ -24831,6 +24835,9 @@
     click(obj) {
       if (obj.parent.parent.parent === this.dialogCloud)
         return this.doCloudDialogAction();
+      if (this.hareState.isJumping)
+        return;
+      this.hareState.isJumping = true;
       let cell = this.handleJump(obj);
       this.activateCell(cell);
     }
@@ -24851,7 +24858,7 @@
       this.rayCaster.removeObject(this.dialogCloud);
       this.dialogCloud.hide();
       this.playCellAnimation(cell);
-      setTimeout(() => this.endJump(cell), 150);
+      setTimeout(() => this.endJump(cell), 175);
     }
     showDialogCloud(cell) {
       this.scene.add(this.dialogCloud);
@@ -24864,7 +24871,8 @@
       const cellAnimation = cell.getAnimation();
       if (!cellAnimation)
         return;
-      cellAnimation.pos(cell.x, cell.height, cell.y);
+      let h = cell.isWater() ? 0 : cell.height;
+      cellAnimation.pos(cell.x, h, cell.y);
       cellAnimation.rot(0, this.hare.rotation.y, 0);
       this.animations.push(cellAnimation);
       this.ground.add(cellAnimation);
@@ -24889,23 +24897,22 @@
       }
     }
     endJump(cell) {
-      if (this.ground.sector.isOnEdge(cell))
-        dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
       if (cell.object === CellObjectType.CARROT)
         this.showDialogCloud(cell);
       if (cell.object === CellObjectType.POO) {
         cell.object = CellObjectType.POO1;
-        setTimeout(cell.updateCell, 100);
+        setTimeout(() => cell.updateCell(), 200);
         this.hareState.pooStepsCount = 5;
+      }
+      if (cell.isWater()) {
+        this.hareState.inWater = true;
+        this.hareState.pooStepsCount = 0;
       }
       if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
         cell.object = CellObjectType.POO_STEPS;
         cell.cellObjectRotation = this.hareState.rotation;
         cell.updateCell();
         this.hareState.pooStepsCount--;
-      }
-      if (cell.type === CellType.WATER || cell.type === CellType.OCEAN) {
-        this.hareState.inWater = true;
       }
       if (cell.type === CellType.GRASS) {
         if (this.hareState.inWater)
@@ -24919,6 +24926,9 @@
           this.animations.push(waterSteps);
         }
       }
+      if (this.ground.sector.isOnEdge(cell))
+        dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
+      this.hareState.isJumping = false;
     }
   };
 
@@ -25019,10 +25029,13 @@
     game.render();
     requestAnimationFrame(update);
   });
-  new SvgButton(`
+  var reloadIcon = `
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M16.3 5h.7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h5l-2.82 -2.82m0 5.64l2.82 -2.82" transform="rotate(-45 12 12)" />
-`, () => {
+  <path d="M16.3 5h.7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 
+      -2v-10a2 2 0 0 1 2 -2h5l-2.82 -2.82m0 5.64l2.82 -2.82" 
+      transform="rotate(-45 12 12)" />
+`;
+  new SvgButton(reloadIcon, () => {
     clearSeed();
     init();
   });

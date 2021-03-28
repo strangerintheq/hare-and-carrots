@@ -10,11 +10,13 @@ export class PooAnimation extends Anim {
 
         dt = Math.max(0, (dt-150)/200)
         if (dt < 1) {
-            let c = 0.5 + dt;
+            let c =  dt;
             this.cube.sc(c, 0.1, c);
             this.cube.pos(0, 0.5-Math.abs(dt-0.5)*0.2, 0);
             return true; // continue play
         }
+        else
+            this.parent.remove(this)
     }
 
 }

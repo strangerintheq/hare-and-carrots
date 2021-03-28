@@ -6,4 +6,5 @@ export class HareState {
     y = 0;
     rotation = 0;
     inWater  = false;
+    isJumping: boolean;
 }
