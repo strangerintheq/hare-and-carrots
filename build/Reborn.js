@@ -1495,11 +1495,11 @@
           _canvas = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
         _canvas.width = image.width;
         _canvas.height = image.height;
-        const context = _canvas.getContext("2d");
+        const context2 = _canvas.getContext("2d");
         if (image instanceof ImageData) {
-          context.putImageData(image, 0, 0);
+          context2.putImageData(image, 0, 0);
         } else {
-          context.drawImage(image, 0, 0, image.width, image.height);
+          context2.drawImage(image, 0, 0, image.width, image.height);
         }
         canvas = _canvas;
       }
@@ -7847,13 +7847,13 @@
     }
   };
   function WebGLAnimation() {
-    let context = null;
+    let context2 = null;
     let isAnimating = false;
     let animationLoop = null;
     let requestId = null;
     function onAnimationFrame(time, frame) {
       animationLoop(time, frame);
-      requestId = context.requestAnimationFrame(onAnimationFrame);
+      requestId = context2.requestAnimationFrame(onAnimationFrame);
     }
     return {
       start: function() {
@@ -7861,18 +7861,18 @@
           return;
         if (animationLoop === null)
           return;
-        requestId = context.requestAnimationFrame(onAnimationFrame);
+        requestId = context2.requestAnimationFrame(onAnimationFrame);
         isAnimating = true;
       },
       stop: function() {
-        context.cancelAnimationFrame(requestId);
+        context2.cancelAnimationFrame(requestId);
         isAnimating = false;
       },
       setAnimationLoop: function(callback) {
         animationLoop = callback;
       },
       setContext: function(value) {
-        context = value;
+        context2 = value;
       }
     };
   }
@@ -12456,8 +12456,8 @@
           const canvas = needsNewCanvas ? createCanvas(width, height) : _canvas2;
           canvas.width = width;
           canvas.height = height;
-          const context = canvas.getContext("2d");
-          context.drawImage(image, 0, 0, width, height);
+          const context2 = canvas.getContext("2d");
+          context2.drawImage(image, 0, 0, width, height);
           console.warn("THREE.WebGLRenderer: Texture has been resized from (" + image.width + "x" + image.height + ") to (" + width + "x" + height + ").");
           return canvas;
         } else {
@@ -14097,9 +14097,9 @@
     function getContext(contextNames, contextAttributes) {
       for (let i = 0; i < contextNames.length; i++) {
         const contextName = contextNames[i];
-        const context = _canvas2.getContext(contextName, contextAttributes);
-        if (context !== null)
-          return context;
+        const context2 = _canvas2.getContext(contextName, contextAttributes);
+        if (context2 !== null)
+          return context2;
       }
       return null;
     }
@@ -21075,8 +21075,8 @@
       loader.load(url, function(buffer) {
         try {
           const bufferCopy = buffer.slice(0);
-          const context = AudioContext.getContext();
-          context.decodeAudioData(bufferCopy, function(audioBuffer) {
+          const context2 = AudioContext.getContext();
+          context2.decodeAudioData(bufferCopy, function(audioBuffer) {
             onLoad(audioBuffer);
           });
         } catch (e) {
@@ -24422,6 +24422,16 @@
     }
   };
 
+  // src/reborn/objects/Poo.ts
+  var Poo = class extends Obj {
+    constructor() {
+      super();
+      this.pos(0, 0.6, 0);
+      new Cube(this, brown2).sc(0.5, 0.1, 0.5);
+      new Cube(this, brown2).sc(0.2, 0.3, 0.3);
+    }
+  };
+
   // src/reborn/objects/CellObject.ts
   var CellObject = class extends Obj {
     constructor(cell) {
@@ -24434,6 +24444,8 @@
         this.add(new Tree1());
       if (cell === CellObjectType.TREE2)
         this.add(new Tree2());
+      if (cell === CellObjectType.POO)
+        this.add(new Poo());
     }
   };
 
@@ -24661,6 +24673,36 @@
     el.innerHTML = str;
   }
 
+  // src/reborn/game/Audio.ts
+  var AudioContext2 = window.AudioContext || window["webkitAudioContext"];
+  var context = new AudioContext2();
+  context.resume();
+  var gain = context.createGain();
+  gain.connect(context.destination);
+  gain.gain.value = 0.4;
+  function play(freq, delay, duration) {
+    let oscillator = context.createOscillator();
+    oscillator.type = "sine";
+    oscillator.connect(gain);
+    oscillator.frequency.value = freq;
+    oscillator.start(context.currentTime + delay);
+    oscillator.stop(context.currentTime + duration + delay);
+  }
+  function jumpSound() {
+    for (let i = 0; i < 5; i++)
+      play(330 + i * 120, 0 + 0.02 * i, 0.02);
+  }
+  function jumpWaterSound() {
+    for (let i = 0; i < 7; i++)
+      play(330 + i * 120 + Math.sin(i) * 100, 0 + 5e-3 * i + Math.sin(i) * 0.1, 0.01);
+  }
+  function playCellAudio(cell) {
+    if (cell.type === CellType.GRASS)
+      jumpSound();
+    else
+      jumpWaterSound();
+  }
+
   // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
@@ -24703,6 +24745,7 @@
       const x = p0.x - dx;
       const z = p0.z - dz;
       const nextCell = this.ground.getCell(x, z);
+      playCellAudio(nextCell);
       const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
       this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
       return nextCell;
@@ -24741,8 +24784,13 @@
     doAction() {
       this.dialogCloud.hide();
       const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
-      cell.object = CellObjectType.NONE;
-      cell.updateCell();
+      if (cell.object === CellObjectType.CARROT) {
+        cell.object = CellObjectType.NONE;
+        cell.updateCell();
+        const cellBehind = this.ground.getCell(this.hare.position.x - 1, this.hare.position.z);
+        cellBehind.object = CellObjectType.POO;
+        cell.updateCell();
+      }
     }
   };
 

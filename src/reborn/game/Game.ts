@@ -12,6 +12,7 @@ import {Cell} from "../data/Cell";
 import {CellObjectType} from "../data/CellObjectType";
 import {DialogCloud} from "../animations/DialogCloud";
 import {info} from "../gui/Info";
+import {jumpSound, playCellAudio} from "./Audio";
 
 export class Game {
 
@@ -55,6 +56,7 @@ export class Game {
     }
 
     private handleJump(obj: Object3D): Cell{
+
         const p0 = this.hare.position;
         const p1 = obj.parent.parent.position;
         const dx = Math.sign(p0.x - p1.x);
@@ -62,6 +64,7 @@ export class Game {
         const x = p0.x - dx;
         const z = p0.z - dz;
         const nextCell = this.ground.getCell(x, z);
+        playCellAudio(nextCell)
         const rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
         this.animations.push(new JumpHareAnimation(this.hare, nextCell, rotation));
         return nextCell;
@@ -107,7 +110,17 @@ export class Game {
     private doAction() {
         this.dialogCloud.hide();
         const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
-        cell.object = CellObjectType.NONE;
-        cell.updateCell();
+
+        if (cell.object === CellObjectType.CARROT) {
+            cell.object = CellObjectType.NONE;
+            cell.updateCell();
+            const cellBehind = this.ground.getCell(this.hare.position.x-1, this.hare.position.z)
+            cellBehind.object = CellObjectType.POO;
+            cell.updateCell();
+        }
+
+
+
+
     }
 }
