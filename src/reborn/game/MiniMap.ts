@@ -2,6 +2,7 @@ import {Sector} from "../data/Sector";
 import {Map} from "./Map";
 import {Cell} from "../data/Cell";
 import {CellType} from "../data/CellType";
+import {restoreSector} from "../storage/SectorStorage";
 
 let s = 3;
 
@@ -26,7 +27,7 @@ export class MiniMap {
         for (let y = -3; y <= 3; y++) {
             for (let x = -3; x <= 3; x++) {
                 let sector = new Sector(x + mapCursor.x, y + mapCursor.y, 21);
-                map.initSector(sector);
+                restoreSector(sector);
                 this.fillCells(sector,x,y)
                // this.drawSectorIndex(sector)
             }
@@ -67,6 +68,9 @@ export class MiniMap {
             return 'blue'
         if (cell.type === CellType.OCEAN)
             return 'darkblue'
-        return 'green';
+        if (cell.type === CellType.GRASS)
+            return 'green'
+        let c = Math.random()*256
+        return `rgb(${c},${c},${c})`;
     }
 }

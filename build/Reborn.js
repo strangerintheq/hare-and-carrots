@@ -15,9 +15,9 @@
   };
   var __exportStar = (target, module, desc) => {
     if (module && typeof module === "object" || typeof module === "function") {
-      for (let key of __getOwnPropNames(module))
-        if (!__hasOwnProp.call(target, key) && key !== "default")
-          __defProp(target, key, {get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable});
+      for (let key2 of __getOwnPropNames(module))
+        if (!__hasOwnProp.call(target, key2) && key2 !== "default")
+          __defProp(target, key2, {get: () => module[key2], enumerable: !(desc = __getOwnPropDesc(module, key2)) || desc.enumerable});
     }
     return target;
   };
@@ -628,17 +628,66 @@
     localStorage.removeItem(MAP_SEED_KEY);
   }
 
+  // src/reborn/storage/SectorStorage.ts
+  var MAP_SECTORS_INDEX_KEY = "hare-sector-index";
+  function restoreSector(sector) {
+    let sectorData = localStorage.getItem(key(sector));
+    if (sectorData) {
+      deserialize(sectorData, sector);
+      return true;
+    }
+  }
+  function saveSector(sector) {
+    localStorage.setItem(key(sector), serialize(sector));
+    let index = JSON.parse(localStorage.getItem(MAP_SECTORS_INDEX_KEY) || "{}");
+    index[key(sector)] = 1;
+    localStorage.setItem(MAP_SECTORS_INDEX_KEY, JSON.stringify(index));
+  }
+  function clearAllSectors() {
+    let index = JSON.parse(localStorage.getItem(MAP_SECTORS_INDEX_KEY) || "{}");
+    Object.keys(index).forEach((sect) => localStorage.removeItem(sect));
+    localStorage.removeItem(MAP_SECTORS_INDEX_KEY);
+  }
+  function key(sector) {
+    return "hare-map-sector--" + JSON.stringify([sector.x, sector.y]);
+  }
+  function serialize(sector) {
+    return JSON.stringify(sector.cells.map((r) => {
+      return r.map((c) => {
+        return {
+          h: c.height,
+          r: c.cellObjectRotation,
+          o: c.object,
+          t: c.type
+        };
+      });
+    }));
+  }
+  function deserialize(sectorData, sector) {
+    const data = JSON.parse(sectorData);
+    sector.forEachCell((c) => {
+      let el2 = data[c.y + sector.halfSize][c.x + sector.halfSize];
+      c.height = el2.h;
+      c.cellObjectRotation = el2.r;
+      c.type = el2.t;
+      c.object = el2.o;
+    });
+  }
+
   // src/reborn/game/Map.ts
   var Map2 = class {
-    noisedValue(key, x, y) {
-      if (!this.noises[key])
-        this.noises[key] = new import_simplex_noise.default(this.seed + key);
-      return this.noises[key].noise2D(x, y);
+    noisedValue(key2, x, y) {
+      if (!this.noises[key2])
+        this.noises[key2] = new import_simplex_noise.default(this.seed + key2);
+      return this.noises[key2].noise2D(x, y);
     }
     initSector(sector) {
       this.seed = getSeed();
       this.noises = {};
+      if (restoreSector(sector))
+        return;
       sector.forEachCell((cell) => this.initCell(sector, cell));
+      saveSector(sector);
     }
     initCell(sector, cell) {
       let x = cell.x + sector.x * (sector.size - 2);
@@ -4815,24 +4864,24 @@
         object.count = this.count;
         object.instanceMatrix = this.instanceMatrix.toJSON();
       }
-      function serialize(library, element) {
+      function serialize2(library, element) {
         if (library[element.uuid] === void 0) {
           library[element.uuid] = element.toJSON(meta);
         }
         return element.uuid;
       }
       if (this.isMesh || this.isLine || this.isPoints) {
-        object.geometry = serialize(meta.geometries, this.geometry);
+        object.geometry = serialize2(meta.geometries, this.geometry);
         const parameters = this.geometry.parameters;
         if (parameters !== void 0 && parameters.shapes !== void 0) {
           const shapes = parameters.shapes;
           if (Array.isArray(shapes)) {
             for (let i = 0, l = shapes.length; i < l; i++) {
               const shape = shapes[i];
-              serialize(meta.shapes, shape);
+              serialize2(meta.shapes, shape);
             }
           } else {
-            serialize(meta.shapes, shapes);
+            serialize2(meta.shapes, shapes);
           }
         }
       }
@@ -4840,7 +4889,7 @@
         object.bindMode = this.bindMode;
         object.bindMatrix = this.bindMatrix.toArray();
         if (this.skeleton !== void 0) {
-          serialize(meta.skeletons, this.skeleton);
+          serialize2(meta.skeletons, this.skeleton);
           object.skeleton = this.skeleton.uuid;
         }
       }
@@ -4848,11 +4897,11 @@
         if (Array.isArray(this.material)) {
           const uuids = [];
           for (let i = 0, l = this.material.length; i < l; i++) {
-            uuids.push(serialize(meta.materials, this.material[i]));
+            uuids.push(serialize2(meta.materials, this.material[i]));
           }
           object.material = uuids;
         } else {
-          object.material = serialize(meta.materials, this.material);
+          object.material = serialize2(meta.materials, this.material);
         }
       }
       if (this.children.length > 0) {
@@ -4865,7 +4914,7 @@
         object.animations = [];
         for (let i = 0; i < this.animations.length; i++) {
           const animation = this.animations[i];
-          object.animations.push(serialize(meta.animations, animation));
+          object.animations.push(serialize2(meta.animations, animation));
         }
       }
       if (isRootObject) {
@@ -4895,8 +4944,8 @@
       return output;
       function extractFromCache(cache) {
         const values = [];
-        for (const key in cache) {
-          const data = cache[key];
+        for (const key2 in cache) {
+          const data = cache[key2];
           delete data.metadata;
           values.push(data);
         }
@@ -5282,20 +5331,20 @@
     setValues: function(values) {
       if (values === void 0)
         return;
-      for (const key in values) {
-        const newValue = values[key];
+      for (const key2 in values) {
+        const newValue = values[key2];
         if (newValue === void 0) {
-          console.warn("THREE.Material: '" + key + "' parameter is undefined.");
+          console.warn("THREE.Material: '" + key2 + "' parameter is undefined.");
           continue;
         }
-        if (key === "shading") {
+        if (key2 === "shading") {
           console.warn("THREE." + this.type + ": .shading has been removed. Use the boolean .flatShading instead.");
           this.flatShading = newValue === FlatShading ? true : false;
           continue;
         }
-        const currentValue = this[key];
+        const currentValue = this[key2];
         if (currentValue === void 0) {
-          console.warn("THREE." + this.type + ": '" + key + "' is not a property of this material.");
+          console.warn("THREE." + this.type + ": '" + key2 + "' is not a property of this material.");
           continue;
         }
         if (currentValue && currentValue.isColor) {
@@ -5303,7 +5352,7 @@
         } else if (currentValue && currentValue.isVector3 && (newValue && newValue.isVector3)) {
           currentValue.copy(newValue);
         } else {
-          this[key] = newValue;
+          this[key2] = newValue;
         }
       }
     },
@@ -5475,8 +5524,8 @@
         data.userData = this.userData;
       function extractFromCache(cache) {
         const values = [];
-        for (const key in cache) {
-          const data2 = cache[key];
+        for (const key2 in cache) {
+          const data2 = cache[key2];
           delete data2.metadata;
           values.push(data2);
         }
@@ -6754,12 +6803,12 @@
         console.warn("THREE.BufferGeometry.merge(): Overwriting original geometry, starting at offset=0. Use BufferGeometryUtils.mergeBufferGeometries() for lossless merge.");
       }
       const attributes = this.attributes;
-      for (const key in attributes) {
-        if (geometry.attributes[key] === void 0)
+      for (const key2 in attributes) {
+        if (geometry.attributes[key2] === void 0)
           continue;
-        const attribute1 = attributes[key];
+        const attribute1 = attributes[key2];
         const attributeArray1 = attribute1.array;
-        const attribute2 = geometry.attributes[key];
+        const attribute2 = geometry.attributes[key2];
         const attributeArray2 = attribute2.array;
         const attributeOffset = attribute2.itemSize * offset;
         const length = Math.min(attributeArray2.length, attributeArray1.length - attributeOffset);
@@ -6839,9 +6888,9 @@
         data.userData = this.userData;
       if (this.parameters !== void 0) {
         const parameters = this.parameters;
-        for (const key in parameters) {
-          if (parameters[key] !== void 0)
-            data[key] = parameters[key];
+        for (const key2 in parameters) {
+          if (parameters[key2] !== void 0)
+            data[key2] = parameters[key2];
         }
         return data;
       }
@@ -6854,17 +6903,17 @@
         };
       }
       const attributes = this.attributes;
-      for (const key in attributes) {
-        const attribute = attributes[key];
+      for (const key2 in attributes) {
+        const attribute = attributes[key2];
         const attributeData = attribute.toJSON(data.data);
         if (attribute.name !== "")
           attributeData.name = attribute.name;
-        data.data.attributes[key] = attributeData;
+        data.data.attributes[key2] = attributeData;
       }
       const morphAttributes = {};
       let hasMorphAttributes = false;
-      for (const key in this.morphAttributes) {
-        const attributeArray = this.morphAttributes[key];
+      for (const key2 in this.morphAttributes) {
+        const attributeArray = this.morphAttributes[key2];
         const array = [];
         for (let i = 0, il = attributeArray.length; i < il; i++) {
           const attribute = attributeArray[i];
@@ -6874,7 +6923,7 @@
           array.push(attributeData);
         }
         if (array.length > 0) {
-          morphAttributes[key] = array;
+          morphAttributes[key2] = array;
           hasMorphAttributes = true;
         }
       }
@@ -7410,9 +7459,9 @@
     data.vertexShader = this.vertexShader;
     data.fragmentShader = this.fragmentShader;
     const extensions = {};
-    for (const key in this.extensions) {
-      if (this.extensions[key] === true)
-        extensions[key] = true;
+    for (const key2 in this.extensions) {
+      if (this.extensions[key2] === true)
+        extensions[key2] = true;
     }
     if (Object.keys(extensions).length > 0)
       data.extensions = extensions;
@@ -8872,9 +8921,9 @@
       const cachedAttributes = currentState.attributes;
       const geometryAttributes = geometry.attributes;
       let attributesNum = 0;
-      for (const key in geometryAttributes) {
-        const cachedAttribute = cachedAttributes[key];
-        const geometryAttribute = geometryAttributes[key];
+      for (const key2 in geometryAttributes) {
+        const cachedAttribute = cachedAttributes[key2];
+        const geometryAttribute = geometryAttributes[key2];
         if (cachedAttribute === void 0)
           return true;
         if (cachedAttribute.attribute !== geometryAttribute)
@@ -8893,14 +8942,14 @@
       const cache = {};
       const attributes2 = geometry.attributes;
       let attributesNum = 0;
-      for (const key in attributes2) {
-        const attribute = attributes2[key];
+      for (const key2 in attributes2) {
+        const attribute = attributes2[key2];
         const data = {};
         data.attribute = attribute;
         if (attribute.data) {
           data.data = attribute.data;
         }
-        cache[key] = data;
+        cache[key2] = data;
         attributesNum++;
       }
       currentState.attributes = cache;
@@ -11010,8 +11059,8 @@
     function remove(object) {
       properties.delete(object);
     }
-    function update2(object, key, value) {
-      properties.get(object)[key] = value;
+    function update2(object, key2, value) {
+      properties.get(object)[key2] = value;
     }
     function dispose() {
       properties = new WeakMap();
@@ -17812,42 +17861,42 @@
       return result;
     },
     flattenJSON: function(jsonKeys, times, values, valuePropertyName) {
-      let i = 1, key = jsonKeys[0];
-      while (key !== void 0 && key[valuePropertyName] === void 0) {
-        key = jsonKeys[i++];
+      let i = 1, key2 = jsonKeys[0];
+      while (key2 !== void 0 && key2[valuePropertyName] === void 0) {
+        key2 = jsonKeys[i++];
       }
-      if (key === void 0)
+      if (key2 === void 0)
         return;
-      let value = key[valuePropertyName];
+      let value = key2[valuePropertyName];
       if (value === void 0)
         return;
       if (Array.isArray(value)) {
         do {
-          value = key[valuePropertyName];
+          value = key2[valuePropertyName];
           if (value !== void 0) {
-            times.push(key.time);
+            times.push(key2.time);
             values.push.apply(values, value);
           }
-          key = jsonKeys[i++];
-        } while (key !== void 0);
+          key2 = jsonKeys[i++];
+        } while (key2 !== void 0);
       } else if (value.toArray !== void 0) {
         do {
-          value = key[valuePropertyName];
+          value = key2[valuePropertyName];
           if (value !== void 0) {
-            times.push(key.time);
+            times.push(key2.time);
             value.toArray(values, values.length);
           }
-          key = jsonKeys[i++];
-        } while (key !== void 0);
+          key2 = jsonKeys[i++];
+        } while (key2 !== void 0);
       } else {
         do {
-          value = key[valuePropertyName];
+          value = key2[valuePropertyName];
           if (value !== void 0) {
-            times.push(key.time);
+            times.push(key2.time);
             values.push(value);
           }
-          key = jsonKeys[i++];
-        } while (key !== void 0);
+          key2 = jsonKeys[i++];
+        } while (key2 !== void 0);
       }
     },
     subclip: function(sourceClip, name, startFrame, endFrame, fps = 30) {
@@ -18640,18 +18689,18 @@
   var Cache = {
     enabled: false,
     files: {},
-    add: function(key, file) {
+    add: function(key2, file) {
       if (this.enabled === false)
         return;
-      this.files[key] = file;
+      this.files[key2] = file;
     },
-    get: function(key) {
+    get: function(key2) {
       if (this.enabled === false)
         return;
-      return this.files[key];
+      return this.files[key2];
     },
-    remove: function(key) {
-      delete this.files[key];
+    remove: function(key2) {
+      delete this.files[key2];
     },
     clear: function() {
       this.files = {};
@@ -24220,16 +24269,20 @@
 
   // src/reborn/renderer/Obj.ts
   var Obj = class extends Object3D {
-    sc(x, y, z) {
+    sc(x, y = x, z = y) {
       this.scale.set(x, y, z);
       return this;
     }
-    pos(x, y, z) {
+    pos(x, y = x, z = y) {
       this.position.set(x, y, z);
       return this;
     }
-    rot(x, y, z) {
+    rot(x, y = x, z = y) {
       this.rotation.set(x, y, z);
+      return this;
+    }
+    rotY(v) {
+      this.rotation.y = v;
       return this;
     }
   };
@@ -24284,17 +24337,23 @@
   var PooAnimation = class extends Anim {
     constructor() {
       super(...arguments);
-      this.cube = new Cube(this, brown2);
+      this.cubes = [...Array(3)].map(() => {
+        return new Cube(this, brown2).sc(0.2 + Math.random() * 0.1, 0.1, 0.2 + Math.random() * 0.1);
+      });
+      this.rnd = Math.random();
     }
     play(dt) {
-      dt = Math.max(0, (dt - 150) / 200);
+      dt = Math.max(0, (dt - 150) / 300);
       if (dt < 1) {
-        let c = dt;
-        this.cube.sc(c, 0.1, c);
-        this.cube.pos(0, 0.5 - Math.abs(dt - 0.5) * 0.2, 0);
+        let y = 0.7 - (dt - 0.5) * (dt - 0.5);
+        this.cubes.forEach((cube2, i) => {
+          let a = this.rnd + i / 3 * Math.PI * 2;
+          let x = Math.cos(a) * dt;
+          let z = Math.sin(a) * dt;
+          cube2.pos(x, y, z);
+        });
         return true;
-      } else
-        this.parent.remove(this);
+      }
     }
   };
 
@@ -24471,9 +24530,17 @@
     constructor() {
       super();
       this.pos(0, 0.5, 0);
-      new Cube(this, brown2).sc(1, 0.1, 1);
+      new Cube(this, brown2).pos(rnd1(), 0, rnd1()).sc(rnd(), 0.1, rnd());
+      new Cube(this, brown2).pos(rnd1(), 0, rnd1()).sc(rnd(), 0.1, rnd());
+      new Cube(this, brown2).pos(rnd1(), 0, rnd1()).sc(rnd(), 0.1, rnd());
     }
   };
+  function rnd() {
+    return Math.random() * 0.1 + 0.2;
+  }
+  function rnd1() {
+    return Math.random() * 0.7 - 0.35;
+  }
 
   // src/reborn/objects/PooSteps.ts
   var PooSteps = class extends Obj {
@@ -24741,12 +24808,16 @@
 
   // src/reborn/game/Audio.ts
   var AudioContext2 = window.AudioContext || window["webkitAudioContext"];
-  var context = new AudioContext2();
-  context.resume();
-  var gain = context.createGain();
-  gain.connect(context.destination);
-  gain.gain.value = 0.4;
+  var context;
+  var gain;
   function play(freq, delay, duration) {
+    if (!context) {
+      context = new AudioContext2();
+      context.resume();
+      gain = context.createGain();
+      gain.connect(context.destination);
+      gain.gain.value = 0.4;
+    }
     let oscillator = context.createOscillator();
     oscillator.type = "sine";
     oscillator.connect(gain);
@@ -24763,10 +24834,13 @@
       play(330 + i * 120 + Math.sin(i) * 100, 0 + 5e-3 * i + Math.sin(i) * 0.1, 0.01);
   }
   function playCellAudio(cell) {
-    if (cell.type === CellType.GRASS)
-      jumpSound();
-    else
-      jumpWaterSound();
+    try {
+      if (cell.type === CellType.GRASS)
+        jumpSound();
+      else
+        jumpWaterSound();
+    } catch (e) {
+    }
   }
 
   // src/reborn/data/HareState.ts
@@ -24775,10 +24849,13 @@
       this.carrotsEaten = 0;
       this.pooStepsCount = 0;
       this.wetTimestamp = 0;
+      this.sectorX = 0;
+      this.sectorY = 0;
       this.x = 0;
       this.y = 0;
       this.rotation = 0;
       this.inWater = false;
+      this.isJumping = false;
     }
   };
 
@@ -24814,6 +24891,7 @@
       this.resize();
     }
     setMapSector(sector) {
+      this.sector = sector;
       this.ground && this.ground.parent.remove(this.ground);
       this.ground = new Ground(sector);
       this.scene.add(this.ground);
@@ -24824,7 +24902,10 @@
       const now = Date.now();
       this.animations = this.animations.filter((a) => a.playAnimation(now));
       this.renderer.render(this.scene, this.camera);
-      info("animations: " + this.animations.length);
+      info(`
+            animations: ${this.animations.length} <br>
+            raycaster: ${this.rayCaster.possibleToMoveCells.length} 
+        `);
     }
     resize() {
       this.renderer.setSize(innerWidth, innerHeight);
@@ -24883,7 +24964,7 @@
       const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z);
       if (cell.object === CellObjectType.CARROT) {
         cell.object = CellObjectType.NONE;
-        cell.updateCell();
+        this.changeCell(cell);
         this.hareState.carrotsEaten++;
         if (this.hareState.carrotsEaten % 1 === 0) {
           const dy = Math.round(Math.cos(this.hare.rotation.y));
@@ -24892,16 +24973,20 @@
           const y = this.hare.position.z - dy;
           const cellBehind = this.ground.getCell(x, y);
           cellBehind.object = CellObjectType.POO;
-          cellBehind.updateCell();
+          this.changeCell(cellBehind);
         }
       }
+    }
+    changeCell(c) {
+      c.updateCell();
+      saveSector(this.sector);
     }
     endJump(cell) {
       if (cell.object === CellObjectType.CARROT)
         this.showDialogCloud(cell);
       if (cell.object === CellObjectType.POO) {
         cell.object = CellObjectType.POO1;
-        setTimeout(() => cell.updateCell(), 200);
+        setTimeout(() => this.changeCell(cell), 200);
         this.hareState.pooStepsCount = 5;
       }
       if (cell.isWater()) {
@@ -24911,7 +24996,7 @@
       if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
         cell.object = CellObjectType.POO_STEPS;
         cell.cellObjectRotation = this.hareState.rotation;
-        cell.updateCell();
+        this.changeCell(cell);
         this.hareState.pooStepsCount--;
       }
       if (cell.type === CellType.GRASS) {
@@ -24950,7 +25035,7 @@
       for (let y = -3; y <= 3; y++) {
         for (let x = -3; x <= 3; x++) {
           let sector = new Sector(x + mapCursor2.x, y + mapCursor2.y, 21);
-          map2.initSector(sector);
+          restoreSector(sector);
           this.fillCells(sector, x, y);
         }
         this.ctx.strokeStyle = "red";
@@ -24967,8 +25052,8 @@
       });
     }
     randomGray() {
-      const rnd = 50 + Math.random() * 150;
-      return `rgb(${rnd}, ${rnd}, ${rnd})`;
+      const rnd2 = 50 + Math.random() * 150;
+      return `rgb(${rnd2}, ${rnd2}, ${rnd2})`;
     }
     drawSectorIndex(sector) {
       this.ctx.font = "20px Arial";
@@ -24981,7 +25066,10 @@
         return "blue";
       if (cell.type === CellType.OCEAN)
         return "darkblue";
-      return "green";
+      if (cell.type === CellType.GRASS)
+        return "green";
+      let c = Math.random() * 256;
+      return `rgb(${c},${c},${c})`;
     }
   };
 
@@ -25036,6 +25124,7 @@
       transform="rotate(-45 12 12)" />
 `;
   new SvgButton(reloadIcon, () => {
+    clearAllSectors();
     clearSeed();
     init();
   });

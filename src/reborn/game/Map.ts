@@ -4,6 +4,7 @@ import {Cell} from "../data/Cell";
 import {CellType} from "../data/CellType";
 import {CellObjectType} from "../data/CellObjectType";
 import {getSeed} from "../storage/SeedStorage";
+import {restoreSector, saveSector} from "../storage/SectorStorage";
 
 export class Map {
 
@@ -19,7 +20,10 @@ export class Map {
     initSector(sector: Sector) {
         this.seed = getSeed();
         this.noises = {};
+        if (restoreSector(sector))
+            return
         sector.forEachCell(cell => this.initCell(sector, cell))
+        saveSector(sector);
     }
 
     private initCell(sector: Sector, cell: Cell) {

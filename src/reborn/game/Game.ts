@@ -16,6 +16,7 @@ import {playCellAudio} from "./Audio";
 import {HareState} from "../data/HareState";
 import {CellType} from "../data/CellType";
 import {WaterStepsAnimation} from "../animations/WaterStepsAnimation";
+import {saveSector} from "../storage/SectorStorage";
 
 export class Game {
 
@@ -28,6 +29,7 @@ export class Game {
     hare = new HareController();
     dialogCloud = new DialogCloud();
     hareState = new HareState();
+    private sector: Sector;
 
     constructor() {
         this.scene.add(new Lights());
@@ -37,6 +39,7 @@ export class Game {
     }
 
     setMapSector(sector: Sector) {
+        this.sector = sector;
         this.ground && this.ground.parent.remove(this.ground)
         this.ground = new Ground(sector);
         this.scene.add(this.ground);
@@ -48,7 +51,10 @@ export class Game {
         const now = Date.now();
         this.animations = this.animations.filter(a => a.playAnimation(now))
         this.renderer.render(this.scene, this.camera);
-        info('animations: ' + this.animations.length)
+        info(`
+            animations: ${this.animations.length} <br>
+            raycaster: ${this.rayCaster.possibleToMoveCells.length} 
+        `)
     }
 
     resize() {
@@ -116,7 +122,7 @@ export class Game {
         const cell = this.ground.getCell(this.hare.position.x, this.hare.position.z)
         if (cell.object === CellObjectType.CARROT) {
             cell.object = CellObjectType.NONE;
-            cell.updateCell();
+            this.changeCell(cell);
             this.hareState.carrotsEaten ++;
 
             if (this.hareState.carrotsEaten % 1 === 0) {
@@ -126,12 +132,17 @@ export class Game {
                 const y = this.hare.position.z - dy;
                 const cellBehind = this.ground.getCell(x, y)
                 cellBehind.object = CellObjectType.POO;
-                cellBehind.updateCell();
+                this.changeCell(cellBehind);
             }
 
         }
 
 
+    }
+
+    private changeCell(c: Cell) {
+        c.updateCell();
+        saveSector(this.sector);
     }
 
     private endJump(cell:Cell) {
@@ -140,7 +151,7 @@ export class Game {
             this.showDialogCloud(cell);
         if (cell.object === CellObjectType.POO) {
             cell.object = CellObjectType.POO1;
-            setTimeout(() => cell.updateCell(), 200)
+            setTimeout(() => this.changeCell(cell), 200)
             this.hareState.pooStepsCount = 5;
         }
         if (cell.isWater()){
@@ -150,7 +161,7 @@ export class Game {
         if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
             cell.object = CellObjectType.POO_STEPS
             cell.cellObjectRotation = this.hareState.rotation;
-            cell.updateCell();
+            this.changeCell(cell)
             this.hareState.pooStepsCount--;
         }
 

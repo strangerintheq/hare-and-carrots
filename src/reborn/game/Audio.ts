@@ -2,13 +2,18 @@ import {Cell} from "../data/Cell";
 import {CellType} from "../data/CellType";
 
 let AudioContext = window.AudioContext || window['webkitAudioContext'];
-let context = new AudioContext();
-context.resume();
-let gain = context.createGain();
-gain.connect(context.destination);
-gain.gain.value = 0.4
+let context, gain;
 
 function play(freq, delay, duration){
+
+    if (!context) {
+        context = new AudioContext();
+        context.resume();
+        gain = context.createGain();
+        gain.connect(context.destination);
+        gain.gain.value = 0.4
+    }
+
     let oscillator = context.createOscillator();
     oscillator.type = "sine";
     oscillator.connect(gain);
@@ -31,9 +36,12 @@ export function jumpWaterSound(){
 
 
 export function playCellAudio(cell: Cell){
-    if (cell.type === CellType.GRASS)
-        jumpSound()
-    else
-        jumpWaterSound();
+    try {
+        if (cell.type === CellType.GRASS)
+            jumpSound()
+        else
+            jumpWaterSound();
+    } catch (e) {
+    }
 
 }

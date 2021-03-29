@@ -4,19 +4,33 @@ import {brown2} from "../../old/core/Materials";
 
 export class PooAnimation extends Anim {
 
-    private cube = new Cube(this, brown2);
+    private cubes = [...Array(3)]
+        .map(() => {
+            return new Cube(this, brown2).sc(0.2+Math.random()*0.1, 0.1, 0.2+Math.random()*0.1);
+        });
+    rnd = Math.random()
 
     protected play(dt: number): boolean {
 
-        dt = Math.max(0, (dt-150)/200)
+        dt = Math.max(0, (dt-150)/300)
+
         if (dt < 1) {
-            let c =  dt;
-            this.cube.sc(c, 0.1, c);
-            this.cube.pos(0, 0.5-Math.abs(dt-0.5)*0.2, 0);
+
+
+            let y = 0.7-(dt-0.5)*(dt-0.5);
+
+            this.cubes.forEach((cube,i) => {
+                let a = this.rnd+ i/3*Math.PI*2
+                let x = Math.cos(a)*dt
+                let z = Math.sin(a)*dt
+                cube.pos(x, y, z);
+
+            })
+
             return true; // continue play
         }
-        else
-            this.parent.remove(this)
+        //else
+            //this.parent.remove(this)
     }
 
 }

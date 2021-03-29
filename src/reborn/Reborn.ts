@@ -5,6 +5,7 @@ import {Cell} from "./data/Cell";
 import {MiniMap} from "./game/MiniMap";
 import {SvgButton} from "./gui/SvgButton";
 import {clearSeed} from "./storage/SeedStorage";
+import {clearAllSectors} from "./storage/SectorStorage";
 
 const sectorSize = 21;
 const mapCursor = {x:0, y:0};
@@ -45,6 +46,7 @@ let reloadIcon = `
 `;
 
 new SvgButton(reloadIcon, () => {
+    clearAllSectors();
     clearSeed();
     init();
 })
