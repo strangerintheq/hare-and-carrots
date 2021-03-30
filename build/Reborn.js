@@ -24357,6 +24357,22 @@
     }
   };
 
+  // src/reborn/animations/WaterStepsAnimation.ts
+  var WaterStepsAnimation = class extends Anim {
+    constructor() {
+      super();
+      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(-0.2, 0.5, 0);
+      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(0.2, 0.5, 0);
+    }
+    play(dt) {
+      if (dt > 2e3) {
+        this.parent.remove(this);
+        return false;
+      } else
+        return true;
+    }
+  };
+
   // src/reborn/data/Cell.ts
   var Cell = class {
     constructor(x, y) {
@@ -24378,6 +24394,35 @@
     }
     isWater() {
       return this.type === CellType.OCEAN || this.type === CellType.WATER;
+    }
+    handleCellLogic(hareState) {
+      let cell = this;
+      if (cell.object === CellObjectType.POO) {
+        cell.object = CellObjectType.POO1;
+        setTimeout(() => this.updateCell(), 200);
+        hareState.pooStepsCount = 5;
+      }
+      if (cell.isWater()) {
+        hareState.inWater = true;
+        hareState.pooStepsCount = 0;
+      }
+      if (hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
+        cell.object = CellObjectType.POO_STEPS;
+        cell.cellObjectRotation = hareState.rotation;
+        this.updateCell();
+        hareState.pooStepsCount--;
+      }
+      if (cell.type === CellType.GRASS) {
+        if (hareState.inWater)
+          hareState.wetTimestamp = Date.now();
+        hareState.inWater = false;
+        if (Date.now() - hareState.wetTimestamp < 2e3) {
+          let waterSteps = new WaterStepsAnimation();
+          waterSteps.rot(0, hareState.rotation, 0);
+          waterSteps.pos(cell.x, cell.height, cell.y);
+          return waterSteps;
+        }
+      }
     }
   };
 
@@ -24676,10 +24721,14 @@
       this.possibleToMoveCells = possibleToMoveCells;
     }
     addObject(dialogCloud) {
-      this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells];
+      let start = this.possibleToMoveCells.indexOf(dialogCloud);
+      if (start === -1)
+        this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells];
     }
     removeObject(dialogCloud) {
-      this.possibleToMoveCells.splice(this.possibleToMoveCells.indexOf(dialogCloud), 1);
+      let start = this.possibleToMoveCells.indexOf(dialogCloud);
+      if (start > -1)
+        this.possibleToMoveCells.splice(start, 1);
     }
   };
 
@@ -24859,22 +24908,6 @@
     }
   };
 
-  // src/reborn/animations/WaterStepsAnimation.ts
-  var WaterStepsAnimation = class extends Anim {
-    constructor() {
-      super();
-      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(-0.2, 0.5, 0);
-      new Cube(this, blue1).sc(0.25, 0.05, 0.6).pos(0.2, 0.5, 0);
-    }
-    play(dt) {
-      if (dt > 2e3) {
-        this.parent.remove(this);
-        return false;
-      } else
-        return true;
-    }
-  };
-
   // src/reborn/game/Game.ts
   var Game = class {
     constructor() {
@@ -24920,7 +24953,7 @@
         return;
       this.hareState.isJumping = true;
       let cell = this.handleJump(obj);
-      this.activateCell(cell);
+      this.jumpedToCellCell(cell);
     }
     handleJump(obj) {
       const p0 = this.hare.position;
@@ -24930,15 +24963,15 @@
       const x = p0.x - dx;
       const z = p0.z - dz;
       const nextCell = this.ground.getCell(x, z);
-      playCellAudio(nextCell);
       this.hareState.rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
       this.animations.push(new JumpHareAnimation(this.hare, nextCell, this.hareState.rotation));
       return nextCell;
     }
-    activateCell(cell) {
+    jumpedToCellCell(cell) {
+      playCellAudio(cell);
       this.rayCaster.removeObject(this.dialogCloud);
       this.dialogCloud.hide();
-      this.playCellAnimation(cell);
+      this.startAnimation(cell.getAnimation(), cell);
       setTimeout(() => this.endJump(cell), 175);
     }
     showDialogCloud(cell) {
@@ -24948,15 +24981,14 @@
       this.dialogCloud.showAt(cell);
       this.rayCaster.addObject(this.dialogCloud);
     }
-    playCellAnimation(cell) {
-      const cellAnimation = cell.getAnimation();
-      if (!cellAnimation)
+    startAnimation(animation, cell) {
+      if (!animation)
         return;
       let h = cell.isWater() ? 0 : cell.height;
-      cellAnimation.pos(cell.x, h, cell.y);
-      cellAnimation.rot(0, this.hare.rotation.y, 0);
-      this.animations.push(cellAnimation);
-      this.ground.add(cellAnimation);
+      animation.pos(cell.x, h, cell.y);
+      animation.rot(0, this.hare.rotation.y, 0);
+      this.animations.push(animation);
+      this.ground.add(animation);
     }
     doCloudDialogAction() {
       this.dialogCloud.hide();
@@ -24984,33 +25016,7 @@
     endJump(cell) {
       if (cell.object === CellObjectType.CARROT)
         this.showDialogCloud(cell);
-      if (cell.object === CellObjectType.POO) {
-        cell.object = CellObjectType.POO1;
-        setTimeout(() => this.changeCell(cell), 200);
-        this.hareState.pooStepsCount = 5;
-      }
-      if (cell.isWater()) {
-        this.hareState.inWater = true;
-        this.hareState.pooStepsCount = 0;
-      }
-      if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
-        cell.object = CellObjectType.POO_STEPS;
-        cell.cellObjectRotation = this.hareState.rotation;
-        this.changeCell(cell);
-        this.hareState.pooStepsCount--;
-      }
-      if (cell.type === CellType.GRASS) {
-        if (this.hareState.inWater)
-          this.hareState.wetTimestamp = Date.now();
-        this.hareState.inWater = false;
-        if (Date.now() - this.hareState.wetTimestamp < 2e3) {
-          let waterSteps = new WaterStepsAnimation();
-          waterSteps.rot(0, this.hareState.rotation, 0);
-          waterSteps.pos(cell.x, cell.height, cell.y);
-          this.ground.add(waterSteps);
-          this.animations.push(waterSteps);
-        }
-      }
+      this.startAnimation(cell.handleCellLogic(this.hareState), cell);
       if (this.ground.sector.isOnEdge(cell))
         dispatchEvent(new CustomEvent("change-sector", {detail: cell}));
       this.hareState.isJumping = false;

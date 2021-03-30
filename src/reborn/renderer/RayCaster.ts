@@ -29,10 +29,14 @@ export class RayCaster extends Raycaster {
     }
 
     addObject(dialogCloud: Object3D) {
-        this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells]
+        let start = this.possibleToMoveCells.indexOf(dialogCloud);
+        if (start === -1)
+            this.possibleToMoveCells = [dialogCloud, ...this.possibleToMoveCells]
     }
 
     removeObject(dialogCloud: Object3D) {
-        this.possibleToMoveCells.splice(this.possibleToMoveCells.indexOf(dialogCloud),1)
+        let start = this.possibleToMoveCells.indexOf(dialogCloud);
+        if (start > -1)
+            this.possibleToMoveCells.splice(start,1)
     }
 }

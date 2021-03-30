@@ -73,7 +73,7 @@ export class Game {
             return
         this.hareState.isJumping = true
         let cell = this.handleJump(obj);
-        this.activateCell(cell);
+        this.jumpedToCellCell(cell);
     }
 
     private handleJump(obj: Object3D): Cell{
@@ -84,16 +84,16 @@ export class Game {
         const x = p0.x - dx;
         const z = p0.z - dz;
         const nextCell = this.ground.getCell(x, z);
-        playCellAudio(nextCell);
         this.hareState.rotation = dx * dx + dz * dz !== 0 ? Math.atan2(-dx, -dz) : this.hare.rotation.y;
         this.animations.push(new JumpHareAnimation(this.hare, nextCell, this.hareState.rotation));
         return nextCell;
     }
 
-    private activateCell(cell: Cell) {
+    private jumpedToCellCell(cell: Cell) {
+        playCellAudio(cell);
         this.rayCaster.removeObject(this.dialogCloud);
         this.dialogCloud.hide();
-        this.playCellAnimation(cell);
+        this.startAnimation(cell.getAnimation(), cell);
         setTimeout(() => this.endJump(cell), 175);
     }
 
@@ -105,15 +105,14 @@ export class Game {
         this.rayCaster.addObject(this.dialogCloud)
     }
 
-    private playCellAnimation(cell: Cell) {
-        const cellAnimation = cell.getAnimation();
-        if (!cellAnimation)
+    private startAnimation(animation: Anim, cell: Cell) {
+        if (!animation)
             return
         let h = cell.isWater() ? 0 : cell.height
-        cellAnimation.pos(cell.x, h, cell.y);
-        cellAnimation.rot(0, this.hare.rotation.y, 0)
-        this.animations.push(cellAnimation);
-        this.ground.add(cellAnimation);
+        animation.pos(cell.x, h, cell.y);
+        animation.rot(0, this.hare.rotation.y, 0)
+        this.animations.push(animation);
+        this.ground.add(animation);
     }
 
     private doCloudDialogAction() {
@@ -146,37 +145,9 @@ export class Game {
     }
 
     private endJump(cell:Cell) {
-
         if (cell.object === CellObjectType.CARROT)
             this.showDialogCloud(cell);
-        if (cell.object === CellObjectType.POO) {
-            cell.object = CellObjectType.POO1;
-            setTimeout(() => this.changeCell(cell), 200)
-            this.hareState.pooStepsCount = 5;
-        }
-        if (cell.isWater()){
-            this.hareState.inWater = true;
-            this.hareState.pooStepsCount = 0;
-        }
-        if (this.hareState.pooStepsCount && cell.object === CellObjectType.NONE) {
-            cell.object = CellObjectType.POO_STEPS
-            cell.cellObjectRotation = this.hareState.rotation;
-            this.changeCell(cell)
-            this.hareState.pooStepsCount--;
-        }
-
-        if (cell.type === CellType.GRASS){
-            if (this.hareState.inWater)
-                this.hareState.wetTimestamp = Date.now();
-            this.hareState.inWater = false;
-            if (Date.now() - this.hareState.wetTimestamp < 2000) {
-                let waterSteps = new WaterStepsAnimation();
-                waterSteps.rot(0, this.hareState.rotation, 0)
-                waterSteps.pos(cell.x, cell.height, cell.y)
-                this.ground.add(waterSteps);
-                this.animations.push(waterSteps)
-            }
-        }
+        this.startAnimation(cell.handleCellLogic(this.hareState), cell);
         if (this.ground.sector.isOnEdge(cell))
             dispatchEvent(new CustomEvent('change-sector', {detail: cell}))
         this.hareState.isJumping = false
